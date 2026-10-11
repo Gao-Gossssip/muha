@@ -57,7 +57,7 @@
     },
     {
       "path": "packages/codex-adapter/src/codex-process.ts",
-      "sha256": "5789cca2c17acc4c52bf2b91ecccc686175aa0cd852c187ef07666a9d2431174"
+      "sha256": "801d46e6125db4b336171b31c1c30400df953e3d6bfdc494df9faa45d6d55003"
     },
     {
       "path": "packages/codex-adapter/src/index.ts",
@@ -362,6 +362,30 @@
         "new-runtime-native-history-recovery"
       ],
       "lockfileSha256": "371efe86bdef3a4e309eebd02f3fc9137150d0744d565e3bf22702f74dbfc30c"
+    },
+    {
+      "harness": "codex",
+      "authorizationDate": "2026-10-11",
+      "status": "PENDING",
+      "reason": "Accept empty native webSearch display queries without changing other string validation",
+      "authorization": "Controlled bugfix only; real-model requalification is not authorized",
+      "changedResources": [
+        {
+          "path": "packages/codex-adapter/src/codex-process.ts",
+          "sha256": "5789cca2c17acc4c52bf2b91ecccc686175aa0cd852c187ef07666a9d2431174",
+          "updatedSha256": "801d46e6125db4b336171b31c1c30400df953e3d6bfdc494df9faa45d6d55003"
+        }
+      ],
+      "realAttempts": 0,
+      "controlled": {
+        "webSearchPass": 6,
+        "codexPass": 64,
+        "codexSkip": 2,
+        "sdkPass": 495,
+        "sdkSkip": 2,
+        "piPass": 60
+      },
+      "lockfileSha256": "7aacb3acd3ddf92765df6f43b9c4efc17d53726431c95e93b16ec99270765b84"
     }
   ]
 }

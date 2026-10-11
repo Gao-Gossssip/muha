@@ -1134,7 +1134,7 @@ export function mapToolStarted(item: JsonObject, itemId: string): AdapterTurnEve
   }
   if (item.type === "webSearch") {
     return { type: "tool.started", nativeToolCallId: itemId, toolName: "webSearch",
-      input: { query: requireString(item.query, "web search query"), ...(item.action === undefined ? {} : { action: item.action }) } };
+      input: { query: requireString(item.query, "web search query", true), ...(item.action === undefined ? {} : { action: item.action }) } };
   }
   if (item.type === "commandExecution") {
     return {
@@ -1205,7 +1205,7 @@ export function mapToolCompleted(item: JsonObject, itemId: string): AdapterTurnE
   }
   if (item.type === "webSearch") {
     return { type: "tool.completed", nativeToolCallId: itemId,
-      output: { query: requireString(item.query, "web search query"), ...(item.action === undefined ? {} : { action: item.action }),
+      output: { query: requireString(item.query, "web search query", true), ...(item.action === undefined ? {} : { action: item.action }),
         ...(item.results === undefined ? {} : { results: item.results }) }, isError: false };
   }
   if (item.type === "commandExecution") {

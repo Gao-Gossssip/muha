@@ -125,3 +125,28 @@ listed in the latest manifest entry changed; the other Harnesses, Core, C helper
 input patch and dependency lockfile retain their accepted digests. Publication
 requires the latest Pi entry to pass; a historical PASS cannot qualify a newly
 pending runtime. Public Registry acceptance remains a separate release gate.
+
+## Codex empty web-search display query fix (2026-10-11)
+
+The native `webSearch` display item's required string `query` may be empty;
+it is not necessarily the actual search request text. Both started and completed
+Tool mappings now accept that empty string and preserve native query, action and
+results. Missing/non-string queries and unrelated tool input validation remain
+strict. Native execution, bridge routes, Profiles and dependencies are unchanged.
+
+Only `packages/codex-adapter/src/codex-process.ts` changes among the 64 pinned
+runtime resources. Its new digest identifies the bugfix candidate, not a new
+real-model PASS; the manifest records Codex requalification as `PENDING` with
+zero real attempts. The preceding Codex model evidence remains historical.
+Controlled cases use the reported Codex 0.162.1 started-item shape and synthetic
+completed snapshots, including a successful native Turn and same-Session
+continuation. Any real-model requalification and npm publication require
+separate authorization; the application's installed dependencies are not updated
+by this source repair.
+
+Controlled verification passed on Node 24.18.0 / npm 11.16.0: all six new
+web-search regressions, 64 Codex/source-integrity contracts with two existing
+opt-in skips, typecheck, and full SDK 495 PASS / 2 opt-in SKIP plus Pi 60 PASS.
+An initially missing SDK entry workspace link was restored with the unchanged
+lockfile's `npm ci`; the failed pre-install typecheck is retained in private
+receipts rather than presented as a first-attempt PASS.
