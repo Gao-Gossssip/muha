@@ -366,9 +366,9 @@
     {
       "harness": "codex",
       "authorizationDate": "2026-10-11",
-      "status": "PENDING",
+      "status": "PASS",
       "reason": "Accept empty native webSearch display queries without changing other string validation",
-      "authorization": "Controlled bugfix only; real-model requalification is not authorized",
+      "authorization": "Bounded native web-search and same-Session continuation approved with gpt-6-luna",
       "changedResources": [
         {
           "path": "packages/codex-adapter/src/codex-process.ts",
@@ -376,7 +376,18 @@
           "updatedSha256": "801d46e6125db4b336171b31c1c30400df953e3d6bfdc494df9faa45d6d55003"
         }
       ],
-      "realAttempts": 0,
+      "sourceRevision": "cd12bc4fa57062815a0dfe604b321cd200f8a0c9",
+      "harnessVersion": "0.162.1",
+      "models": { "text": "gpt-6-luna" },
+      "realAttempts": 2,
+      "attemptLimit": 3,
+      "concurrency": 1,
+      "perAttemptSecondsLimit": 120,
+      "totalMinutesLimit": 10,
+      "elapsedMs": 24006,
+      "checks": ["native-empty-query-start", "native-search-completion", "lossless-public-tool-values", "same-session-continuation", "owned-process-cleanup"],
+      "emptyStartedQueries": 1,
+      "emptyCompletedQueries": 0,
       "controlled": {
         "webSearchPass": 6,
         "codexPass": 64,

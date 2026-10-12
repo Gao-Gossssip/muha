@@ -135,14 +135,10 @@ results. Missing/non-string queries and unrelated tool input validation remain
 strict. Native execution, bridge routes, Profiles and dependencies are unchanged.
 
 Only `packages/codex-adapter/src/codex-process.ts` changes among the 64 pinned
-runtime resources. Its new digest identifies the bugfix candidate, not a new
-real-model PASS; the manifest records Codex requalification as `PENDING` with
-zero real attempts. The preceding Codex model evidence remains historical.
-Controlled cases use the reported Codex 0.162.1 started-item shape and synthetic
-completed snapshots, including a successful native Turn and same-Session
-continuation. Any real-model requalification and npm publication require
-separate authorization; the application's installed dependencies are not updated
-by this source repair.
+runtime resources. Its new digest identifies the repaired runtime; the preceding
+Codex model matrix remains historical. Controlled cases use the reported Codex
+0.162.1 started-item shape and synthetic completed snapshots, including a
+successful native Turn and same-Session continuation.
 
 Controlled verification passed on Node 24.18.0 / npm 11.16.0: all six new
 web-search regressions, 64 Codex/source-integrity contracts with two existing
@@ -150,3 +146,15 @@ opt-in skips, typecheck, and full SDK 495 PASS / 2 opt-in SKIP plus Pi 60 PASS.
 An initially missing SDK entry workspace link was restored with the unchanged
 lockfile's `npm ci`; the failed pre-install typecheck is retained in private
 receipts rather than presented as a first-attempt PASS.
+
+The user separately authorized `gpt-6-luna` for this narrow repair, under three
+attempts, 120 seconds per attempt, ten minutes overall and concurrency one.
+Source `cd12bc4fa57062815a0dfe604b321cd200f8a0c9` on Codex CLI 0.162.1 passed
+both actual attempts in 24.006 seconds: native web search emitted one empty-query
+started item, completed successfully with lossless public input/output, and the
+same Session completed its next Turn. Exactly one terminal per Turn and owned
+cleanup passed; the reserve attempt was unused. Empty completed queries were
+not observed in this real probe; that mapping is covered by controlled fixtures,
+not presented as an observed native completion. No other Harness, full model
+matrix or consumer application workflow was rerun. Seven-package 0.1.16 Registry
+publication and lockfile installation acceptance remain the separate release gate.
