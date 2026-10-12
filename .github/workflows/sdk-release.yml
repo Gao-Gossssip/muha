@@ -73,7 +73,6 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '22.20.0'
-          registry-url: https://registry.npmjs.org/
       - name: Require reviewed source and prepared artifacts
         env:
           REVIEWED_REVISION: ${{ inputs.revision }}
@@ -81,10 +80,9 @@ jobs:
           REVIEWED_MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
           GH_TOKEN: ${{ github.token }}
         run: node scripts/release-workflow.mjs download
-      - run: npm install --global npm@11.15.0
-      - name: Upload exact tarballs with provenance and candidate tag
+      - run: npm install --global npm@11.21.0
+      - name: Upload exact tarballs using OIDC with provenance and candidate tag
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           REVIEWED_REVISION: ${{ inputs.revision }}
           REVIEWED_MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
         run: node scripts/publish-public-release.mjs publish
@@ -127,12 +125,12 @@ jobs:
     permissions:
       contents: read
       actions: read
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: '22.20.0'
-          registry-url: https://registry.npmjs.org/
       - name: Download the same reviewed cohort
         env:
           REVIEWED_REVISION: ${{ inputs.revision }}
@@ -140,10 +138,9 @@ jobs:
           REVIEWED_MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
           GH_TOKEN: ${{ github.token }}
         run: node scripts/release-workflow.mjs download
-      - run: npm install --global npm@11.15.0
-      - name: Promote all accepted exact versions to latest
+      - run: npm install --global npm@11.21.0
+      - name: Promote all accepted exact versions to latest using OIDC
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
           REVIEWED_REVISION: ${{ inputs.revision }}
           REVIEWED_MANIFEST_SHA256: ${{ inputs.manifest_sha256 }}
         run: node scripts/publish-public-release.mjs promote
