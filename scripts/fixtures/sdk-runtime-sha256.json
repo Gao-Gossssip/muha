@@ -209,7 +209,7 @@
     },
     {
       "path": "packages/pi-adapter/scripts/build-sdk.mjs",
-      "sha256": "a6942901ef9ecd83e77cb27268a0c714f665ec5310218c23f42f3892973db953"
+      "sha256": "6fcb2d92bdfb6314f2eacbc803a96856b8c8d67f668361ae7bb4c521ffebf3f1"
     },
     {
       "path": "packages/pi-adapter/src/index.ts",
@@ -397,6 +397,32 @@
         "piPass": 60
       },
       "lockfileSha256": "7aacb3acd3ddf92765df6f43b9c4efc17d53726431c95e93b16ec99270765b84"
+    },
+    {
+      "harness": "pi",
+      "sdkVersion": "1.2.0",
+      "status": "PENDING",
+      "reason": "Align official SDK with codemode 1.2.0 after a fresh-install missing-export failure; rebase the verified ordered-input patch",
+      "authorization": "Controlled repository test repair only; no new real-model authorization or publication",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/scripts/build-sdk.mjs",
+          "sha256": "a6942901ef9ecd83e77cb27268a0c714f665ec5310218c23f42f3892973db953",
+          "updatedSha256": "6fcb2d92bdfb6314f2eacbc803a96856b8c8d67f668361ae7bb4c521ffebf3f1"
+        }
+      ],
+      "sourceRevision": null,
+      "realAttempts": 0,
+      "controlled": {
+        "nodeVersion": "24.18.0",
+        "npmVersion": "11.16.0",
+        "sdkPass": 580,
+        "sdkSkip": 2,
+        "piPass": 64,
+        "freshInstall": "PASS",
+        "lockfileCi": "PASS"
+      },
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e"
     }
   ]
 }

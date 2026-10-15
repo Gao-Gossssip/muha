@@ -115,10 +115,16 @@ test("Registry provenance rejects another package, bytes, source, workflow or ru
 // Earlier PASS receipts cannot qualify a newly changed lifecycle implementation.
 test("publication refuses a pending Pi runtime even when its historical qualification passed", async () => {
   const { assertPiPublicationQualification } = await import("../../scripts/publication-qualification.mjs");
-  const passed = { harness: "pi", sdkVersion: "1.0.4", status: "PASS" };
+  const passed = { harness: "pi", sdkVersion: "1.2.0", status: "PASS" };
   assert.doesNotThrow(() => assertPiPublicationQualification({ requalifications: [passed] }));
   for (const status of ["PENDING", "FAIL"]) {
     assert.throws(() => assertPiPublicationQualification({ requalifications: [passed, { ...passed, status }] }), /Latest Pi runtime/);
   }
   assert.throws(() => assertPiPublicationQualification({ requalifications: [] }), /Latest Pi runtime/);
+  assert.throws(() => assertPiPublicationQualification({ requalifications: [
+    { ...passed, sdkVersion: "1.0.4" },
+  ] }), /Latest Pi runtime/, "a historical SDK PASS cannot qualify the current SDK");
+  const current = JSON.parse(await readFile(new URL("../../scripts/fixtures/sdk-runtime-sha256.json", import.meta.url), "utf8"));
+  assert.throws(() => assertPiPublicationQualification(current), /Latest Pi runtime/,
+    "Pi 1.2.0 still requires separately authorized real-model qualification");
 });

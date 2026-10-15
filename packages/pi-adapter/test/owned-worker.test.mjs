@@ -22,7 +22,7 @@ test("Pi ownership helper loss fails close without claiming descendant reclamati
   t.after(() => owner.close().catch(() => {}));
   const ready = once(owner.child, "message");
   owner.child.send({ id: "ready", command: "ready", args: {} });
-  assert.equal((await ready)[0].value.version, "1.0.4");
+  assert.equal((await ready)[0].value.version, "1.2.0");
   nativePid = Number(await readFile(pidFile, "utf8"));
   assert.ok(nativePid > 1);
   owner.child.kill("SIGKILL");

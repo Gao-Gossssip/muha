@@ -17,17 +17,16 @@ const sdkRoot = new URL("../../../node_modules/@earendil-works/pi-coding-agent/"
 const sdkEntry = new URL("dist/index.js", sdkRoot);
 const target = new URL("core/agent-session.js", sdkEntry);
 const source = await readFile(target, "utf8");
-const expected = "9898d8a44ba68d495b0f6e78f888116a6496d7c1b5d1bb568e3028c3b1413977";
+const expected = "a5c9ff22e42215405804dc0c850e98aff424a1262829161155132a3da020b693";
 if (createHash("sha256").update(source).digest("hex") !== expected) {
-  throw new Error("Pi SDK 1.0.4 input patch does not match installed source");
+  throw new Error("Pi SDK 1.2.0 input patch does not match installed source");
 }
 let patched = source;
 function replaceOnce(from, to) {
   if (patched.split(from).length !== 2) throw new Error("Pi SDK input patch anchor mismatch");
   patched = patched.replace(from, to);
 }
-replaceOnce("    async prompt(text, options) {", `    async prompt(text, options) {
-        const orderedContent = Array.isArray(text) ? structuredClone(text) : undefined;
+replaceOnce("        const expandPromptTemplates = options?.expandPromptTemplates ?? true;", `        const orderedContent = Array.isArray(text) ? structuredClone(text) : undefined;
         if (orderedContent) {
             if (orderedContent.length === 0 || orderedContent.some(part =>
                 !part || (part.type !== "text" && part.type !== "image"))) {
@@ -38,19 +37,40 @@ replaceOnce("    async prompt(text, options) {", `    async prompt(text, options
             }
             text = orderedContent.filter(part => part.type === "text").map(part => part.text).join("\\n");
             options = { ...options, images: orderedContent.filter(part => part.type === "image") };
-        }`);
+        }
+        const expandPromptTemplates = options?.expandPromptTemplates ?? true;`);
 // An explicit native transformation wins even when its text is unchanged.
 replaceOnce('return { text: inputResult.text, images: inputResult.images ?? images };',
   'return { text: inputResult.text, images: inputResult.images ?? images, transformed: true };');
+// Pi 1.2 prepares user/custom messages in _prepareRun. Carry the order privately,
+// not on the native trigger exposed to extension hooks. Native custom-message
+// runs omit it. Native transformations and Skill/template expansion discard it.
+replaceOnce("    async _startRun(trigger, onStarted) {", "    async _startRun(trigger, onStarted, orderedContent) {");
+replaceOnce("messages = await this._prepareRun(trigger);", "messages = await this._prepareRun(trigger, orderedContent);");
+replaceOnce("    async _prepareRun(trigger) {", "    async _prepareRun(trigger, orderedContent) {");
+// SDK 1.2 marks preparation busy before notifying preflight acceptance. Keep
+// that callback inside its existing native finalizer: rejection/interruption
+// must release the busy state without starting a model or copying the loop.
+replaceOnce("        onStarted?.();\n", "");
+replaceOnce(`        try {
+            await this.agent.prompt(messages);`, `        try {
+            onStarted?.();
+            await this.agent.prompt(messages);`);
+replaceOnce('await this._startRun({ messageType: "user", prompt: expandedText, images: currentImages }, () => preflightResult?.("started"));',
+  'await this._startRun({ messageType: "user", prompt: expandedText, images: currentImages }, () => preflightResult?.("started"), !processedInput.transformed && expandedText === text ? orderedContent : undefined);');
 // Keep Pi's image normalization. When it can preserve every image slot, place
 // normalized images back into the original ordered parts. Native replacement
 // text, image omissions, or normalization hints use Pi's replacement message.
-replaceOnce(`        const userContent = [{ type: "text", text: userText }];
-        userContent.push(...normalized.images);`, `        let imageIndex = 0;
-        const userContent = orderedContent && !processedInput.transformed && expandedText === text &&
-            normalized.hints.length === 0 && normalized.images.length === (currentImages?.length ?? 0)
-            ? orderedContent.map(part => part.type === "image" ? normalized.images[imageIndex++] : part)
-            : [{ type: "text", text: userText }, ...normalized.images];`);
+replaceOnce(`            messages.push({
+                role: "user",
+                content: [{ type: "text", text }, ...normalized.images],`, `            let imageIndex = 0;
+            const userContent = orderedContent && normalized.hints.length === 0 &&
+                normalized.images.length === (trigger.images?.length ?? 0)
+                ? orderedContent.map(part => part.type === "image" ? normalized.images[imageIndex++] : part)
+                : [{ type: "text", text }, ...normalized.images];
+            messages.push({
+                role: "user",
+                content: userContent,`);
 const output = new URL("../dist/", import.meta.url);
 const licenseResources = [
   [new URL("../../../node_modules/@aws-sdk/core/LICENSE", import.meta.url), "third-party-licenses/aws-sdk-3.972.39.LICENSE", "edea91454b811f127fbdea3d86f378f6719bd372ed440abf82b232f6fca06c3d"],
@@ -71,7 +91,7 @@ if (process.argv.includes("--check")) {
   // tree that other owned Session processes may currently be importing.
   const manifest = JSON.parse(await readFile(new URL("sdk-patch.json", output), "utf8"));
   const hash = value => createHash("sha256").update(value).digest("hex");
-  if (manifest.version !== "1.0.4" || manifest.originalSha256 !== expected || manifest.patchedSha256 !== hash(patched) ||
+  if (manifest.version !== "1.2.0" || manifest.originalSha256 !== expected || manifest.patchedSha256 !== hash(patched) ||
       hash(await readFile(new URL("ordered-agent-session.mjs", output))) !== hash(patched)) {
     throw new Error("Pi SDK patch is missing or stale; build before packing");
   }
@@ -87,7 +107,7 @@ if (process.argv.includes("--check")) {
 await mkdir(output, { recursive: true });
 await writeChanged(new URL("ordered-agent-session.mjs", output), patched);
 await writeChanged(new URL("sdk-patch.json", output), JSON.stringify({
-  version: "1.0.4", originalSha256: expected,
+  version: "1.2.0", originalSha256: expected,
   patchedSha256: createHash("sha256").update(patched).digest("hex"),
 }) + "\n");
 await copyChanged(new URL("../src/sdk-loader.mjs", import.meta.url), new URL("sdk-loader.mjs", output));

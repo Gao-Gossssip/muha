@@ -69,7 +69,8 @@ test("the official packages share one installable ESM contract", async () => {
   });
   assert.deepEqual(manifests[4].dependencies, {
     "@muha-sdk/core": releaseVersion,
-    "@earendil-works/pi-coding-agent": "1.0.4",
+    "@earendil-works/pi-codemode": ">=1.0.4",
+    "@earendil-works/pi-coding-agent": "1.2.0",
   });
   assert.equal(manifests[4].bundledDependencies, undefined);
   assert.equal(manifests[4].bundleDependencies, undefined);
