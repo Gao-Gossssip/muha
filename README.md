@@ -4,9 +4,49 @@
 
 One TypeScript API for Codex, OpenCode, Kimi Code, Pi, and AGY.
 
-Use your coding agents from scripts and applications: create sessions, stream
-responses and tool activity, interrupt work, and resume native conversations.
-Each agent keeps its own models, tools, permissions, and conversation history.
+Muha is a lightweight TypeScript SDK for using coding agents in scripts and apps.
+Choose harnesses and models, connect tasks in code, and keep their native capabilities.
+A harness is a full agent runtime with models, tools, permissions, and history,
+not just a model API.
+
+## Why Muha
+
+- **Task-aware spending** Use cost-effective models for routine work and stronger
+  setups for difficult steps, combining existing subscriptions and providers.
+- **Automated handoffs** Connect research, writing, and review in code, passing
+  material and handling results without repeated terminal operations.
+- **Less integration glue** Manage startup, sessions, events, and interactions
+  across harnesses through one API instead of rebuilding each integration.
+
+## How it works
+
+- **Lightweight TypeScript API** Manage Sessions, Turns, streams, interactions,
+  interruption, and opt-in retries in ordinary Node.js code, without a workflow DSL.
+- **Native capabilities** Reuse each harness's models, tools, auth, permissions,
+  history, and supported Skills/MCP. Native billing still applies;
+  Muha does not automatically select the cheapest model.
+- **No extra deployment** No separate Muha server, container platform, or
+  additional sandbox layer is required. Adapters may manage local helpers or native
+  services; Muha is not a security isolation boundary.
+
+## What you can build
+
+- **Flexible workflows** Reuse Sessions for ongoing context or create a fresh
+  Session per independent task. A Session permits one active Turn at a time;
+  parallel tasks use separate Sessions.
+- **Harness and model comparisons** Run the same task in separate Sessions for
+  evaluations, prompt experiments, or cross-checks. Your application supplies
+  scoring and cost estimates; Muha supplies a common execution API.
+- **Agent-led orchestration** Expose Muha as tools or scripts so an orchestrator
+  harness can delegate to others and collect results. Your code owns routing,
+  planning, and scheduling.
+- **Applications and scripts** Build chat, research-to-draft pipelines,
+  code-review tools, or batch file processing with the same execution controls.
+
+**Boundaries** Muha is not a built-in workflow scheduler or orchestrator.
+A Session stays bound to its harness and workspace; switching harnesses requires
+a new Session, without automatic conversation-history migration. Query optional
+capabilities: a common API does not promise identical capabilities or outputs.
 
 ## Install
 
@@ -95,7 +135,7 @@ Pass your chosen adapters to `createMuhaRuntime({ harnesses: [...] })`.
 Only configured agents start. Pi and AGY require an explicit supported policy,
 such as `harnessManaged`; they do not support the default `interactive` policy.
 
-## More ways to use Muha
+## Working with the API
 
 - Keep `session.reference` to resume the same native conversation.
 - Read `runtime.getHarnessCapabilities(...)` before using optional features.

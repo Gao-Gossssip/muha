@@ -5,6 +5,44 @@ import { dirname, join, resolve } from 'node:path';
 import test from 'node:test';
 
 const root = resolve(import.meta.dirname, '../..');
+
+test('root READMEs explain motivation, the embedded SDK approach and application-level use cases', async () => {
+  for (const [file, headings, concepts] of [
+    ['README.md', ['Why Muha', 'How it works', 'What you can build', 'Install'],
+      [/cost-effective models/, /Lightweight TypeScript API/, /No extra deployment/,
+        /additional sandbox layer/, /fresh Session per independent/, /Harness and model comparisons/,
+        /Agent-led orchestration/, /Applications and scripts/]],
+    ['README.zh-CN.md', ['为什么需要 Muha', 'Muha 如何工作', '可以用它做什么', '安装'],
+      [/高性价比的模型/, /轻量化 TypeScript API/, /无需额外部署/,
+        /额外沙箱层/, /独立任务创建新 Session/, /不同 Harness 与模型/,
+        /由 Agent 编排 Agent/, /集成应用与脚本/]],
+  ]) {
+    const contents = await readFile(join(root, file), 'utf8');
+    const positions = headings.map(heading => contents.indexOf(`## ${heading}\n`));
+    assert.ok(positions.every(position => position >= 0), file);
+    assert.deepEqual([...positions].sort((a, b) => a - b), positions, file);
+    for (const concept of concepts) assert.match(contents.replace(/\s+/g, ' '), concept, file);
+    const introduction = contents.slice(positions[0], positions.at(-1));
+    const points = introduction.split('\n').filter(line => line.startsWith('- '));
+    assert.equal(points.length, 10, file);
+    assert.ok(points.every(line => /^- \*\*[^*]+\*\* \S/.test(line)), file);
+  }
+});
+
+test('root README positioning preserves native costs, Session binding and the orchestration boundary', async () => {
+  const english = (await readFile(join(root, 'README.md'), 'utf8')).replace(/\s+/g, ' ');
+  const chinese = await readFile(join(root, 'README.zh-CN.md'), 'utf8');
+  for (const concept of [/does not automatically select the cheapest model/,
+    /Adapters may manage/, /not a security\s+isolation boundary/,
+    /one active\s+Turn at a time/, /not a built-in workflow scheduler or\s+orchestrator/,
+    /switching\s+harnesses requires a new Session/, /without automatic conversation-history migration/,
+    /does not promise identical\s+capabilities or outputs/]) assert.match(english, concept);
+  for (const concept of [/不自动选择最低价模型/, /本地辅助进程或原生服务/,
+    /不是安全隔离边界/, /只能有一个活动 Turn/, /不内置工作流调度器或 Orchestrator/,
+    /切换 Harness 需要创建新的 Session/, /不会自动迁移会话历史/,
+    /不表示各家拥有相同的能力或输出/]) assert.match(chinese, concept);
+});
+
 test('SDK guidance is self-contained and preserves qualification exceptions', async () => {
   const qualification = await readFile(join(root, 'QUALIFICATION.md'), 'utf8');
   for (const fact of ['gpt-5.6-luna', 'opencode-go/deepseek-v4.1-flash', 'deepseek/deepseek-flash',
