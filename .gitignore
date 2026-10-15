@@ -10,6 +10,7 @@ dist/
 
 # Local scratch output
 /.scratch/
+/examples/auto-social-media/workspaces/
 
 */.backup/
 docs/

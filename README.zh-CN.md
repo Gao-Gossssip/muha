@@ -61,6 +61,23 @@ node example.mjs
 示例会拒绝需要审批的工具操作，并忽略 Agent 的追问。实际使用时可选择
 支持的审批策略，并处理追问；不同 Agent 的权限行为有所区别。
 
+## 示例
+
+在[示例索引](examples/README.zh-CN.md)中查看可运行场景；每个示例拥有独立
+的源码目录与运行说明，便于后续持续扩充。
+
+两个示例都要求完整安装 `@muha-sdk/muha`，但不要求安装全部原生 CLI。
+仅提供本地已安装的 Harness 选项；Pi SDK 随 Muha 安装，其他 Harness
+需要对应原生命令在 `PATH` 上可执行。
+
+| 项目 | 概述 | 位置 |
+| --- | --- | --- |
+| [多 Harness 集成 Chat](examples/local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，支持五种适配器、原生 model/effort、内联 Turn 事件、审批、追问和停止。选项仅在点击“新对话”后生效，不迁移上下文。 | [examples/local-chat/](examples/local-chat/) |
+| [AI 热点选题与写作](examples/auto-social-media/README.zh-CN.md) | 纯命令行交互：使用 `content-strategy` 选题、`khazix-writer` 写文；引导配置两阶段的 harness/model/effort，终端仅流式展示模型回复，保留工作目录。需明确确认真实模型调用，不自动发布。 | [examples/auto-social-media/](examples/auto-social-media/) |
+
+Examples 属于 GitHub 项目内容，不随 npm 包安装；新增示例不需要重新发布
+SDK。新增场景的约定见[贡献说明](CONTRIBUTING.md#examples)。
+
 ## 选择 Agent
 
 | Agent | 适配器 | 准备工作 |

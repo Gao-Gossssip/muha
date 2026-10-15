@@ -64,6 +64,23 @@ The example denies tool actions that request approval and dismisses follow-up
 questions. Choose a supported approval policy and handle questions for your
 workflow; policy details differ between agents.
 
+## Examples
+
+Browse the [examples catalog](examples/README.md) for runnable scenarios, each
+with its own source and setup guide.
+
+Both examples require the complete `@muha-sdk/muha` installation and offer only
+locally installed harnesses; installing all native CLIs is unnecessary. Pi's SDK
+comes with Muha, while other harnesses need their native CLI on `PATH`.
+
+| Project | Overview | Location |
+| --- | --- | --- |
+| [Multi-Harness Chat](examples/local-chat/README.md) | Single-file server and chat UI: five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](examples/local-chat/) |
+| [AI Topic & Writing](examples/auto-social-media/README.md) | Interactive command-line research-to-draft workflow using `content-strategy` and `khazix-writer`. Independently choose each agent's harness/model/effort, stream model replies in the terminal and inspect the retained workspace. Real models require explicit consent. | [examples/auto-social-media/](examples/auto-social-media/) |
+
+Examples live in this GitHub repository, not the npm package. Adding examples
+does not require a new SDK release. See [example contribution guidance](CONTRIBUTING.md#examples).
+
 ## Choose an agent
 
 | Agent | Adapter | Setup |
