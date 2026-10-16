@@ -1,3 +1,4 @@
+import { spawnNpmSync } from "../../scripts/npm-command.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
@@ -68,6 +69,8 @@ test("the official packages share one installable ESM contract", async () => {
     "jsonc-parser": "3.3.1",
   });
   assert.deepEqual(manifests[4].dependencies, {
+    ...Object.fromEntries(["chord", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
+      .map(name => [`@earendil-works/${name}`, "1.1.0"])),
     "@muha-sdk/core": releaseVersion,
     "@earendil-works/pi-coding-agent": "1.0.4",
   });
@@ -82,7 +85,7 @@ test("the official packages share one installable ESM contract", async () => {
 
 test("every official package tarball contains declarations and one ESM build", () => {
   for (const [directory] of packages) {
-    const result = spawnSync("npm", ["pack", "--dry-run", "--json"], {
+    const result = spawnNpmSync(["pack", "--dry-run", "--json"], {
       cwd: new URL(`../../packages/${directory}`, import.meta.url),
       encoding: "utf8",
       maxBuffer: 16 * 1024 * 1024,
@@ -99,7 +102,7 @@ test("every official package tarball contains declarations and one ESM build", (
     if (directory === "codex-adapter") {
       const observer = files.find(file => file.path === "dist/codex-observer-worker.js");
       assert.ok(observer, "Codex ships its private native observer executable");
-      assert.ok(observer.mode & 0o111, "the bridge can execute the packaged observer");
+      if (process.platform !== "win32") assert.ok(observer.mode & 0o111, "the bridge can execute the packaged observer");
       assert.ok(paths.includes("dist/codex-observer-wire.js"));
     }
     assert.ok(
