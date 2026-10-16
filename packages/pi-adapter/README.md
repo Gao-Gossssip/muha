@@ -1,9 +1,11 @@
 # @muha-sdk/pi-adapter
 
-Pi uses the verified high-level input patch for SDK 1.0.4. See
+Pi uses the checksum-verified high-level input patch for SDK 1.2.0. See
 [qualification and limitations](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md)
 for source versions and acceptance. The older Pi/Pi grilling result belongs to
-SDK 0.84.2 and does not qualify SDK 1.0.4.
+SDK 0.84.2. Both that result and the later SDK 1.0.4 real-model evidence remain
+historical; SDK 1.2.0 real-model requalification is pending and publication is
+blocked until it passes. Controlled tests do not replace that acceptance.
 
 ```ts
 import { createMuhaRuntime } from "@muha-sdk/core";
@@ -27,13 +29,29 @@ try {
 
 ## Native configuration and execution
 
-Pi declares the exact official SDK version `@earendil-works/pi-coding-agent@1.0.4`
+Pi declares the exact official SDK version `@earendil-works/pi-coding-agent@1.2.0`
 as a normal npm dependency; it does not bundle the SDK tree. It is not a PATH
 CLI or a globally installed SDK. Installing this Adapter needs Registry access or
 a prewarmed npm cache. Callers supply native Pi authentication and
 model configuration. `OfficialAdapterOptions.env` can override or delete child
 environment variables, including Pi's `PI_CODING_AGENT_DIR`; it never changes
 the host environment or working directory. Node.js 22.20.0 or newer is required.
+
+The Adapter also directly declares `@earendil-works/pi-codemode` as `>=1.0.4`,
+with no upper bound, per the selected dependency policy. This is not a guarantee
+that every matching release is compatible with Pi SDK 1.2.0. The development
+lockfile currently selects codemode 1.2.0; that lockfile does not pin a consumer's
+first independent installation. The SDK's own `^1.2.0` codemode requirement still
+participates in npm resolution and may produce a separate nested version.
+Muha does not rewrite upstream manifests, override their imports or bundle that
+dependency. SDK 1.0.4 imported exports removed from codemode 1.2.0 and failed
+before Session execution in fresh installations. Aligning the official SDK to
+1.2.0 removes those stale imports; the input patch is rebased onto its native
+run-preparation boundary, without replacing the agent loop. Preflight rejection
+uses the SDK's native finalizer so unsupported UI and interrupted extension
+commands cannot leave a Session permanently busy. Future dependency
+combinations still require independent installation, initialization and the
+affected controlled tests; real-model acceptance is a separate gate.
 
 Each Session handle owns an SDK process. Initialization and native listing use
 short-lived owned processes; only the consumer's main process owns the Muha

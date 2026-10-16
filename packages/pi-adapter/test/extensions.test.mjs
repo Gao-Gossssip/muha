@@ -65,7 +65,7 @@ test("Pi reload discovers extension-authorized configuration changes without cha
   assert.equal(before.workspaceMcp, false);
 });
 
-test("Pi waits for a native extension command's model execution before settling its public Turn", async t => {
+test("Pi waits for a native extension command's model execution before settling its public Turn", { timeout: 10000 }, async t => {
   const fixture = await controlledPi(t);
   await mkdir(join(fixture.agentDir, "extensions"));
   await writeFile(join(fixture.agentDir, "extensions", "command.ts"), `

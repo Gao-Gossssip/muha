@@ -69,10 +69,9 @@ test("the official packages share one installable ESM contract", async () => {
     "jsonc-parser": "3.3.1",
   });
   assert.deepEqual(manifests[4].dependencies, {
-    ...Object.fromEntries(["chord", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
-      .map(name => [`@earendil-works/${name}`, "1.1.0"])),
     "@muha-sdk/core": releaseVersion,
-    "@earendil-works/pi-coding-agent": "1.0.4",
+    "@earendil-works/pi-codemode": ">=1.0.4",
+    "@earendil-works/pi-coding-agent": "1.2.0",
   });
   assert.equal(manifests[4].bundledDependencies, undefined);
   assert.equal(manifests[4].bundleDependencies, undefined);

@@ -85,6 +85,95 @@ test("image-only input stays image-only and legacy text retains its native repre
   } finally { await f.close(); }
 });
 
+test("native run preparation stays busy and does not expose private ordering to hooks", { timeout: 5000 }, async () => {
+  let enter, release;
+  const entered = new Promise(resolve => { enter = resolve; });
+  const gate = new Promise(resolve => { release = resolve; });
+  const observed = [], dispositions = [];
+  const f = await fixture({ extension(pi) {
+    pi.on("before_agent_start", async event => {
+      observed.push({ messageType: event.messageType, prompt: event.prompt,
+        images: event.images, hasPrivateOrder: Object.hasOwn(event, "orderedContent") });
+      enter();
+      await gate;
+    });
+  } });
+  try {
+    const content = [image, { type: "text", text: "first" }, image, { type: "text", text: "last" }];
+    const running = f.session.prompt(content, { preflightResult: value => dispositions.push(value) });
+    await entered;
+    assert.equal(f.session.isIdle, false);
+    assert.equal(f.inputs.length, 0);
+    assert.deepEqual(dispositions, []);
+    release();
+    await running;
+    assert.deepEqual(observed, [{ messageType: "user", prompt: "first\nlast",
+      images: [image, image], hasPrivateOrder: false }]);
+    assert.deepEqual(dispositions, ["started"]);
+    assert.deepEqual(f.inputs[0].find(m => m.role === "user").content, content);
+    assert.equal(f.session.isIdle, true);
+  } finally { release(); await f.close(); }
+});
+
+test("native custom-message runs do not reuse ordered user input", async () => {
+  const triggers = [];
+  const f = await fixture({ extension(pi) {
+    pi.on("before_agent_start", event => { triggers.push(event.messageType); });
+  } });
+  try {
+    const content = [image, { type: "text", text: "ordered" }];
+    await f.session.prompt(content);
+    await f.session.sendCustomMessage({ customType: "controlled-custom",
+      content: [{ type: "text", text: "native custom" }], display: true }, { triggerTurn: true });
+    assert.deepEqual(triggers, ["user", "custom"]);
+    assert.equal(f.inputs.length, 2);
+    // Native custom records persist as custom messages, but Pi projects them
+    // into user content at its LLM boundary. Neither representation gains the
+    // preceding ordered prompt's images.
+    assert.deepEqual(f.inputs[1].filter(m => m.role === "user").map(m => m.content),
+      [content, [{ type: "text", text: "native custom" }]]);
+    const custom = f.session.messages.find(m => m.role === "custom" && m.customType === "controlled-custom");
+    assert.deepEqual(custom.content, [{ type: "text", text: "native custom" }]);
+    assert.equal(f.session.isIdle, true);
+  } finally { await f.close(); }
+});
+
+test("preflight rejection releases native busy state without executing a model", async () => {
+  const f = await fixture();
+  try {
+    await assert.rejects(f.session.prompt([image], { preflightResult(value) {
+      assert.equal(value, "started");
+      throw new Error("Controlled preflight rejection");
+    } }), /Controlled preflight rejection/);
+    assert.equal(f.inputs.length, 0);
+    assert.equal(f.session.isIdle, true);
+    const next = [image, { type: "text", text: "continue" }];
+    await f.session.prompt(next);
+    assert.equal(f.inputs.length, 1);
+    assert.deepEqual(f.inputs[0].find(m => m.role === "user").content, next);
+    assert.equal(f.session.isIdle, true);
+  } finally { await f.close(); }
+});
+
+test("native settled deferral preserves the next prompt's original content order", async () => {
+  const f = await fixture();
+  try {
+    const next = [image, { type: "text", text: "deferred" }, image];
+    let queued = false;
+    f.session.subscribe(event => {
+      if (event.type === "agent_settled" && !queued) {
+        queued = true;
+        void f.session.prompt(next);
+      }
+    });
+    await f.session.prompt([{ type: "text", text: "first run" }]);
+    assert.equal(f.inputs.length, 2);
+    assert.deepEqual(f.inputs[1].filter(m => m.role === "user").at(-1).content, next);
+    assert.deepEqual(f.events.filter(t => t === "agent_settled"), ["agent_settled", "agent_settled"]);
+    assert.equal(f.session.isIdle, true);
+  } finally { await f.close(); }
+});
+
 test("native input hooks see the projection and may explicitly replace ordered content", async () => {
   const observed = [];
   const f = await fixture({ extension(pi) {
@@ -196,7 +285,7 @@ test("a clean consumer installs the declared Pi SDK and uses the verified input 
     }
     run("npm", ["install", "--prefer-offline", "--ignore-scripts", "--no-audit", "--no-fund", ...artifacts], root);
     const installed = JSON.parse(run("npm", ["ls", "@earendil-works/pi-coding-agent", "--depth=1", "--json"], root));
-    assert.equal(installed.dependencies["@muha-sdk/pi-adapter"].dependencies["@earendil-works/pi-coding-agent"].version, "1.0.4");
+    assert.equal(installed.dependencies["@muha-sdk/pi-adapter"].dependencies["@earendil-works/pi-coding-agent"].version, "1.2.0");
     const source = `import assert from "node:assert/strict";
       import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
       import { createServer } from "node:http";

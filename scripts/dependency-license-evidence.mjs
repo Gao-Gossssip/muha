@@ -17,6 +17,11 @@ const evidence = new Map([
   ...["chord", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
     .map(name => [`@earendil-works/${name}@1.1.0`, { ...pi, source: "https://github.com/earendil-works/pi/blob/v1.1.0/LICENSE" }]),
   ["@earendil-works/pi-coding-agent@1.0.4", pi],
+  ...["pi-coding-agent", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
+    .map(name => [`@earendil-works/${name}@1.2.0`, { ...pi, source: "https://github.com/earendil-works/pi/blob/v1.2.0/LICENSE" }]),
+  ["@aws-sdk/credential-provider-http@3.972.76", aws],
+  ["@aws-sdk/credential-provider-login@3.972.81", aws],
+  ["@aws-sdk/nested-clients@3.997.48", aws],
   ["@aws-sdk/credential-provider-http@3.972.74", aws],
   ["@aws-sdk/credential-provider-login@3.972.79", aws],
   ["@aws-sdk/nested-clients@3.997.46", aws],

@@ -10,12 +10,11 @@ test("local delivery preserves exact supplemental Pi dependency license resource
   const verified = audit.dependencyClosure.filter(node => !node.licenseFiles.length &&
     node.licenseEvidence?.status === "verified");
   const expected = [
-    ...["chord", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
-      .map(name => `@earendil-works/${name}@1.1.0`),
-    "@earendil-works/pi-coding-agent@1.0.4",
-    "@aws-sdk/credential-provider-http@3.972.74",
-    "@aws-sdk/credential-provider-login@3.972.79",
-    "@aws-sdk/nested-clients@3.997.46", "data-uri-to-buffer@4.0.1",
+    ...["pi-coding-agent", "pi-agent-core", "pi-ai", "pi-codemode", "pi-mcp", "pi-telemetry", "pi-tui"]
+      .map(name => `@earendil-works/${name}@1.2.0`),
+    "@aws-sdk/credential-provider-http@3.972.76",
+    "@aws-sdk/credential-provider-login@3.972.81",
+    "@aws-sdk/nested-clients@3.997.48", "data-uri-to-buffer@4.0.1",
   ];
   assert.deepEqual(verified.map(node => `${node.name}@${node.version}`).sort(), expected.sort());
   for (const node of verified) {

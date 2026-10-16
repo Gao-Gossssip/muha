@@ -478,7 +478,7 @@ async function verifyInstalledPi(consumer, isolatedEnvironment) {
     assert.equal(
       resolvedPi.dependencies["@muha-sdk/pi-adapter"]
         .dependencies["@earendil-works/pi-coding-agent"].version,
-      "1.0.4",
+      "1.2.0",
     );
     await writeFile(join(consumer, "pi-session-consumer.mjs"), [
       'import assert from "node:assert/strict";',

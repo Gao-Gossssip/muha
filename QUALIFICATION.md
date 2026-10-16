@@ -26,12 +26,19 @@ model was selected and AGY real-model qualification remains blocked.
 The paid receipt identifies the preceding candidate snapshot. Subsequent
 Windows path/environment, private declaration and packaging fixes receive
 controlled verification; the paid smoke was not repeated on the final source.
-Fresh Pi installs now explicitly retain the seven companion packages at the
-already tested 1.1.0 versions: upstream SDK 1.0.4 ranges otherwise admit newer
-companions that removed `MCP_TYPESCRIPT_PREAMBLE`. The SDK version, model
-Profiles and input patch remain unchanged. Private receipts stay in ignored
+This candidate follows main's Pi SDK 1.2.0 migration and rebased input patch.
+The earlier Windows Pi SDK 1.0.4 smoke remains historical; additional Windows
+Pi 1.2.0 paid verification is pending. Private receipts stay in ignored
 paths. Bounded smoke does not qualify every declared Windows capability or a
 consumer application, and no Registry publication was performed.
+
+The current Windows 11 x64 candidate, including main's Pi SDK 1.2.0 migration,
+passed `npm run check`: repository index policy, typecheck, native builds,
+602 SDK contracts (24 historical/opt-in skips), and 63 Pi contracts (one
+Linux-specific process-observation skip). The controlled examples, package
+isolation, umbrella cold install and lockfile replay passed. Earlier npm
+Registry timeout failures remain in private receipts; this final run had zero
+failures. Linux CI and full Windows capability qualification remain pending.
 
 ## Preserved qualification history
 
@@ -39,8 +46,10 @@ The `@muha-sdk/muha` entry package in 0.1.15 re-exports the same public Core
 API and five official Adapter factories. Seven packages now form the SDK release;
 the Official Harness Set remains unchanged. Entry loading, one-dependency installs,
 README examples and lockfile replay receive controlled consumer checks. The 64
-qualified Core/Adapter runtime resources and external dependency locks retain
-their accepted digests; this packaging change does not repeat the paid model matrix.
+qualified Core/Adapter runtime resources and external dependency locks retained
+their accepted digests for that packaging change; it did not repeat the paid model matrix.
+The later Pi 1.2.0 test-repair candidate described below changes its patch and
+dependency closure and is not qualified by that historical packaging evidence.
 Public Registry acceptance is recorded separately in each
 [GitHub Release](https://github.com/Gao-Sijie/muha/releases).
 
@@ -58,6 +67,9 @@ cannot identify this SDK tree. Raw evidence is retained privately.
 | Kimi | native web | 2.1.1 | `deepseek/deepseek-flash` |
 | AGY | native CLI | 1.2.14 | `claude-sonnet-4-6` |
 | Pi | patched SDK | 1.0.4 (internal dependency packages 1.1.0) | text/non-image: `opencode-go/deepseek-v4.1-flash`; image: `opencode-go/qwen3.8-flash` |
+
+These are accepted historical versions. The current Pi 1.2.0 controlled candidate
+below is not yet a real-model-qualified replacement for the Pi row.
 
 Codex/Luna reasoning text: three probes remained `NOT_TRIGGERED` (zero deltas);
 first-version disposition is user-approved `WAIVED`, not PASS. The native stream
@@ -91,6 +103,62 @@ Any future behavior/loading/dependency change must enumerate affected units,
 cost and bounded real-model requalification, then obtain authorization before
 reusing that unit's evidence. Public-history review, visibility approval, npm
 scope/version/publication and Registry install/lockfile `npm ci` are later gates.
+
+## Pi codemode dependency declaration (2026-10-14)
+
+The user selected a direct `@earendil-works/pi-codemode: >=1.0.4` dependency
+without an upper bound for the Pi Adapter. The exact Pi SDK remains 1.0.4,
+and the development lockfile still selects codemode 1.1.0. No runtime resource,
+input patch, installed dependency version or other Harness changes in this step.
+Historical real evidence qualifies only its recorded source and dependency
+combination, not every release admitted by this open-ended declaration.
+
+At that declaration-only stage the SDK's own codemode range was unchanged; this declaration cannot override
+its native dependency resolution. Current independent-installation failures
+are not waived by choosing this range. A newly resolved combination must pass
+installation, initialization and the affected controlled contracts, and obtain
+separate authorization for bounded real-model requalification before its real
+behavior is described as accepted. No new paid matrix or npm publication is
+authorized by this declaration change.
+
+## Pi 1.2.0 controlled test-repair candidate (2026-10-14)
+
+Fresh installation reproduced SDK 1.0.4 with native Pi component packages
+1.2.0. SDK 1.0.4 imports `MCP_TYPESCRIPT_PREAMBLE` and
+`mcpStructuredContentSchema`, which codemode 1.2.0 no longer exports; the SDK
+failed to load before any Turn or model call. This is a dependency API mismatch,
+not a provider connection problem, and retries cannot repair it.
+
+The candidate pins the official SDK to 1.2.0 and retains the user-selected
+direct `pi-codemode: >=1.0.4` range with no upper bound or consumer overrides.
+Its development lock selects the native Pi 1.2.0 suite. The verified ordered-input
+patch now carries content order privately through native run preparation,
+preserving native image normalization, explicit transformations, expansion,
+custom messages and lifecycle. SDK 1.2.0 sets its busy state before notifying
+preflight acceptance; the candidate keeps that callback inside the SDK's native
+finalizer so rejection or interruption releases the state without a model request.
+Ordered prompts deferred from native settled callbacks keep their original order.
+SDK version/source/patch checks and strict anchor
+validation remain enforced; there is no unpatched fallback. The upstream v1.2.0
+MIT license body matches the shipped text apart from its final newline.
+
+The 64-resource manifest records the current controlled candidate and preserves
+all historical PASS receipts. Only Pi's input-patch build changes among those
+resources; its dependency lock and exact license-evidence mapping also change.
+Core and the four other Harness runtime resources retain their accepted digests.
+The latest Pi qualification is `PENDING`, not PASS, and the publication guard
+requires the current SDK version so an older accepted SDK cannot authorize it.
+
+This task authorizes controlled test repair, not paid model calls or publication.
+On Node 24.18.0 / npm 11.16.0, lockfile `npm ci`, typecheck and full
+`npm run check` passed: SDK 580 PASS / 2 existing opt-in SKIP, Pi 64 PASS.
+Fresh Core/Pi, five-Adapter and umbrella installs, consumer lockfile replay,
+four new ordered-input/preflight regressions, owned-process reclamation,
+license evidence and source/patch integrity were exercised without real models.
+Before real evidence can be reused, separately authorize bounded Pi-only
+requalification of text/reasoning/usage, native tools and Skills, model/effort,
+ordered/pure images and persisted history, interruption/SDK loss and cleanup.
+No other Harness matrix or consumer application validation is implied.
 
 ## Pi 1.0.4 requalification (2026-10-08)
 

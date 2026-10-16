@@ -41,3 +41,23 @@ New commits contain no `docs/` directory at any depth. Run
 
 See [RELEASING.md](RELEASING.md) for reviewed candidates, npm publication and
 public Registry consumer acceptance.
+
+## Examples
+
+Examples are GitHub repository content outside the seven npm packages. Put a new
+scenario in `examples/<kebab-case-name>/`, with `main.ts` as its entry and
+`README.md` as its setup/run guide; add `README.zh-CN.md` where useful. Keep
+scenario resources in that directory, use public SDK imports, and do not create
+an npm workspace or export for examples.
+
+Update both [English](examples/README.md) and [Chinese](examples/README.zh-CN.md)
+catalogs. Explain native prerequisites, an executable repository-root command,
+permissions, model costs, cleanup and limitations; do not commit credentials,
+private evidence or speculative placeholder scenarios. Prefer Node's erasable
+TypeScript syntax where the example runs directly with Node.
+
+Regular typecheck covers `examples/**/*.ts`. Add controlled contracts under
+`test/` for meaningful behavior and navigation, keeping test fixtures out of
+the runnable example. Real models still need explicit approval. An examples-only
+change does not require an SDK version bump, release packing or npm publication;
+normal repository checks still apply.

@@ -7,6 +7,10 @@
   },
   "include": [
     "public-contract.ts",
-    "muha-contract.ts"
+    "muha-contract.ts",
+    "../../examples/**/*.ts"
+  ],
+  "exclude": [
+    "../../examples/auto-social-media/workspaces"
   ]
 }
