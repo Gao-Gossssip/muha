@@ -52,4 +52,5 @@ jobs:
       - run: npm ci
       - run: npm run build --silent
       - run: node --test --test-concurrency=2 test/contracts/windows-paths.test.mjs test/contracts/windows-host.test.mjs test/contracts/opencode-windows-cleanup.test.mjs test/contracts/opencode-v2-failures.test.mjs test/contracts/opencode-v2-service.test.mjs test/contracts/opencode-v2-fixture-evidence.test.mjs test/contracts/agy-events.test.mjs test/contracts/agy-resume.test.mjs test/contracts/kimi-rich-turn.test.mjs test/contracts/kimi-windows-evidence.test.mjs
+        timeout-minutes: 10
       - run: npm run check

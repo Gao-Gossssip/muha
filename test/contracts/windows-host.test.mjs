@@ -16,6 +16,13 @@ const windows = { skip: process.platform !== 'win32', timeout: 10000 };
 const endpoint = fileURLToPath(new URL('../fixtures/acp-owned-process.mjs', import.meta.url));
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 async function waitFor(check) { for (let i = 0; i < 200; i++) { if (await check()) return; await delay(10); } throw new Error('Owned fixture did not settle'); }
+async function readPids(file) {
+  try { return JSON.parse(await readFile(file, 'utf8')); }
+  catch (error) {
+    if (error.code === 'ENOENT' || error instanceof SyntaxError) return [];
+    throw error;
+  }
+}
 
 test('Windows environment overrides replace and remove differently cased native keys', windows, () => {
   const merged = harnessEnvironment({ Path: 'test-only-path' });
@@ -51,7 +58,7 @@ test('Windows owner reclaims detached grandchildren, keeps close repeatable and 
     for (const pid of [...pids].reverse()) if (alive(pid)) process.kill(pid);
     outsider.kill(); await outsiderExit; await rm(root, { recursive: true, force: true });
   });
-  await waitFor(async () => { pids = await readFile(file, 'utf8').then(JSON.parse, () => []); return pids.length === 3; });
+  await waitFor(async () => { pids = await readPids(file); return pids.length === 3; });
   const first = closeHarnessProcess(child);
   assert.equal(first, closeHarnessProcess(child));
   await first;
@@ -62,11 +69,22 @@ test('Windows owner reclaims detached grandchildren, keeps close repeatable and 
 test('Windows helper loss fails ownership reporting and releases owned descendants', windows, async t => {
   const root = await mkdtemp(join(tmpdir(), 'muha-windows-owner-loss-'));
   const file = join(root, 'pids.json');
-  const child = spawnHarnessProcess(process.execPath, [endpoint], { env: { ...process.env, MUHA_TEST_OWNED_PIDS: file }, stdio: ['pipe', 'pipe', 'pipe'] });
+  const release = join(root, 'release');
+  const child = spawnHarnessProcess(process.execPath, [endpoint], { env: { ...process.env,
+    MUHA_TEST_OWNED_PIDS: file, MUHA_TEST_OWNED_PIDS_RELEASE: release }, stdio: ['pipe', 'pipe', 'pipe'] });
   child.stdout.resume(); child.stderr.resume();
   let pids = [];
-  t.after(async () => { for (const pid of [...pids].reverse()) if (alive(pid)) process.kill(pid); await rm(root, { recursive: true, force: true }); });
-  await waitFor(async () => { pids = await readFile(file, 'utf8').then(JSON.parse, () => []); return pids.length === 3; });
+  t.after(async () => {
+    await closeHarnessProcess(child).catch(() => { child.kill(); });
+    for (const pid of [...pids].reverse()) if (alive(pid)) process.kill(pid);
+    await rm(root, { recursive: true, force: true });
+  });
+  // Hold the real writer between opening the PID file and completing its JSON.
+  // A read during this interval is not a readiness or cleanup failure.
+  await waitFor(async () => (await readFile(file, 'utf8').catch(() => undefined)) === '[');
+  assert.deepEqual(await readPids(file), []);
+  await writeFile(release, 'release');
+  await waitFor(async () => { pids = await readPids(file); return pids.length === 3; });
   const exit = once(child, 'exit'); child.kill(); await exit;
   await assert.rejects(closeHarnessProcess(child), /ownership|owner|cleanup/i);
   await waitFor(() => pids.every(pid => !alive(pid)));
