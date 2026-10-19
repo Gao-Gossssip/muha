@@ -30,7 +30,13 @@ async function withV2Runtime(env, action) {
     });
     await action({ runtime, workspace, evidenceFile, pidFile });
   } finally {
-    await runtime?.close();
+    try { await runtime?.close(); }
+    catch (error) {
+      // The test reporter truncates nested failures to [Object]. Retain the
+      // actual cleanup boundary in CI without dumping native logs or config.
+      console.error('Controlled OpenCode cleanup failure:', JSON.stringify(error.data));
+      throw error;
+    }
     await rm(root, { recursive: true, force: true });
   }
 }
