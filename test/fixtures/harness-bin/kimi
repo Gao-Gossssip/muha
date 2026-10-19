@@ -1048,7 +1048,14 @@ async function persistSnapshot(path, value) {
   const pending = (snapshotWrites.get(path) ?? Promise.resolve()).then(async () => {
     const staged = `${path}.next`;
     await writeFile(staged, snapshot);
-    await rename(staged, path);
+    const deadline = Date.now() + 5000;
+    for (;;) {
+      try { await rename(staged, path); break; }
+      catch (error) {
+        if (process.platform !== "win32" || !["EPERM", "EBUSY", "EACCES"].includes(error.code) || Date.now() >= deadline) throw error;
+        await new Promise(resolve => setTimeout(resolve, 25));
+      }
+    }
   });
   snapshotWrites.set(path, pending);
   await pending;

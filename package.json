@@ -20,7 +20,7 @@
     "build:sdk": "npm run build",
     "clean": "tsc -b --clean && node scripts/clean-build-outputs.mjs",
     "typecheck": "tsc -b --pretty false && tsc -p test/types/tsconfig.json --pretty false",
-    "test": "npm run build --silent && node --test --test-concurrency=2 test/contracts/*.test.mjs test/internals/*.test.mjs && npm test --workspace @muha-sdk/pi-adapter",
+    "test": "npm run build --silent && node scripts/test-contracts.mjs && npm test --workspace @muha-sdk/pi-adapter",
     "test:sdk": "npm test",
     "check": "npm run check:repository && npm run typecheck && npm test",
     "check:repository": "node scripts/check-repository-policy.mjs",

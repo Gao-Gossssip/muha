@@ -13,8 +13,9 @@ import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-
 
 const execute = promisify(execFile);
 const coldInstallTimeoutMs = process.platform === "win32" ? 600000 : 120000;
-const reinstallTimeoutMs = process.platform === "win32" ? 300000 : 120000;
-export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 1200000 : 240000;
+// A warm npm cache still requires the same Windows file extraction and hooks.
+const reinstallTimeoutMs = process.platform === "win32" ? 600000 : 120000;
+export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 1500000 : 240000;
 async function run(command, args, options) {
   if (command === "npm") [command, args] = npmCommand(args);
   const settings = { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options };

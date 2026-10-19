@@ -39,6 +39,6 @@ export async function agyConformance(t, { root, scenario, sessionsFile, evidence
     env: { HOME: home, PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter),
       ...(scenario ? { MUHA_FAKE_AGY_SCENARIO: scenario } : {}),
       ...(evidenceFile ? { MUHA_FAKE_AGY_EVIDENCE: evidenceFile } : {}) },
-    startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+    startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
   } };
 }

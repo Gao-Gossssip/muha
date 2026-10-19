@@ -5,7 +5,8 @@ import { delimiter, dirname, join, resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
 
-import { createMuhaRuntime, MuhaError } from "@muha-sdk/core";
+import { MuhaError } from "@muha-sdk/core";
+import { createControlledRuntime as createMuhaRuntime, controlledOperation } from "../support/controlled-runtime.mjs";
 import { kimiAdapter } from "@muha-sdk/kimi-adapter";
 
 const fakeHarnessBin = resolve(import.meta.dirname, "../fixtures/harness-bin");
@@ -21,7 +22,8 @@ test("Kimi applies auto before creating a usable Session and replaces it on resu
     const reference = session.reference;
     for (const policy of ["autoApprove", "interactive", "autoDeny"]) {
       if (policy !== "autoApprove") session = await fixture.runtime.resumeSession({ reference, approvalPolicy: policy });
-      const turn = await session.startTurn([{ type: "text", text: "Run with the selected mode." }]);
+      const turn = await controlledOperation("Controlled Kimi startTurn failed",
+        () => session.startTurn([{ type: "text", text: "Run with the selected mode." }]));
       const events = [];
       for await (const event of turn) events.push(event);
       assert.equal((await turn.result).status, "completed");
@@ -324,7 +326,7 @@ async function createFixture(name, scenario = "rich") {
         MUHA_FAKE_KIMI_SCENARIO: scenario,
         MUHA_FAKE_KIMI_EVIDENCE_FILE: evidenceFile,
       },
-      startupTimeoutMs: 2_000,
+      startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000,
       shutdownTimeoutMs: 2_000,
     })],
     dataDir: join(root, "diagnostics"),

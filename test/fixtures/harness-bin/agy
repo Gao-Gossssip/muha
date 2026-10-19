@@ -9,6 +9,9 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { nativeStringField } from "../agy-native-metadata.mjs";
 
 const args = process.argv.slice(2);
+if (process.env.MUHA_FAKE_AGY_SCENARIO === "slow-startup") {
+  await new Promise(resolve => setTimeout(resolve, 2500));
+}
 const value = flag => args.includes(flag) ? args[args.indexOf(flag) + 1] : undefined;
 if (value("--model") === "invalid-model" ||
   (value("--effort") !== undefined && (!["low", "medium", "high"].includes(value("--effort")) || value("--model") === "fake-opus"))) {
