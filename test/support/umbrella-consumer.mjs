@@ -12,11 +12,19 @@ import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
 import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-pi.mjs";
 
 const execute = promisify(execFile);
-const coldInstallTimeoutMs = process.platform === "win32" ? 300000 : 120000;
-export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 900000 : 240000;
+const coldInstallTimeoutMs = process.platform === "win32" ? 600000 : 120000;
+const reinstallTimeoutMs = process.platform === "win32" ? 300000 : 120000;
+export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 1200000 : 240000;
 async function run(command, args, options) {
   if (command === "npm") [command, args] = npmCommand(args);
-  return execute(command, args, { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options });
+  const settings = { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options };
+  const startedAt = Date.now();
+  try { return await execute(command, args, settings); }
+  catch (error) {
+    error.message += `\nConsumer command: ${JSON.stringify({ command, args, timeout: settings.timeout,
+      elapsedMs: Date.now() - startedAt, code: error.code, signal: error.signal, killed: error.killed })}`;
+    throw error;
+  }
 }
 
 export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, reviewedInstallScripts }) {
@@ -60,7 +68,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     await writeFile(join(consumer, "package.json"), JSON.stringify({ private: true, type: "module", allowScripts: reviewedInstallScripts }));
     // Bare `@muha-sdk/muha` is tested before publication. The public job pins the reviewed
     // candidate version because latest is promoted only after both jobs pass.
-    // Windows cold extraction and reviewed native hooks can exceed two minutes
+    // Windows cold extraction and reviewed native hooks can exceed five minutes
     // on hosted runners. Keep the cold cache, original hooks and finite bound.
     await run("npm", ["install", "--save-exact", registryVersion ? `@muha-sdk/muha@${registryVersion}` : "@muha-sdk/muha"],
       { cwd: consumer, env, timeout: coldInstallTimeoutMs });
@@ -86,7 +94,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     assert.deepEqual(cores.trim().split(/\r?\n/), [join(consumer, "node_modules/@muha-sdk/core")]);
     await run("npm", ["ls", "--all"], { cwd: consumer, env });
     await rm(join(consumer, "node_modules"), { recursive: true });
-    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env, timeout: coldInstallTimeoutMs });
+    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env, timeout: reinstallTimeoutMs });
     assert.deepEqual(await readFile(join(consumer, "package-lock.json")), lockBytes);
 
     await writeFile(join(consumer, "entry.mjs"), [

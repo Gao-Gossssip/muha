@@ -286,8 +286,8 @@ test("a clean consumer installs the declared Pi SDK and uses the verified input 
       const packed = JSON.parse(run("npm", ["pack", "--workspace", name, "--json", "--pack-destination", root], repo));
       artifacts.push(join(root, packed[0].filename));
     }
-    // Match the finite Windows cold-install budget used by the umbrella
-    // consumer; hosted extraction can exceed the ordinary command deadline.
+    // Keep a finite Windows install budget above the ordinary command deadline;
+    // this consumer can reuse the existing npm cache for hosted extraction.
     run("npm", ["install", "--prefer-offline", "--ignore-scripts", "--no-audit", "--no-fund", ...artifacts],
       root, undefined, process.platform === "win32" ? 300000 : 120000);
     const installed = JSON.parse(run("npm", ["ls", "@earendil-works/pi-coding-agent", "--depth=1", "--json"], root));
