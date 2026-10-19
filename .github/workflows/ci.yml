@@ -32,7 +32,9 @@ jobs:
 
   windows-contract:
     runs-on: windows-2022
-    timeout-minutes: 45
+    # Full hosted Windows checks reached 42 minutes before Pi's cold install
+    # received its 5-minute budget. Individual command bounds still apply.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:

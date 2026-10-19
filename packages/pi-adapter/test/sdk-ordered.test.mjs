@@ -270,11 +270,14 @@ test("ordered high-level input stays busy until delayed cancellation really sett
 test("a clean consumer installs the declared Pi SDK and uses the verified input patch without global Pi", async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-pi-packed-test-"));
   const repo = fileURLToPath(new URL("../../../", import.meta.url));
-  const run = (command, args, cwd, input) => {
+  const run = (command, args, cwd, input, timeout = 120000) => {
     if (command === "npm") [command, args] = npmCommand(args);
-    const result = spawnSync(command, args, { cwd, input, encoding: "utf8", timeout: 120000,
+    const result = spawnSync(command, args, { cwd, input, encoding: "utf8", timeout,
       env: { ...process.env, npm_config_audit: "false", npm_config_fund: "false" }, maxBuffer: 8 * 1024 * 1024 });
-    assert.equal(result.status, 0, result.stderr || result.stdout || String(result.error));
+    assert.equal(result.status, 0, [
+      JSON.stringify({ command, args, timeout, status: result.status, signal: result.signal, error: result.error?.code }),
+      result.stderr, result.stdout,
+    ].filter(Boolean).join("\n"));
     return result.stdout;
   };
   try {
@@ -283,7 +286,10 @@ test("a clean consumer installs the declared Pi SDK and uses the verified input 
       const packed = JSON.parse(run("npm", ["pack", "--workspace", name, "--json", "--pack-destination", root], repo));
       artifacts.push(join(root, packed[0].filename));
     }
-    run("npm", ["install", "--prefer-offline", "--ignore-scripts", "--no-audit", "--no-fund", ...artifacts], root);
+    // Match the finite Windows cold-install budget used by the umbrella
+    // consumer; hosted extraction can exceed the ordinary command deadline.
+    run("npm", ["install", "--prefer-offline", "--ignore-scripts", "--no-audit", "--no-fund", ...artifacts],
+      root, undefined, process.platform === "win32" ? 300000 : 120000);
     const installed = JSON.parse(run("npm", ["ls", "@earendil-works/pi-coding-agent", "--depth=1", "--json"], root));
     assert.equal(installed.dependencies["@muha-sdk/pi-adapter"].dependencies["@earendil-works/pi-coding-agent"].version, "1.2.0");
     const source = `import assert from "node:assert/strict";
