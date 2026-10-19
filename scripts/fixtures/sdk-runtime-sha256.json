@@ -209,7 +209,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
-      "sha256": "7c8d0f8417f2e53b843579f0cef5e742ac4dce69853ecdb917e8dddebb3847df"
+      "sha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-turn.ts",
@@ -548,7 +548,7 @@
         {
           "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
           "sha256": "c0e954cc147fc06cc7d37eb1228387c2e3ada01a08fb41f6609152dc74094e82",
-          "updatedSha256": "7c8d0f8417f2e53b843579f0cef5e742ac4dce69853ecdb917e8dddebb3847df"
+          "updatedSha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82"
         },
         {
           "path": "packages/opencode-adapter/src/workspace-mcp-v2-worker.ts",

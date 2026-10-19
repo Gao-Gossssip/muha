@@ -177,7 +177,13 @@ export class OpenCodeV2Service {
     const child = this.#child;
     try {
       if (!child) return;
-      if (process.platform === "win32") return await closeHarnessProcess(child, this.options.shutdownTimeoutMs ?? defaultTimeoutMs);
+      if (process.platform === "win32") {
+        try { return await closeHarnessProcess(child, this.options.shutdownTimeoutMs ?? defaultTimeoutMs); }
+        catch (error) {
+          throw { ...serviceFailure("closeHarness", "shutdown"),
+            message: `OpenCode v2 owned-process cleanup failed: ${error instanceof Error ? error.message : "unknown ownership error"}` } satisfies HarnessErrorData;
+        }
+      }
       child.stdin.end();
       const timeout = this.options.shutdownTimeoutMs ?? defaultTimeoutMs;
       if (await exitsWithin(child, timeout)) {
@@ -193,7 +199,16 @@ export class OpenCodeV2Service {
       if (!(await exitsWithin(child, 5_000))) throw serviceFailure("closeHarness", "shutdown");
     } finally {
       if (this.#configRoot !== undefined) {
-        await rm(this.#configRoot, { recursive: true, force: true });
+        try {
+          // Windows scanners can retain a just-loaded plugin handle briefly.
+          // Retry transient sharing errors within a finite bound; persistent
+          // errors still reject close and leave the path available for diagnosis.
+          await rm(this.#configRoot, { recursive: true, force: true,
+            maxRetries: process.platform === "win32" ? 5 : 0, retryDelay: 100 });
+        } catch (error) {
+          throw { ...serviceFailure("closeHarness", "shutdown"),
+            message: `OpenCode v2 configuration cleanup failed (${isRecord(error) ? String(error.code ?? "unknown") : "unknown"})` } satisfies HarnessErrorData;
+        }
         this.#configRoot = undefined;
         this.#pluginPath = undefined;
       }

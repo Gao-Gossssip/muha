@@ -48,4 +48,6 @@ jobs:
           cache: npm
       - run: npm run check:repository -- . HEAD
       - run: npm ci
+      - run: npm run build --silent
+      - run: node --test --test-concurrency=2 test/contracts/windows-paths.test.mjs test/contracts/opencode-windows-cleanup.test.mjs test/contracts/opencode-v2-failures.test.mjs
       - run: npm run check

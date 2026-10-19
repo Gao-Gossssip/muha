@@ -13,7 +13,7 @@ import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-
 
 const execute = promisify(execFile);
 const coldInstallTimeoutMs = process.platform === "win32" ? 300000 : 120000;
-export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 720000 : 240000;
+export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 900000 : 240000;
 async function run(command, args, options) {
   if (command === "npm") [command, args] = npmCommand(args);
   return execute(command, args, { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options });
@@ -86,7 +86,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     assert.deepEqual(cores.trim().split(/\r?\n/), [join(consumer, "node_modules/@muha-sdk/core")]);
     await run("npm", ["ls", "--all"], { cwd: consumer, env });
     await rm(join(consumer, "node_modules"), { recursive: true });
-    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env });
+    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env, timeout: coldInstallTimeoutMs });
     assert.deepEqual(await readFile(join(consumer, "package-lock.json")), lockBytes);
 
     await writeFile(join(consumer, "entry.mjs"), [
