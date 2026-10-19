@@ -6,7 +6,7 @@
  */
 import { createHash, randomUUID } from "node:crypto";
 import { constants } from "node:fs";
-import { access, mkdir, mkdtemp, open, readFile, realpath, rm, stat } from "node:fs/promises";
+import { access, lstat, mkdir, mkdtemp, open, readFile, realpath, rename, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import { createInterface } from "node:readline";
@@ -184,8 +184,22 @@ export function createCommandLine(input: NodeJS.ReadableStream = process.stdin,
 }
 // Native tools can create files; do not follow an artifact symlink when saving their final reply.
 async function save(path: string, data: string | Uint8Array) {
-  const file = await open(path, constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | constants.O_NOFOLLOW, 0o600);
-  try { await file.writeFile(data); } finally { await file.close(); }
+  if (process.platform !== "win32") {
+    const file = await open(path, constants.O_WRONLY | constants.O_CREAT | constants.O_TRUNC | constants.O_NOFOLLOW, 0o600);
+    try { await file.writeFile(data); } finally { await file.close(); }
+    return;
+  }
+  // Windows has no O_NOFOLLOW. Never open the destination for writing: an
+  // atomic replacement cannot follow a link swapped in after the lstat check.
+  const temporary = join(dirname(path), `.muha-${randomUUID()}.tmp`);
+  const file = await open(temporary, "wx", 0o600);
+  try {
+    await file.writeFile(data); await file.close();
+    try {
+      if (!(await lstat(path)).isFile()) throw new ExampleError("产出路径必须为普通文件。");
+    } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+    await rename(temporary, path);
+  } finally { await file.close(); await rm(temporary, { force: true }); }
 }
 
 /** Download the reviewed allowlist, checking every byte before installing it. No model calls. */

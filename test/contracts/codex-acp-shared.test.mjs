@@ -1,9 +1,10 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 // T20–T23 — Codex ACP route: the shared ACP stack is reused for Kernel and
 // Session resume (T20), rich input/events/usage (T21), permissions/questions
 // (T22), and Workspace/model/effort (T23). Controlled-endpoint evidence;
 // real admission remains T24/T33.
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";

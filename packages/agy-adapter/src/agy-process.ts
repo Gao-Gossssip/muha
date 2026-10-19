@@ -1,4 +1,4 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { HarnessErrorData, OfficialAdapterOptions } from "@muha-sdk/core";
@@ -22,7 +22,7 @@ export class AgyProcess implements LiveHarnessAdapter {
     this.#env = harnessEnvironment(options.env);
   }
   async initialize(): Promise<void> {
-    const workspacePath = await mkdtemp(join(tmpdir(), "muha-agy-ready-"));
+    const workspacePath = await realpath(await mkdtemp(join(tmpdir(), "muha-agy-ready-")));
     try {
       const session = await this.createSession({ workspacePath, approvalPolicy: "harnessManaged" });
       await session.close();

@@ -1,8 +1,9 @@
+import { mkdtemp } from "./temporary-directory.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFile, spawn } from "node:child_process";
 import { once } from "node:events";
-import { copyFile, lstat, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { copyFile, lstat, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, join, resolve } from "node:path";
 import { promisify } from "node:util";
@@ -11,6 +12,8 @@ import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
 import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-pi.mjs";
 
 const execute = promisify(execFile);
+const coldInstallTimeoutMs = process.platform === "win32" ? 300000 : 120000;
+export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 720000 : 240000;
 async function run(command, args, options) {
   if (command === "npm") [command, args] = npmCommand(args);
   return execute(command, args, { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options });
@@ -57,7 +60,10 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     await writeFile(join(consumer, "package.json"), JSON.stringify({ private: true, type: "module", allowScripts: reviewedInstallScripts }));
     // Bare `@muha-sdk/muha` is tested before publication. The public job pins the reviewed
     // candidate version because latest is promoted only after both jobs pass.
-    await run("npm", ["install", "--save-exact", registryVersion ? `@muha-sdk/muha@${registryVersion}` : "@muha-sdk/muha"], { cwd: consumer, env });
+    // Windows cold extraction and reviewed native hooks can exceed two minutes
+    // on hosted runners. Keep the cold cache, original hooks and finite bound.
+    await run("npm", ["install", "--save-exact", registryVersion ? `@muha-sdk/muha@${registryVersion}` : "@muha-sdk/muha"],
+      { cwd: consumer, env, timeout: coldInstallTimeoutMs });
     const manifest = JSON.parse(await readFile(join(consumer, "package.json"), "utf8"));
     assert.deepEqual(manifest.dependencies, { "@muha-sdk/muha": release.version }, "@muha-sdk/muha must be the only direct SDK dependency");
     assert.equal(manifest.overrides, undefined);

@@ -1,7 +1,8 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
-import { access, cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, symlink, writeFile } from 'node:fs/promises';
+import { access, cp, link, mkdir, readFile, readdir, realpath, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { PassThrough } from 'node:stream';
@@ -598,13 +599,28 @@ test('cleanup failure is observable, blocks writer and does not claim successful
 });
 
 test('a final artifact symlink cannot overwrite an external file or advance to writer', async t => {
+  let unavailable = false;
   const f = await fixture(t, [{ beforeTerminal: async session => {
-    await symlink(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md'));
+    try { await symlink(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md')); }
+    catch (error) { if (process.platform === 'win32' && error.code === 'EPERM') unavailable = true; else throw error; }
   } }]);
   await writeFile(join(f.root, 'outside.txt'), 'preserve');
   const result = await f.start();
+  if (unavailable) { t.skip('File symlinks require Windows developer mode or privilege'); return; }
   assert.equal(result.status, 'failed'); assertNoWriter(f);
   assert.equal(await readFile(join(f.root, 'outside.txt'), 'utf8'), 'preserve');
+});
+
+test('Windows replaces an artifact hardlink without changing the external file', { skip: process.platform !== 'win32' }, async t => {
+  const f = await fixture(t, [{ text: 'topic result', beforeTerminal: async session => {
+    await link(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md'));
+  } }, { text: 'article result' }]);
+  await writeFile(join(f.root, 'outside.txt'), 'preserve');
+  const result = await f.start();
+  assert.equal(result.status, 'completed');
+  assert.equal(await readFile(join(f.root, 'outside.txt'), 'utf8'), 'preserve');
+  assert.equal(await readFile(join(result.workspacePath, 'topic.md'), 'utf8'), 'topic result');
+  assert.ok(!(await readdir(result.workspacePath)).some(name => name.startsWith('.muha-')));
 });
 
 test('terminal control sequences are stripped only on display, not saved raw replies or handoff', async t => {

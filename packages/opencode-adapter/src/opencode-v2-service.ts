@@ -1,5 +1,5 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, rm } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
@@ -51,7 +51,7 @@ export class OpenCodeV2Service {
     }
 
     try {
-      this.#configRoot = await mkdtemp(join(tmpdir(), "muha-opencode-v2-config-"));
+      this.#configRoot = await realpath(await mkdtemp(join(tmpdir(), "muha-opencode-v2-config-")));
       const plugins = join(this.#configRoot, "plugins");
       await mkdir(plugins);
       this.#pluginPath = join(plugins, "muha-order.js");

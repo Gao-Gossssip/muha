@@ -1,10 +1,10 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
   access,
   chmod,
   mkdir,
-  mkdtemp,
   readFile,
   readdir,
   realpath,

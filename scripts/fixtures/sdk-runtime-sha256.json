@@ -9,7 +9,7 @@
     },
     {
       "path": "packages/agy-adapter/src/agy-process.ts",
-      "sha256": "49f7777d438416f45b5b0641f3cc1c4af14b3c5bda8ae3abad5d85eecc15e2d6"
+      "sha256": "176a2ba5bcf3e687029247c1f8f3ba197417dc471b84be891aeddc67f4ee194e"
     },
     {
       "path": "packages/agy-adapter/src/index.ts",
@@ -209,7 +209,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
-      "sha256": "b5645bc799a990b3998ee7571d9b6f882ed4920cce827d735b160a983e6b9880"
+      "sha256": "7c8d0f8417f2e53b843579f0cef5e742ac4dce69853ecdb917e8dddebb3847df"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-turn.ts",
@@ -548,7 +548,7 @@
         {
           "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
           "sha256": "c0e954cc147fc06cc7d37eb1228387c2e3ada01a08fb41f6609152dc74094e82",
-          "updatedSha256": "b5645bc799a990b3998ee7571d9b6f882ed4920cce827d735b160a983e6b9880"
+          "updatedSha256": "7c8d0f8417f2e53b843579f0cef5e742ac4dce69853ecdb917e8dddebb3847df"
         },
         {
           "path": "packages/opencode-adapter/src/workspace-mcp-v2-worker.ts",
@@ -575,7 +575,8 @@
       ],
       "preservedQualification": "Earlier real-model entries retain their original source/platform scope; Windows full qualification is pending",
       "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
-      "sharedCoreQualification": "Native Windows Core is pending full platform qualification; bounded smoke used the preceding candidate snapshot"
+      "sharedCoreQualification": "Native Windows Core is pending full platform qualification; bounded smoke used the preceding candidate snapshot",
+      "ciFixScope": "Canonical temporary-directory paths changed; paid smoke remains limited to its recorded earlier snapshot"
     },
     {
       "harness": "kimi",
@@ -648,12 +649,21 @@
       "models": {
         "text": "opencode-go/deepseek-v4.1-flash"
       },
-      "realSmokeStatus": "NOT_RUN",
-      "realAttempts": 0,
+      "realSmokeStatus": "PASS",
+      "realAttempts": 3,
       "attemptLimit": 3,
       "perAttemptSecondsLimit": 60,
       "concurrency": 1,
-      "checks": [],
+      "checks": [
+        "text-turn",
+        "same-session-continuation",
+        "new-runtime-resume",
+        "native-file-tool",
+        "resumed-conversation-memory",
+        "one-terminal-per-turn",
+        "native-diagnostic-records",
+        "owned-close"
+      ],
       "preservedQualification": "Earlier real-model entries retain their original source/platform scope; Windows full qualification is pending",
       "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
       "sharedCoreQualification": "Native Windows Core is pending full platform qualification; bounded smoke used the preceding candidate snapshot",
@@ -671,7 +681,8 @@
           "owned-close"
         ]
       },
-      "realAuthorization": "Additional bounded Windows Pi 1.2.0 verification pending"
+      "realAuthorization": "User explicitly authorized the separate Pi SDK 1.2.0 three-Turn batch",
+      "realSmokeSourceSnapshot": "fc5225501cab1661bb8da15a237b4652cf03365d"
     },
     {
       "harness": "agy",
@@ -683,7 +694,7 @@
         {
           "path": "packages/agy-adapter/src/agy-process.ts",
           "sha256": "b6e67f801f9fda9ee66165c2a9d4ebab5adb2596b23aa601cd865dc8903c761d",
-          "updatedSha256": "49f7777d438416f45b5b0641f3cc1c4af14b3c5bda8ae3abad5d85eecc15e2d6"
+          "updatedSha256": "176a2ba5bcf3e687029247c1f8f3ba197417dc471b84be891aeddc67f4ee194e"
         },
         {
           "path": "packages/agy-adapter/src/owned-cli.ts",
@@ -694,16 +705,41 @@
       "models": {
         "text": "claude-sonnet-4-6"
       },
-      "realSmokeStatus": "FAIL",
+      "realSmokeStatus": "NOT_RUN",
       "realAttempts": 0,
       "attemptLimit": 3,
       "perAttemptSecondsLimit": 60,
       "concurrency": 1,
       "checks": [],
-      "blocker": "Installed AGY 1.3.5 rejects repository model claude-sonnet-4-6 before a Turn; model substitution not performed",
+      "blocker": "AGY temporary-Workspace canonicalization changed after the authorized paid snapshot; new source has controlled alias regression evidence only",
       "preservedQualification": "Earlier real-model entries retain their original source/platform scope; Windows full qualification is pending",
       "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
-      "sharedCoreQualification": "Native Windows Core is pending full platform qualification; bounded smoke used the preceding candidate snapshot"
+      "sharedCoreQualification": "Native Windows Core is pending full platform qualification; bounded smoke used the preceding candidate snapshot",
+      "priorWindowsSmoke": {
+        "sourceSnapshot": "fc5225501cab1661bb8da15a237b4652cf03365d",
+        "model": "claude-sonnet-5-5-low",
+        "observedCliVersionAfterSmoke": "1.3.6",
+        "status": "PASS",
+        "realAttempts": 3,
+        "checks": [
+          "text-turn",
+          "same-session-continuation",
+          "new-runtime-resume",
+          "native-file-tool",
+          "resumed-conversation-memory",
+          "one-terminal-per-turn",
+          "native-diagnostic-records",
+          "owned-close"
+        ]
+      },
+      "originalModelProbe": {
+        "model": "claude-sonnet-4-6",
+        "cliVersion": "1.3.5",
+        "status": "FAIL",
+        "realAttempts": 0,
+        "reason": "Native Session creation rejected the fixed model before a Turn"
+      },
+      "ciFixScope": "Canonical temporary-directory paths changed; paid smoke remains limited to its recorded earlier snapshot"
     }
   ]
 }

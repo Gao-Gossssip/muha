@@ -1,6 +1,7 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { cp, lstat, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { basename, delimiter, dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -9,7 +10,7 @@ import { npmCommand } from "../../scripts/npm-command.mjs";
 import test from "node:test";
 import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-pi.mjs";
 import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
-import { verifyUmbrellaConsumer } from "../support/umbrella-consumer.mjs";
+import { verifyUmbrellaConsumer, umbrellaConsumerTimeoutMs } from "../support/umbrella-consumer.mjs";
 
 const repositoryRoot = resolve(import.meta.dirname, "../..");
 const registryVersion = process.env.MUHA_PUBLIC_REGISTRY_VERSION ?? (process.env.MUHA_REGISTRY_CANDIDATE
@@ -186,7 +187,7 @@ test("an isolated fixture can install Core and all five official Adapters", asyn
   }
 });
 
-test("installing only @muha-sdk/muha delivers the complete SDK and replays its consumer lockfile", { timeout: 240000 }, async () => {
+test("installing only @muha-sdk/muha delivers the complete SDK and replays its consumer lockfile", { timeout: umbrellaConsumerTimeoutMs }, async () => {
   await verifyUmbrellaConsumer({ repositoryRoot, registryVersion, reviewedInstallScripts });
 });
 

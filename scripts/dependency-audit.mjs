@@ -11,6 +11,7 @@ const sorted = object => JSON.stringify(Object.fromEntries(Object.entries(object
  * hoisted install in a developer checkout. It is checked byte-for-byte
  * against the locked source, but only packed files define redistribution. */
 export async function auditProductionDependencies({ root, packages, lock }) {
+  root = await realpath(root);
   const dependencies = [], edges = [], problems = [], queue = [], seen = new Set();
   const official = new Set(packages.map(item => item.manifest.name));
   const enqueue = (manifest, from) => {

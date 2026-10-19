@@ -1,9 +1,9 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
 import {
   access,
   lstat,
   mkdir,
-  mkdtemp,
   readFile,
   realpath,
   rm,

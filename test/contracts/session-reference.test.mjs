@@ -1,6 +1,7 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 // Single, closed Session Reference contract (T11, ADR-0135).
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, rm } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
