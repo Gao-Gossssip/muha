@@ -49,5 +49,5 @@ jobs:
       - run: npm run check:repository -- . HEAD
       - run: npm ci
       - run: npm run build --silent
-      - run: node --test --test-concurrency=2 test/contracts/windows-paths.test.mjs test/contracts/windows-host.test.mjs test/contracts/opencode-windows-cleanup.test.mjs test/contracts/opencode-v2-failures.test.mjs
+      - run: node --test --test-concurrency=2 test/contracts/windows-paths.test.mjs test/contracts/windows-host.test.mjs test/contracts/opencode-windows-cleanup.test.mjs test/contracts/opencode-v2-failures.test.mjs test/contracts/opencode-v2-service.test.mjs test/contracts/opencode-v2-fixture-evidence.test.mjs
       - run: npm run check
