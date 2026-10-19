@@ -19,6 +19,7 @@ static HANDLE job = NULL;
 static PROCESS_INFORMATION native_process;
 static bool closing = false, cleanup_error = false, started = false;
 static bool forced = false, native_exited = false;
+static bool closed_sent = false, acknowledged = false;
 static ULONGLONG force_at = 0;
 static int command_start = 2;
 static HANDLE worker_pipe = INVALID_HANDLE_VALUE;
@@ -279,15 +280,19 @@ int wmain(int argc, wchar_t **argv) {
             forced = true;
             if (!TerminateJobObject(job, 1)) fail("terminateJob");
         }
-        if (closing && empty_job() && (!native_process.hProcess ||
+        if (closing && !closed_sent && empty_job() && (!native_process.hProcess ||
                 WaitForSingleObject(native_process.hProcess, 0) == WAIT_OBJECT_0) &&
                 (!worker_connected || WaitForSingleObject(worker_connected, 0) != WAIT_OBJECT_0 ||
                     WaitForSingleObject(worker_output_done, 0) == WAIT_OBJECT_0)) {
             char message[128];
-            snprintf(message, sizeof(message), "{\"type\":\"closed\",\"noChildren\":true,\"cleanupError\":%s}\n", cleanup_error ? "true" : "false");
-            (void)emit(message);
-            break;
+            snprintf(message, sizeof(message), "{\"type\":\"closed\",\"noChildren\":true,\"cleanupError\":%s,\"ackRequired\":true}\n", cleanup_error ? "true" : "false");
+            if (!emit(message)) control_open = false;
+            closed_sent = true;
         }
+        /* Keep the pipe alive until the host has consumed the cleanup proof.
+         * Otherwise its concurrent close write can destroy the duplex reader
+         * with EPIPE before that already-written proof is delivered. */
+        if (closed_sent && (acknowledged || !control_open)) break;
         if (closing && GetTickCount64() > force_at + 5000) {
             SetLastError(ERROR_TIMEOUT); fail("cleanupTimeout"); break;
         }
@@ -313,7 +318,8 @@ int wmain(int argc, wchar_t **argv) {
             if (!strcmp(input, "go") && !started && !closing) {
                 started = true;
                 if (!create_native(argc, argv)) start_close("spawnError", 0);
-            } else if (!strcmp(input, "close")) start_close("close", (DWORD)grace);
+            } else if (!strcmp(input, "ack") && closed_sent) acknowledged = true;
+            else if (!strcmp(input, "close")) start_close("close", (DWORD)grace);
             else if (!strcmp(input, "interrupt")) start_close("interrupt", (DWORD)grace);
             else start_close("invalidControl", 0);
         }

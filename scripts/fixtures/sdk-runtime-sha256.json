@@ -81,7 +81,7 @@
     },
     {
       "path": "packages/core/native/windows-supervisor.c",
-      "sha256": "ee1107644520fcf452261c218eacc32d3bca6059d12be15bfe83c3a8e81803d4"
+      "sha256": "9ed5da9585d54f50ae25ad07ee92ef6a7ad14fec39463e6a9277d54d5983b184"
     },
     {
       "path": "packages/core/scripts/build-native.mjs",
@@ -129,7 +129,7 @@
     },
     {
       "path": "packages/core/src/host-process.ts",
-      "sha256": "e8419056ae76764fa4faefd9b34f528b6b8f1995b3881c3e6de4dbaee85a0c18"
+      "sha256": "19f61e873c9440ea73b92b5ab809677fefaa23364c2a433f698f73675c3e1958"
     },
     {
       "path": "packages/core/src/index.ts",
@@ -472,7 +472,7 @@
         {
           "path": "packages/core/native/windows-supervisor.c",
           "sha256": null,
-          "updatedSha256": "ee1107644520fcf452261c218eacc32d3bca6059d12be15bfe83c3a8e81803d4"
+          "updatedSha256": "9ed5da9585d54f50ae25ad07ee92ef6a7ad14fec39463e6a9277d54d5983b184"
         },
         {
           "path": "packages/core/src/acp/owned-process.ts",
@@ -487,7 +487,7 @@
         {
           "path": "packages/core/src/host-process.ts",
           "sha256": null,
-          "updatedSha256": "e8419056ae76764fa4faefd9b34f528b6b8f1995b3881c3e6de4dbaee85a0c18"
+          "updatedSha256": "19f61e873c9440ea73b92b5ab809677fefaa23364c2a433f698f73675c3e1958"
         },
         {
           "path": "packages/core/src/platform.ts",

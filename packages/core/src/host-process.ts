@@ -77,7 +77,10 @@ export function spawnHarnessProcess(command: string, args: readonly string[], op
       const event = JSON.parse(line) as Record<string, unknown>;
       if (event.type === "ready") { if (autoStart && !closing) control.write("go\n"); }
       else if (event.type === "spawned") nativePid = typeof event.pid === "number" ? event.pid : undefined;
-      else if (event.type === "closed") proof = event.noChildren === true && event.cleanupError === false;
+      else if (event.type === "closed") {
+        proof = event.noChildren === true && event.cleanupError === false;
+        if (event.ackRequired === true && !control.destroyed) control.write("ack\n");
+      }
       else if (event.type === "nativeExit") nativeExit = typeof event.code === "number" ? event.code : undefined;
       else if (event.type === "error") {
         const error = new Error(`Windows owner failed during ${String(event.operation)} (${String(event.win32)})`);

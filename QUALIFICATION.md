@@ -50,7 +50,10 @@ failures. Its Linux CI matrix passed, but all three Windows CI versions
 reported 527 passing / 75 failing / 24 skipped contracts. The follow-up
 candidate fixes canonical temporary Workspaces and dependency-audit roots,
 canonical fixture identities, Windows artifact replacement and cold-install
-time bounds. Its AGY/OpenCode runtime changes receive new controlled checks;
+time bounds. A Windows control-channel close acknowledgement prevents a
+concurrent close write from discarding the owner's cleanup proof after native
+exit; helper loss and missing proof still fail. Core/AGY/OpenCode runtime
+changes receive new controlled checks;
 the paid receipts above retain their earlier source scope and were not rerun.
 Full Windows capability qualification and multi-platform assembly remain pending.
 

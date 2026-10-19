@@ -10,7 +10,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createMuhaRuntime } from '@muha-sdk/core';
 import { DiagnosticEventStore } from '../../packages/core/dist/event-store.js';
 import { randomUUID } from 'node:crypto';
-import { spawnHarnessProcess, closeHarnessProcess, harnessEnvironment, harnessProcessExitCode } from '@muha-sdk/core/internal/host-process';
+import { spawnHarnessProcess, closeHarnessProcess, harnessEnvironment, harnessProcessExitCode, harnessProcessPid } from '@muha-sdk/core/internal/host-process';
 
 const windows = { skip: process.platform !== 'win32', timeout: 10000 };
 const endpoint = fileURLToPath(new URL('../fixtures/acp-owned-process.mjs', import.meta.url));
@@ -70,6 +70,20 @@ test('Windows helper loss fails ownership reporting and releases owned descendan
   const exit = once(child, 'exit'); child.kill(); await exit;
   await assert.rejects(closeHarnessProcess(child), /ownership|owner|cleanup/i);
   await waitFor(() => pids.every(pid => !alive(pid)));
+});
+
+test('Windows close consumes native-exit cleanup proof after the host was unable to read notifications', windows, async t => {
+  const child = spawnHarnessProcess(process.execPath, ['-e', 'console.log("ready");setInterval(()=>{},1000)'],
+    { stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+  child.stderr.resume();
+  t.after(async () => { await closeHarnessProcess(child).catch(() => { child.kill(); }); });
+  await once(child.stdout, 'data');
+  await waitFor(() => Number.isSafeInteger(harnessProcessPid(child)));
+  process.kill(harnessProcessPid(child), 'SIGKILL');
+  // Force the real cross-pipe race: native exit/cleanup happens before the
+  // host can observe either the control data or ChildProcess exit callback.
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 150);
+  await closeHarnessProcess(child);
 });
 
 test('Windows diagnostic store enforces private ACLs and lease ownership and reopens after close', windows, async t => {
