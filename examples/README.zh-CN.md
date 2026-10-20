@@ -23,21 +23,71 @@ TypeScript 入口和运行说明，方便后续持续增加新的 examples。
 
 ## 在仓库中运行
 
-使用 SDK 支持的 Node.js/Linux 环境，并按示例要求准备原生 Harness。
-在仓库根目录执行：
+使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64，
+并按各示例要求准备所选 Harness。下方 Windows 说明使用本分支的仓库构建；
+npm 包支持的平台以所安装版本为准。Windows 构建需要 Visual Studio 2022
+C++ Build Tools 与 Windows SDK。在仓库根目录先统一安装、构建一次：
 
 ```sh
 npm ci
 npm run build
+```
+
+Windows PowerShell 中使用 `npm.cmd ci`、`npm.cmd run build`，不依赖
+PowerShell 对 npm 的 `.ps1` shim 的执行权限。之后选择一个案例运行。
+
+**多 Harness 集成 Chat** 启动本机服务，直到停止前持续运行：
+
+```sh
 node examples/local-chat/main.ts .
 ```
 
-`.` 表示真实存在的当前工作目录。仓库中的依赖通过 workspace 链接到本地包，
-因此需要先构建；这不是打包或发布。将示例复制到自己的 ESM 项目时，改为
-通过 npm 安装 `@muha-sdk/muha`，并遵循对应示例说明，无需构建 Muha 仓库。
+打开 `http://127.0.0.1:3000`。`.` 表示真实存在的当前工作目录。选择 Harness
+和模型、新建对话后发送消息；打开页面不会发送 Turn。Ctrl+C 关闭 Runtime。
+Windows PowerShell 中如需限定 Harness、修改端口：
 
-认证、模型可用性、原生权限及模型调用费用由使用者负责；聊天服务启动后
-不会自动发送 Turn。
+```powershell
+$env:MUHA_HARNESSES = 'codex,pi'
+$env:PORT = '3001'
+node examples/local-chat/main.ts .
+```
+
+**AI 热点选题与写作** 全程在终端交互：
+
+```sh
+node examples/auto-social-media/main.ts
+```
+
+确认真实模型、工具操作与重试说明，配置选题 Agent，等待 `topic.md` 保存后，
+独立配置写文 Agent。终端打印的 `examples/auto-social-media/workspaces/muha-social-*`
+目录保留 `topic.md`、`article.md`、`provenance.json`，不会发布草稿。输入 `q`
+或 Ctrl+C 停止并保留已有产出。单独指南也给出带空格的 Windows 产出路径写法。
+
+仓库的 workspace 依赖需要先构建，这不是打包或发布。复制单文件到自己的
+ESM 项目时，完整安装 `@muha-sdk/muha` 并遵循对应指南。认证、模型可用性、
+原生权限及调用费用由使用者负责。
+
+## 测试两个案例
+
+构建后，在仓库根目录运行聚焦测试：
+
+```sh
+npm run test:examples
+```
+
+Windows PowerShell 使用 `npm.cmd run test:examples`。它自动收集所有
+`*example*.test.mjs` 契约，Windows CI 的 Node 22.20.0、LTS、current
+矩阵也会单独执行。Windows 与 Linux 的完整 `npm test` / `npm run check`
+同样包含这些契约。
+
+| 案例 | 受控覆盖 |
+| --- | --- |
+| Chat | 五种 Harness 的 HTTP/浏览器控制；真实 Core/Pi Adapter/固定 SDK 的文本流、会话历史与所属进程关闭，使用含中文和空格的路径。 |
+| 选题写作 | 授权、配置、审批/追问、中断与失败；真实 SDK 配置 Skill、两个串行原生 Session、原样交接选题、保留产出与关闭 Runtime，使用 Windows CRLF 输入。 |
+
+集成测试只连接本机受控 Provider，使用临时配置和本地 Skill 夹具，不依赖
+原生 CLI、真实凭据、外网 Skill 下载或付费模型。这些测试验证示例集成，
+完整 Harness/Capability 资格保持单独的范围。
 
 ## 目录与扩展示例
 

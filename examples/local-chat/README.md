@@ -27,13 +27,26 @@ node main.ts .
 Copy [main.ts](main.ts) into that project first. For workspace-linked packages in
 this repository, install the complete workspace set and build instead:
 
-From this repository (Node.js 22.20.0 or newer, supported Linux/WSL2):
+From this repository (Node.js >=22.20.0, Linux x64/glibc or native Windows x64):
 
 ```sh
 npm ci
 npm run build
 node examples/local-chat/main.ts .
 ```
+
+On native Windows, use this branch's repository build; platform support in an
+installed npm release depends on that version. Install Visual Studio 2022 C++
+Build Tools and a Windows SDK for the repository's native build. In PowerShell:
+
+```powershell
+npm.cmd ci
+npm.cmd run build
+node examples/local-chat/main.ts .
+```
+
+`npm.cmd` avoids npm's PowerShell script execution-policy dependency. Quote an
+explicit workspace path if it contains spaces or Chinese characters.
 
 Here `.` uses the existing current directory as the workspace. You can instead
 pass the path of another **existing project directory**; do not literally use a
@@ -52,6 +65,15 @@ installing another CLI. Optionally narrow the installed subset or change ports:
 
 ```sh
 MUHA_HARNESSES=codex,pi PORT=3001 node examples/local-chat/main.ts .
+```
+
+The assignment syntax above is for a POSIX shell. In Windows PowerShell:
+
+```powershell
+$env:MUHA_HARNESSES = 'codex,pi'
+$env:PORT = '3001'
+$workspace = (Get-Location).Path
+node examples/local-chat/main.ts "$workspace"
 ```
 
 `MUHA_HARNESSES` is intersected with local installations; it cannot force an
@@ -144,3 +166,10 @@ can use this server; do not forward its port or expose it through a proxy.
 Controlled HTTP/browser tests do not constitute new paid harness qualification.
 No real model calls, publication or consumer application tests are required to
 run the example's controlled contract suite.
+
+After the repository build, run `npm run test:examples`
+(`npm.cmd run test:examples` in PowerShell). Alongside the five-harness HTTP/browser fixtures,
+integration tests run the real Core/Pi Adapter/pinned SDK against a loopback
+provider, exercising streamed Turns, native conversation history and owned close
+on a Chinese workspace path with spaces. The same suite runs explicitly in
+Windows CI and is included in the full SDK checks; it needs no real credentials.

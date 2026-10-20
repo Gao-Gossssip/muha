@@ -24,21 +24,77 @@ install all native CLIs. Detection does not verify authentication or models.
 
 ## Run from the repository
 
-Use the SDK's supported Node.js/Linux environment and prepare the chosen native
-harnesses as described in each example. From the repository root:
+Use Node.js >=22.20.0 on Linux x64 (glibc) or native Windows x64. Prepare the
+chosen harnesses as described in each guide. These Windows instructions use this
+branch's repository build; npm package support depends on the installed release.
+Building on Windows requires Visual Studio 2022 C++ Build Tools and a Windows SDK.
+From the repository root, install and build once:
 
 ```sh
 npm ci
 npm run build
+```
+
+In Windows PowerShell, use `npm.cmd ci` and `npm.cmd run build` to avoid depending
+on PowerShell's permission to execute npm's `.ps1` shim. Then choose one case:
+
+**Multi-Harness Chat** starts a loopback server and keeps running until stopped:
+
+```sh
 node examples/local-chat/main.ts .
 ```
 
-`.` is the existing current workspace directory, not a placeholder. Building is
-needed when using this repository's workspace-linked packages; it does **not**
-pack or publish a release. If you copy an example to your own ESM project,
-install `@muha-sdk/muha` from npm and follow its individual guide instead.
-Native authentication, model availability, permissions and any provider charges
-remain your responsibility. Starting the chat does not automatically send a Turn.
+Open `http://127.0.0.1:3000`. `.` uses the existing current workspace. Select a
+harness/model, create a conversation, then send a message. Page loading does not
+send a Turn. Ctrl+C closes the Runtime. For a subset and a different port in
+Windows PowerShell:
+
+```powershell
+$env:MUHA_HARNESSES = 'codex,pi'
+$env:PORT = '3001'
+node examples/local-chat/main.ts .
+```
+
+**AI Topic & Writing** runs entirely in the terminal:
+
+```sh
+node examples/auto-social-media/main.ts
+```
+
+Confirm the real-model/tool/retry notice, configure the topic agent, wait for
+`topic.md`, then configure the writer independently. The printed output directory
+under `examples/auto-social-media/workspaces/muha-social-*` retains `topic.md`,
+`article.md` and `provenance.json`; it does not publish the draft. Enter `q` or
+Ctrl+C to stop and keep existing output. Its guide also shows a quoted Windows
+output path with spaces.
+
+Building workspace-linked packages does not pack or publish a release. For a
+copied standalone file, install the complete `@muha-sdk/muha` in an ESM project
+and follow its guide. Native authentication, models, permissions and provider
+charges remain the user's responsibility.
+
+## Test both cases
+
+After the build, run the focused suite from the repository root:
+
+```sh
+npm run test:examples
+```
+
+Use `npm.cmd run test:examples` in Windows PowerShell. It discovers all
+`*example*.test.mjs` contracts and is also run explicitly by the Windows CI
+matrix (Node 22.20.0, LTS and current). The full `npm test` / `npm run check`
+suite includes the same contracts on Windows and Linux.
+
+| Case | Controlled coverage |
+| --- | --- |
+| Chat | HTTP/browser controls for all five harnesses; real Core/Pi Adapter/pinned SDK text streaming, conversation history and owned close, on a Chinese path with spaces. |
+| Topic & Writing | Consent, selection, approvals/Questions, cancellation and failures; real SDK Skill configuration, two serial native Sessions, exact topic handoff, retained files and Runtime close, with Windows CRLF input. |
+
+Integration tests use only a loopback provider, temporary configuration and local
+Skill fixtures. They do not require installed native CLIs, real credentials,
+external Skill downloads or paid models. They verify example integration; the
+full harness/capability qualification retains its separate scope.
 
 ## Layout and adding examples
 

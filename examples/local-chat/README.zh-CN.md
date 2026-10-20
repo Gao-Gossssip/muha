@@ -11,7 +11,7 @@
 
 ## 准备与启动
 
-在 SDK 支持的 Linux/WSL2 环境中使用 Node.js 22.20.0 或更新版本。
+使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
 完整包提供五种适配器及其 npm 依赖（包含 Pi SDK），但不会替你安装另外
 四家的原生 CLI。只需安装自己要使用的 Harness，不要求五家全部安装。
@@ -31,6 +31,19 @@ npm run build
 node examples/local-chat/main.ts .
 ```
 
+原生 Windows 使用本分支的仓库构建；npm 包支持的平台以安装版本为准。
+仓库构建需要 Visual Studio 2022 C++ Build Tools 与 Windows SDK。
+Windows PowerShell 中执行：
+
+```powershell
+npm.cmd ci
+npm.cmd run build
+node examples/local-chat/main.ts .
+```
+
+使用 `npm.cmd` 不依赖 npm 的 PowerShell 脚本执行权限；显式传入含空格、
+中文的项目路径时，用引号包住整个参数。
+
 打开 `http://127.0.0.1:3000`。`.` 是真实存在的当前项目目录；也可以传入
 另一个已存在的项目路径，不要照搬 `/absolute/project` 等占位路径。
 已启用的任何 Harness 无法启动时，Runtime 初始化会失败，不会自动回退。
@@ -49,6 +62,15 @@ Pi SDK 随完整 Muha 安装，**无需全局 `pi` 命令**，仍需配置原生
 
 ```sh
 MUHA_HARNESSES=codex,pi PORT=3001 node examples/local-chat/main.ts .
+```
+
+上方环境变量语法用于 POSIX shell；Windows PowerShell 使用：
+
+```powershell
+$env:MUHA_HARNESSES = 'codex,pi'
+$env:PORT = '3001'
+$workspace = (Get-Location).Path
+node examples/local-chat/main.ts "$workspace"
 ```
 
 `MUHA_HARNESSES` 与本地检测结果取交集，不能强制启用缺失的原生 CLI。
@@ -115,3 +137,9 @@ Codex/OpenCode/Kimi 默认使用 `interactive`，Pi/AGY 默认使用
 
 使用受控 HTTP/浏览器测试不会构成新的真实模型验收，也不需要执行 npm
 发布或消费者应用测试。模型调用与费用仍需使用者自行授权和承担。
+
+仓库构建后运行 `npm run test:examples`，PowerShell 使用
+`npm.cmd run test:examples`。除五种 Harness 的 HTTP/浏览器夹具外，集成
+测试通过本地受控 Provider 使用真实 Core/Pi Adapter/固定 SDK，验证含中文、
+空格路径上的流式 Turn、原生会话历史与所属进程关闭。Windows CI 单独执行，
+完整 SDK 检查也包含同一套测试，不需要真实凭据。
