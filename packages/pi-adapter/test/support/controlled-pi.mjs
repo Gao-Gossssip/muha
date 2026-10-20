@@ -1,5 +1,6 @@
+import { mkdtemp } from "../../../../test/support/temporary-directory.mjs";
 import { createServer } from "node:http";
-import { mkdtemp, mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdir, writeFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createMuhaRuntime } from "@muha-sdk/core";
@@ -32,7 +33,7 @@ export async function controlledPi(t, respond) {
       compat: { supportsReasoningEffort: true },
       contextWindow: 100000, maxTokens: 1000, cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } })),
   } } }));
-  const options = { env: { PI_CODING_AGENT_DIR: agentDir }, startupTimeoutMs: 10000, shutdownTimeoutMs: 2000 };
+  const options = { env: { PI_CODING_AGENT_DIR: agentDir }, startupTimeoutMs: process.platform === "win32" ? 30000 : 10000, shutdownTimeoutMs: 2000 };
   let runtime;
   t.after(async () => {
     await runtime?.close();
@@ -62,6 +63,7 @@ export async function nativePi(fixture, script, args = []) {
   const loader = new URL("../../dist/sdk-loader.mjs", import.meta.url).href;
   const { stdout } = await promisify(execFile)(process.execPath, ["--input-type=module", "-e",
     `const { loadSdk } = await import(${JSON.stringify(loader)}); const sdk = await loadSdk();\n${script}`,
-    fixture.workspace, ...args], { env: { ...process.env, PI_CODING_AGENT_DIR: fixture.agentDir }, timeout: 10000 });
+    fixture.workspace, ...args], { env: { ...process.env, PI_CODING_AGENT_DIR: fixture.agentDir },
+    timeout: process.platform === "win32" ? 30000 : 10000 });
   return JSON.parse(stdout);
 }

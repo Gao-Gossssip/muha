@@ -1,12 +1,23 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
 import { agyAdapter } from "@muha-sdk/agy-adapter";
-import { createMuhaRuntime } from "@muha-sdk/core";
+import { createControlledRuntime as createMuhaRuntime } from "../support/controlled-runtime.mjs";
 import { DatabaseSync } from "node:sqlite";
 import { agyConformance } from "../support/agy-conformance.mjs";
+
+test("Windows AGY controlled startup accommodates native bootstrap latency", { skip: process.platform !== "win32", timeout: 30000 }, async () => {
+  const root = await mkdtemp(join(tmpdir(), "muha-agy-bootstrap-"));
+  let runtime;
+  try {
+    const { options } = await agyConformance(undefined, { root, scenario: "slow-startup" });
+    runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter(options)] });
+    assert.equal(runtime.status, "active");
+  } finally { await runtime?.close(); await rm(root, { recursive: true, force: true }); }
+});
 
 test("AGY resumes the same native history after closing its Runtime", async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-agy-resume-"));
@@ -16,7 +27,7 @@ test("AGY resumes the same native history after closing its Runtime", async () =
   let runtime;
   const open = () => createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
     env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter) },
-    startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+    startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
   })] });
   try {
     runtime = await open();
@@ -84,7 +95,7 @@ test("AGY rejects a new Session whose Project differs from its claimed init Work
   try {
     runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
       env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter),
-        MUHA_FAKE_AGY_SCENARIO: "wrong-create-project" }, startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+        MUHA_FAKE_AGY_SCENARIO: "wrong-create-project" }, startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
     })] });
     await assert.rejects(runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "harnessManaged" }),
       error => error.data?.code === "HARNESS_ERROR");

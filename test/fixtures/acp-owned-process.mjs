@@ -1,8 +1,9 @@
 // Protocol-neutral ownership fault endpoint. All PIDs are test-owned; the
 // detached grandchild deliberately escapes process-group-only cleanup.
 import { spawn } from "node:child_process";
-import { writeFile } from "node:fs/promises";
+import { access, writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
+import { setTimeout as delay } from "node:timers/promises";
 
 process.on("SIGTERM", () => {});
 setInterval(() => {}, 1000);
@@ -18,6 +19,11 @@ if (process.argv[2] === "grandchild") {
     detached: true, stdio: ["ignore", "ignore", "ignore", "ipc"],
   });
   await new Promise(resolve => child.once("message", async ({ pids }) => {
+    const release = process.env.MUHA_TEST_OWNED_PIDS_RELEASE;
+    if (release) {
+      await writeFile(process.env.MUHA_TEST_OWNED_PIDS, "[");
+      while (!await access(release).then(() => true, () => false)) await delay(10);
+    }
     await writeFile(process.env.MUHA_TEST_OWNED_PIDS, JSON.stringify([process.pid, ...pids]));
     resolve();
   }));

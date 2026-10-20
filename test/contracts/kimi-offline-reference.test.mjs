@@ -1,8 +1,9 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 // T29/T30 — Kimi offline Session/Reference contract and capability honesty.
 // No real model requests; the local native default route stays unchanged and
 // unknown identities fail explicitly.
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, rm } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";

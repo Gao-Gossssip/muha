@@ -1,7 +1,8 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
-import { access, cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, symlink, writeFile } from 'node:fs/promises';
+import { access, cp, link, mkdir, readFile, readdir, realpath, rm, stat, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { PassThrough } from 'node:stream';
@@ -58,7 +59,7 @@ async function copiedExample(t) {
   await mkdir(directory, { recursive: true });
   await cp(new URL('../../examples/auto-social-media/main.ts', import.meta.url), join(directory, 'main.ts'));
   await writeFile(join(root, 'package.json'), '{"type":"module"}\n');
-  await symlink(fileURLToPath(new URL('../../node_modules', import.meta.url)), join(root, 'node_modules'));
+  await symlink(fileURLToPath(new URL('../../node_modules', import.meta.url)), join(root, 'node_modules'), process.platform === 'win32' ? 'junction' : 'dir');
   const { runEditorialScript: script, createCommandLine: commandLine } = await import(pathToFileURL(join(directory, 'main.ts')).href);
   return { directory, outputRoot: join(directory, 'workspaces'), script, commandLine };
 }
@@ -114,9 +115,11 @@ test('default workspaces live beside the script, survive both stages and stay di
     const f = await fixture(t, [], undefined, copy.script, copy.commandLine), result = await f.start(answers(), true, true);
     assert.equal(result.status, 'completed');
     const parent = await realpath(copy.outputRoot);
-    assert.ok(result.workspacePath.startsWith(parent + '/muha-social-'));
-    assert.equal((await stat(copy.outputRoot)).mode & 0o777, 0o700);
-    assert.equal((await stat(result.workspacePath)).mode & 0o777, 0o700);
+    assert.ok(result.workspacePath.startsWith(join(parent, 'muha-social-')));
+    if (process.platform !== 'win32') {
+      assert.equal((await stat(copy.outputRoot)).mode & 0o777, 0o700);
+      assert.equal((await stat(result.workspacePath)).mode & 0o777, 0o700);
+    }
     assert.deepEqual(await readdir(f.root), []);
     assert.ok(f.platform.runtimes.every(runtime => runtime.sessions[0].reference.workspacePath === result.workspacePath));
     for (const file of ['topic.md', 'article.md', 'provenance.json']) await access(join(result.workspacePath, file));
@@ -141,7 +144,7 @@ test('an explicit existing output parent overrides the default without creating 
   const copy = await copiedExample(t), f = await fixture(t, [], undefined, copy.script, copy.commandLine);
   const result = await f.start();
   assert.equal(result.status, 'completed');
-  assert.ok(result.workspacePath.startsWith(await realpath(f.root) + '/muha-social-'));
+  assert.ok(result.workspacePath.startsWith(join(await realpath(f.root), 'muha-social-')));
   await assert.rejects(access(copy.outputRoot), { code: 'ENOENT' });
 });
 
@@ -157,10 +160,10 @@ test('default output-parent creation failure stops before Skill download or nati
 
 test('default output-parent symlinks retain canonical shared workspace identity', async t => {
   const copy = await copiedExample(t), f = await fixture(t, [], undefined, copy.script, copy.commandLine);
-  await symlink(f.root, copy.outputRoot);
+  await symlink(f.root, copy.outputRoot, process.platform === 'win32' ? 'junction' : 'dir');
   const result = await f.start(answers(), true, true);
   assert.equal(result.status, 'completed');
-  assert.ok(result.workspacePath.startsWith(await realpath(f.root) + '/muha-social-'));
+  assert.ok(result.workspacePath.startsWith(join(await realpath(f.root), 'muha-social-')));
   assert.ok(f.platform.runtimes.every(runtime => runtime.sessions[0].reference.workspacePath === result.workspacePath));
 });
 
@@ -192,7 +195,7 @@ test('an actual executable agy file is offered and selectable in both editorial 
   const f = await fixture(t, [], () => installedHarnesses(bin));
   bin = join(f.root, 'bin');
   await mkdir(bin);
-  await writeFile(join(bin, 'agy'), '#!/bin/sh\nexit 99\n', { mode: 0o700 });
+  await writeFile(join(bin, process.platform === 'win32' ? 'agy.exe' : 'agy'), '#!/bin/sh\nexit 99\n', { mode: 0o700 });
   const result = await f.start(['yes', '2', 'claude-sonnet-4-6', '', 'agy', 'claude-sonnet-4-6', '']);
   assert.equal(result.status, 'completed');
   assert.equal(f.text.split('1. pi\n2. agy\n').length - 1, 2);
@@ -258,8 +261,8 @@ test('topic completion hands off exact text in the same workspace to a new Sessi
   const topic = 'Plain topic text, not JSON.\n素材与链接。\n', article = 'Draft text, unchanged.\n';
   const f = await fixture(t, [{ text: topic }, { text: article }]), result = await f.start();
   assert.equal(result.status, 'completed');
-  assert.ok(result.workspacePath.startsWith(f.root + '/muha-social-'));
-  assert.equal((await stat(result.workspacePath)).mode & 0o777, 0o700);
+  assert.ok(result.workspacePath.startsWith(join(f.root, 'muha-social-')));
+  if (process.platform !== 'win32') assert.equal((await stat(result.workspacePath)).mode & 0o777, 0o700);
   const topicSession = f.platform.runtimes[0].sessions[0], writerSession = f.platform.runtimes[1].sessions[0];
   assert.notEqual(topicSession.reference.sessionId, writerSession.reference.sessionId);
   assert.equal(topicSession.reference.workspacePath, writerSession.reference.workspacePath);
@@ -596,13 +599,28 @@ test('cleanup failure is observable, blocks writer and does not claim successful
 });
 
 test('a final artifact symlink cannot overwrite an external file or advance to writer', async t => {
+  let unavailable = false;
   const f = await fixture(t, [{ beforeTerminal: async session => {
-    await symlink(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md'));
+    try { await symlink(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md')); }
+    catch (error) { if (process.platform === 'win32' && error.code === 'EPERM') unavailable = true; else throw error; }
   } }]);
   await writeFile(join(f.root, 'outside.txt'), 'preserve');
   const result = await f.start();
+  if (unavailable) { t.skip('File symlinks require Windows developer mode or privilege'); return; }
   assert.equal(result.status, 'failed'); assertNoWriter(f);
   assert.equal(await readFile(join(f.root, 'outside.txt'), 'utf8'), 'preserve');
+});
+
+test('Windows replaces an artifact hardlink without changing the external file', { skip: process.platform !== 'win32' }, async t => {
+  const f = await fixture(t, [{ text: 'topic result', beforeTerminal: async session => {
+    await link(join(f.root, 'outside.txt'), join(session.reference.workspacePath, 'topic.md'));
+  } }, { text: 'article result' }]);
+  await writeFile(join(f.root, 'outside.txt'), 'preserve');
+  const result = await f.start();
+  assert.equal(result.status, 'completed');
+  assert.equal(await readFile(join(f.root, 'outside.txt'), 'utf8'), 'preserve');
+  assert.equal(await readFile(join(result.workspacePath, 'topic.md'), 'utf8'), 'topic result');
+  assert.ok(!(await readdir(result.workspacePath)).some(name => name.startsWith('.muha-')));
 });
 
 test('terminal control sequences are stripped only on display, not saved raw replies or handoff', async t => {
@@ -675,7 +693,7 @@ test('readline pending question honors AbortSignal and rejects concurrent prompt
 });
 
 test('standalone command consumes real stdin; declining exits without download/model/service', async () => {
-  const child = spawn(process.execPath, ['examples/auto-social-media/main.ts'], {
+  const child = spawn(process.execPath, ['--disable-warning=ExperimentalWarning', 'examples/auto-social-media/main.ts'], {
     cwd: new URL('../..', import.meta.url), stdio: ['pipe', 'pipe', 'pipe'],
   });
   let stdout = '', stderr = '';

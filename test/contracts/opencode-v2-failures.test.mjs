@@ -1,5 +1,6 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
@@ -29,7 +30,13 @@ async function withV2Runtime(env, action) {
     });
     await action({ runtime, workspace, evidenceFile, pidFile });
   } finally {
-    await runtime?.close();
+    try { await runtime?.close(); }
+    catch (error) {
+      // The test reporter truncates nested failures to [Object]. Retain the
+      // actual cleanup boundary in CI without dumping native logs or config.
+      console.error('Controlled OpenCode cleanup failure:', JSON.stringify(error.data));
+      throw error;
+    }
     await rm(root, { recursive: true, force: true });
   }
 }

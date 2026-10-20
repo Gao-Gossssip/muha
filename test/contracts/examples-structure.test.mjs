@@ -14,15 +14,32 @@ test('examples catalog and root READMEs link to a scenario-per-directory layout'
     assert.match(scenario, /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/);
     for (const file of ['main.ts', 'README.md']) await access(join(root, 'examples', scenario, file));
     assert.ok((await read('examples/README.md')).includes(`${scenario}/README.md`));
+    assert.ok((await read('examples/README.md')).includes(`node examples/${scenario}/main.ts`), `${scenario}: catalog launch command`);
     const chineseGuide = `examples/${scenario}/README.zh-CN.md`;
     try { await access(join(root, chineseGuide)); }
     catch { continue; }
     assert.ok((await read('examples/README.zh-CN.md')).includes(`${scenario}/README.zh-CN.md`));
+    assert.ok((await read('examples/README.zh-CN.md')).includes(`node examples/${scenario}/main.ts`), `${scenario}: Chinese catalog launch command`);
   }
   assert.ok((await read('README.md')).includes('## Examples\n'));
   assert.ok((await read('README.zh-CN.md')).includes('## 示例\n'));
   assert.ok((await read('README.md')).includes('examples/README.md'));
   assert.ok((await read('README.zh-CN.md')).includes('examples/README.zh-CN.md'));
+});
+
+test('every example guide has native Windows PowerShell instructions and a focused test command', async () => {
+  const entries = await readdir(join(root, 'examples'), { withFileTypes: true });
+  for (const entry of entries.filter(entry => entry.isDirectory())) {
+    for (const language of ['README.md', 'README.zh-CN.md']) {
+      const path = `examples/${entry.name}/${language}`;
+      let guide;
+      try { guide = await read(path); }
+      catch (error) { if (language === 'README.zh-CN.md' && error.code === 'ENOENT') continue; throw error; }
+      assert.match(guide, /Windows x64/, path);
+      assert.match(guide, /```powershell\n[\s\S]*?npm\.cmd ci[\s\S]*?npm\.cmd run build[\s\S]*?```/, path);
+      assert.ok(guide.includes('npm.cmd run test:examples'), path);
+    }
+  }
 });
 
 test('root READMEs and example catalogs present Project/Overview/Location tables', async () => {

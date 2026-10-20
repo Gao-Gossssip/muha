@@ -1,5 +1,6 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
-import { mkdtemp, rm } from "node:fs/promises";
+import { rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
@@ -38,7 +39,7 @@ const profiles = createConformanceProfiles({
     },
   },
   pi: {
-    options: () => ({ env: { PATH: controlledPath } }),
+    options: () => ({ env: { PATH: controlledPath }, startupTimeoutMs: 30000 }),
     expected: {
       ...commonCapabilities, approvalPolicies: ["autoApprove", "harnessManaged"], turnQuestions: false, workspaceMcp: false,
       model: { selectionAt: allSelectionPoints, observation: "effective" },

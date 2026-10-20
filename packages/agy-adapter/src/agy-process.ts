@@ -1,10 +1,11 @@
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { HarnessErrorData, OfficialAdapterOptions } from "@muha-sdk/core";
 import type { AdapterCreateSessionOptions, AdapterResumeSessionOptions, AdapterSession, AdapterTurn,
   AdapterTurnEvent, AdapterTurnInput, LiveHarnessAdapter, LiveHarnessAdapterContext } from "@muha-sdk/core/internal";
 import { OwnedCli } from "./owned-cli.js";
+import { harnessEnvironment } from "@muha-sdk/core/internal/host-process";
 import { nativeBinding } from "./native-metadata.js";
 import { bounded, Deferred, EventQueue, failure, object, type JsonObject } from "./protocol.js";
 
@@ -18,14 +19,10 @@ export class AgyProcess implements LiveHarnessAdapter {
   get closing(): boolean { return this.#closing !== undefined; }
   get initialized(): boolean { return this.#initialized; }
   constructor(readonly options: OfficialAdapterOptions, readonly context: LiveHarnessAdapterContext) {
-    this.#env = { ...process.env };
-    for (const [key, value] of Object.entries(options.env ?? {})) {
-      if (value === undefined) delete this.#env[key];
-      else this.#env[key] = value;
-    }
+    this.#env = harnessEnvironment(options.env);
   }
   async initialize(): Promise<void> {
-    const workspacePath = await mkdtemp(join(tmpdir(), "muha-agy-ready-"));
+    const workspacePath = await realpath(await mkdtemp(join(tmpdir(), "muha-agy-ready-")));
     try {
       const session = await this.createSession({ workspacePath, approvalPolicy: "harnessManaged" });
       await session.close();

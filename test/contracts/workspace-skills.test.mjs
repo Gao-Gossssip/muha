@@ -1,9 +1,9 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
 import {
   access,
   lstat,
   mkdir,
-  mkdtemp,
   readFile,
   realpath,
   rm,
@@ -36,7 +36,7 @@ test("configureWorkspace creates only when permitted and returns a canonical pat
       attempts: [],
     });
     const alias = join(root, "workspace-alias");
-    await symlink(workspace, alias, "dir");
+    await symlink(workspace, alias, process.platform === "win32" ? "junction" : "dir");
     assert.deepEqual(await runtime.configureWorkspace({ workspacePath: alias }), {
       workspacePath: await realpath(workspace),
       created: false,

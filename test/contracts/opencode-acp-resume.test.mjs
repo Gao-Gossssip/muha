@@ -1,7 +1,8 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 // T13 — OpenCode ACP route: resume with references, session list, model/effort
 // selection and history isolation through the controlled MABC endpoint.
 import assert from "node:assert/strict";
-import { mkdtemp, mkdir, readFile, rm } from "node:fs/promises";
+import { mkdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";

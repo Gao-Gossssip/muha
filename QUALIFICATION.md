@@ -1,5 +1,64 @@
 # SDK qualification and migration provenance
 
+## Native Windows x64 candidate (2026-10-15/18)
+
+This branch adds a native Windows ownership helper, private NTFS diagnostic
+storage checks and a Windows pipe transport for Pi. Earlier Linux qualification
+records below retain their original source and platform scope. The candidate's
+full Windows qualification remains PENDING; the latest Pi entry blocks
+publication. Multi-platform release assembly is also pending.
+
+The user authorized real Windows model tests with the repository Profiles.
+On Windows 11 x64 / Node 22.23.3, Codex 0.162.1 (`gpt-5.6-luna`), OpenCode
+2.0.28 (`opencode-go/deepseek-v4.1-flash`), Kimi 2.1.1
+(`deepseek/deepseek-flash`) and the pinned Pi SDK 1.0.4
+(`opencode-go/deepseek-v4.1-flash`) each passed three actual Turns: text,
+same-Session continuation, and a native file Tool after Session resumption in a
+new Runtime. Every accepted Turn had one completed terminal, host-owned native
+diagnostic records were present, and Runtime close succeeded. These twelve
+Turns used concurrency one, no Muha retries, a 60-second per-attempt deadline
+and a three-attempt per-Harness limit within a 30-minute overall bound.
+
+AGY 1.3.5 rejected the fixed `claude-sonnet-4-6` model during Session creation,
+before any model Turn. Following explicit user authorization, AGY's native
+`claude-sonnet-5-5-low` selection passed three bounded Windows Turns on source
+`fc5225501cab1661bb8da15a237b4652cf03365d`; the CLI version checked immediately
+afterwards was 1.3.6. The dotted alias `claude-sonnet-5.5` was rejected before
+any Turn. This smoke does not replace the historical fixed-model Profile.
+
+The paid receipt identifies the preceding candidate snapshot. Subsequent
+Windows path/environment, private declaration and packaging fixes receive
+controlled verification; the paid smoke was not repeated on the final source.
+This candidate follows main's Pi SDK 1.2.0 migration and rebased input patch.
+The earlier Windows Pi SDK 1.0.4 smoke remains historical. A separately
+authorized Pi SDK 1.2.0 batch passed three Windows Turns on source `fc52255`,
+using `opencode-go/deepseek-v4.1-flash` / low effort. Both new batches verified
+the earlier conversation marker as well as the file contents after resumption
+in a fresh Runtime, one terminal per Turn, native diagnostics and owned close.
+They used three Turns per Harness, 60 seconds per Turn, concurrency one and
+zero retries. Private receipts stay in ignored paths. Bounded smoke does not
+qualify every declared Windows capability or a
+consumer application, and no Registry publication was performed.
+
+The preceding Windows 11 x64 candidate `fc52255`, including Pi SDK 1.2.0,
+passed `npm run check`: repository index policy, typecheck, native builds,
+602 SDK contracts (24 historical/opt-in skips), and 63 Pi contracts (one
+Linux-specific process-observation skip). The controlled examples, package
+isolation, umbrella cold install and lockfile replay passed. Earlier npm
+Registry timeout failures remain in private receipts; this final run had zero
+failures. Its Linux CI matrix passed, but all three Windows CI versions
+reported 527 passing / 75 failing / 24 skipped contracts. The follow-up
+candidate fixes canonical temporary Workspaces and dependency-audit roots,
+canonical fixture identities, Windows artifact replacement and cold-install
+time bounds. A Windows control-channel close acknowledgement prevents a
+concurrent close write from discarding the owner's cleanup proof after native
+exit; helper loss and missing proof still fail. Core/AGY/OpenCode runtime
+changes receive new controlled checks;
+the paid receipts above retain their earlier source scope and were not rerun.
+Full Windows capability qualification and multi-platform assembly remain pending.
+
+## Preserved qualification history
+
 The `@muha-sdk/muha` entry package in 0.1.15 re-exports the same public Core
 API and five official Adapter factories. Seven packages now form the SDK release;
 the Official Harness Set remains unchanged. Entry loading, one-dependency installs,

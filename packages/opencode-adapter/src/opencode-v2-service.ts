@@ -1,5 +1,5 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { copyFile, mkdir, mkdtemp, rm } from "node:fs/promises";
+import { copyFile, mkdir, mkdtemp, realpath, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline";
@@ -7,6 +7,7 @@ import { createInterface } from "node:readline";
 import { OpenCode, type OpenCodeClient } from "@opencode/client";
 import type { HarnessErrorData, OfficialAdapterOptions } from "@muha-sdk/core";
 import type { LiveHarnessAdapterContext } from "@muha-sdk/core/internal";
+import { spawnHarnessProcess, closeHarnessProcess, harnessEnvironment, harnessProcessPid } from "@muha-sdk/core/internal/host-process";
 import { orderedInputPluginID } from "./opencode-v2-order-plugin.js";
 
 const defaultTimeoutMs = 60_000;
@@ -38,11 +39,7 @@ export class OpenCodeV2Service {
   }
 
   async initialize(): Promise<void> {
-    const env: NodeJS.ProcessEnv = { ...process.env };
-    for (const [name, value] of Object.entries(this.options.env ?? {})) {
-      if (value === undefined) delete env[name];
-      else env[name] = value;
-    }
+    const env = harnessEnvironment(this.options.env);
     delete env.OPENCODE_SERVER_USERNAME;
     delete env.OPENCODE_SERVER_PASSWORD;
     env.OPENCODE_PASSWORD = this.password;
@@ -54,7 +51,7 @@ export class OpenCodeV2Service {
     }
 
     try {
-      this.#configRoot = await mkdtemp(join(tmpdir(), "muha-opencode-v2-config-"));
+      this.#configRoot = await realpath(await mkdtemp(join(tmpdir(), "muha-opencode-v2-config-")));
       const plugins = join(this.#configRoot, "plugins");
       await mkdir(plugins);
       this.#pluginPath = join(plugins, "muha-order.js");
@@ -67,12 +64,12 @@ export class OpenCodeV2Service {
 
     let child: ChildProcessWithoutNullStreams;
     try {
-      child = spawn("opencode", ["serve", "--stdio", "--port", "0"], {
+      child = spawnHarnessProcess("opencode", ["serve", "--stdio", "--port", "0"], {
         detached: true,
         env,
         shell: false,
         stdio: ["pipe", "pipe", "pipe"],
-      });
+      }, this.options.shutdownTimeoutMs ?? defaultTimeoutMs) as ChildProcessWithoutNullStreams;
     } catch {
       await this.close();
       throw serviceFailure("initialize", "spawn");
@@ -156,7 +153,7 @@ export class OpenCodeV2Service {
         !isRecord(info) ||
         typeof info.version !== "string" ||
         !/^2\.\d+\.\d+(?:[-+].+)?$/.test(info.version) ||
-        info.pid !== child.pid ||
+        info.pid !== harnessProcessPid(child) ||
         !Array.isArray(info.urls) ||
         !info.urls.includes(baseUrl)
       ) throw serviceFailure("initialize", "handshake");
@@ -180,6 +177,13 @@ export class OpenCodeV2Service {
     const child = this.#child;
     try {
       if (!child) return;
+      if (process.platform === "win32") {
+        try { return await closeHarnessProcess(child, this.options.shutdownTimeoutMs ?? defaultTimeoutMs); }
+        catch (error) {
+          throw { ...serviceFailure("closeHarness", "shutdown"),
+            message: `OpenCode v2 owned-process cleanup failed: ${error instanceof Error ? error.message : "unknown ownership error"}` } satisfies HarnessErrorData;
+        }
+      }
       child.stdin.end();
       const timeout = this.options.shutdownTimeoutMs ?? defaultTimeoutMs;
       if (await exitsWithin(child, timeout)) {
@@ -195,7 +199,16 @@ export class OpenCodeV2Service {
       if (!(await exitsWithin(child, 5_000))) throw serviceFailure("closeHarness", "shutdown");
     } finally {
       if (this.#configRoot !== undefined) {
-        await rm(this.#configRoot, { recursive: true, force: true });
+        try {
+          // Windows scanners can retain a just-loaded plugin handle briefly.
+          // Retry transient sharing errors within a finite bound; persistent
+          // errors still reject close and leave the path available for diagnosis.
+          await rm(this.#configRoot, { recursive: true, force: true,
+            maxRetries: process.platform === "win32" ? 5 : 0, retryDelay: 100 });
+        } catch (error) {
+          throw { ...serviceFailure("closeHarness", "shutdown"),
+            message: `OpenCode v2 configuration cleanup failed (${isRecord(error) ? String(error.code ?? "unknown") : "unknown"})` } satisfies HarnessErrorData;
+        }
         this.#configRoot = undefined;
         this.#pluginPath = undefined;
       }

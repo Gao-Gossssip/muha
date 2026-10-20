@@ -1,17 +1,31 @@
+import { mkdtemp } from "./temporary-directory.mjs";
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFile, spawn } from "node:child_process";
 import { once } from "node:events";
-import { lstat, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from "node:fs/promises";
+import { copyFile, lstat, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { delimiter, join, resolve } from "node:path";
 import { promisify } from "node:util";
+import { npmCommand } from "../../scripts/npm-command.mjs";
 import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
 import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-pi.mjs";
 
 const execute = promisify(execFile);
+const coldInstallTimeoutMs = process.platform === "win32" ? 600000 : 120000;
+// A warm npm cache still requires the same Windows file extraction and hooks.
+const reinstallTimeoutMs = process.platform === "win32" ? 600000 : 120000;
+export const umbrellaConsumerTimeoutMs = process.platform === "win32" ? 1500000 : 240000;
 async function run(command, args, options) {
-  return execute(command, args, { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options });
+  if (command === "npm") [command, args] = npmCommand(args);
+  const settings = { timeout: 120000, maxBuffer: 8 * 1024 * 1024, ...options };
+  const startedAt = Date.now();
+  try { return await execute(command, args, settings); }
+  catch (error) {
+    error.message += `\nConsumer command: ${JSON.stringify({ command, args, timeout: settings.timeout,
+      elapsedMs: Date.now() - startedAt, code: error.code, signal: error.signal, killed: error.killed })}`;
+    throw error;
+  }
 }
 
 export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, reviewedInstallScripts }) {
@@ -55,7 +69,10 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     await writeFile(join(consumer, "package.json"), JSON.stringify({ private: true, type: "module", allowScripts: reviewedInstallScripts }));
     // Bare `@muha-sdk/muha` is tested before publication. The public job pins the reviewed
     // candidate version because latest is promoted only after both jobs pass.
-    await run("npm", ["install", "--save-exact", registryVersion ? `@muha-sdk/muha@${registryVersion}` : "@muha-sdk/muha"], { cwd: consumer, env });
+    // Windows cold extraction and reviewed native hooks can exceed five minutes
+    // on hosted runners. Keep the cold cache, original hooks and finite bound.
+    await run("npm", ["install", "--save-exact", registryVersion ? `@muha-sdk/muha@${registryVersion}` : "@muha-sdk/muha"],
+      { cwd: consumer, env, timeout: coldInstallTimeoutMs });
     const manifest = JSON.parse(await readFile(join(consumer, "package.json"), "utf8"));
     assert.deepEqual(manifest.dependencies, { "@muha-sdk/muha": release.version }, "@muha-sdk/muha must be the only direct SDK dependency");
     assert.equal(manifest.overrides, undefined);
@@ -78,7 +95,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
     assert.deepEqual(cores.trim().split(/\r?\n/), [join(consumer, "node_modules/@muha-sdk/core")]);
     await run("npm", ["ls", "--all"], { cwd: consumer, env });
     await rm(join(consumer, "node_modules"), { recursive: true });
-    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env });
+    await run("npm", ["ci", "--no-audit", "--no-fund"], { cwd: consumer, env, timeout: reinstallTimeoutMs });
     assert.deepEqual(await readFile(join(consumer, "package-lock.json")), lockBytes);
 
     await writeFile(join(consumer, "entry.mjs"), [
@@ -113,10 +130,11 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
       "--typeRoots", join(repositoryRoot, "node_modules/@types"), "example.mts"], { cwd: consumer, env });
     const nodeOnly = join(root, "node-only");
     await mkdir(nodeOnly);
-    await symlink(process.execPath, join(nodeOnly, "node"));
+    if (process.platform === "win32") await copyFile(process.execPath, join(nodeOnly, "node.exe"));
+    else await symlink(process.execPath, join(nodeOnly, "node"));
     await writeFile(join(consumer, "readme-home.mjs"),
       'import os from "node:os"; import {syncBuiltinESMExports} from "node:module"; os.homedir = () => process.env.MUHA_README_HOME; syncBuiltinESMExports();\n');
-    const readmeEnvironment = { ...env, PATH: `${join(repositoryRoot, "test/fixtures/harness-bin")}:${nodeOnly}`,
+    const readmeEnvironment = { ...env, PATH: [join(repositoryRoot, "test/fixtures/harness-bin"), nodeOnly].join(delimiter),
       MUHA_README_HOME: join(root, "readme-home"), MUHA_FAKE_NATIVE_SESSIONS_FILE: join(root, "codex-sessions.json") };
     await run(process.execPath, ["--import", "./readme-home.mjs", "example.mjs"], { cwd: consumer, env: readmeEnvironment });
     const answer = join(root, "question-answer.json");

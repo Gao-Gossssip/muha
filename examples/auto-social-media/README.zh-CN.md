@@ -8,7 +8,7 @@ Node 内置模块。不发布、不上传、不对外联系；目录名不代表
 
 ## 准备与运行
 
-使用 Node.js >=22.20.0，宿主环境为 SDK 支持的 Linux/WSL2。
+使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
 完整包提供五种适配器及 Pi SDK，不会安装其他四家的原生 CLI；
 只需准备自己要使用的 Harness，不要求五家全部安装。
@@ -28,6 +28,16 @@ npm run build
 node examples/auto-social-media/main.ts
 ```
 
+原生 Windows 使用本分支的仓库构建；npm 包的平台支持以安装版本为准。
+仓库构建需要 Visual Studio 2022 C++ Build Tools 与 Windows SDK。
+Windows PowerShell 使用下列命令，`npm.cmd` 不依赖 npm 的 `.ps1` 执行权限：
+
+```powershell
+npm.cmd ci
+npm.cmd run build
+node examples/auto-social-media/main.ts
+```
+
 全程在终端交互。默认在脚本旁的 `workspaces/` 下生成独立工作目录；
 在本仓库中即 `examples/auto-social-media/workspaces/muha-social-*`。
 该路径按 `main.ts` 的位置解析，不受启动时的当前目录影响；复制脚本到其他
@@ -37,6 +47,15 @@ ESM 项目后，则使用新脚本旁的 `workspaces/`。默认父目录在确�
 
 ```sh
 node examples/auto-social-media/main.ts /existing/output-directory
+```
+
+例如，在 PowerShell 中先创建含中文、空格的父目录，再将整个路径作为一个
+带引号的参数传入：
+
+```powershell
+$outputRoot = Join-Path $env:TEMP 'Muha 文章产出'
+New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null
+node examples/auto-social-media/main.ts "$outputRoot"
 ```
 
 不要照抄占位路径。每次运行在确认授权并完成选题配置后，新建一个
@@ -161,3 +180,10 @@ Ctrl+C 为 130，SIGTERM 为 143。仅终端展示移除控制字符，
 
 受控命令行测试不调用真实模型，也不证明选题或写作质量。
 付费真实测试须另行确定 Harness、Model 与预算。
+
+仓库构建后运行 `npm run test:examples`；Windows PowerShell 使用
+`npm.cmd run test:examples`。集成测试仅通过本地受控 Provider 与本地 Skill
+夹具，使用真实 Core/Pi Adapter/固定 SDK，验证 Skill 发现、两个串行原生
+Session、原样交接选题、保留文件和关闭 Runtime，覆盖中文、空格路径与
+CRLF 输入。Windows CI 单独执行，两个平台的完整 SDK 检查也包含这些测试，
+不需要真实凭据、外网 Skill 下载或付费模型。

@@ -1,11 +1,12 @@
+import { mkdtemp } from "../support/temporary-directory.mjs";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
 import { DatabaseSync } from "node:sqlite";
 import { agyAdapter } from "@muha-sdk/agy-adapter";
-import { createMuhaRuntime } from "@muha-sdk/core";
+import { createControlledRuntime as createMuhaRuntime } from "../support/controlled-runtime.mjs";
 
 async function fixture(scenario, options = {}) {
   const root = await mkdtemp(join(tmpdir(), "muha-agy-events-"));
@@ -13,7 +14,7 @@ async function fixture(scenario, options = {}) {
   await mkdir(workspacePath);
   const runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
     env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter),
-      MUHA_FAKE_AGY_SCENARIO: scenario }, startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+      MUHA_FAKE_AGY_SCENARIO: scenario }, startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
   })] });
   const session = await runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "harnessManaged", ...options });
   return { session, runtime, workspacePath, async close() { try { await runtime.close(); } finally { await rm(root, { recursive: true, force: true }); } } };
@@ -175,7 +176,7 @@ test("AGY usage replaces per-step snapshots and excludes previous native Session
   } finally { await f.close(); }
 });
 
-test("AGY does not invent retryability for an unclassified native ERROR even when retries are enabled", { timeout: 10_000 }, async () => {
+test("AGY does not invent retryability for an unclassified native ERROR even when retries are enabled", { timeout: process.platform === "win32" ? 30_000 : 10_000 }, async () => {
   const f = await fixture("native-error-exit", { turnRetryPolicy: { maxRetries: 2 } });
   try {
     const turn = await f.session.startTurn([{ type: "text", text: "Attempt the work." }]);

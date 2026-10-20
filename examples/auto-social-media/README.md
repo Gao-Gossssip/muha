@@ -10,7 +10,7 @@ preparation, not a social-platform integration.
 
 ## Prepare and run
 
-Use Node.js >=22.20.0 on the SDK's supported Linux/WSL2 host. From the repository:
+Use Node.js >=22.20.0 on Linux x64/glibc or native Windows x64. From the repository:
 
 Both stages require the complete `@muha-sdk/muha` installation, not separate
 Core/Adapter packages. The complete entry includes all five adapters and Pi's
@@ -32,6 +32,18 @@ npm run build
 node examples/auto-social-media/main.ts
 ```
 
+Native Windows uses this branch's repository build; npm package support depends
+on the installed release. Install Visual Studio 2022 C++ Build Tools and a
+Windows SDK for the repository build. In Windows PowerShell:
+
+```powershell
+npm.cmd ci
+npm.cmd run build
+node examples/auto-social-media/main.ts
+```
+
+Use `npm.cmd` to avoid depending on npm's PowerShell `.ps1` execution permission.
+
 All interaction takes place in the terminal. Each workspace defaults to
 `workspaces/` beside the script: in this repository,
 `examples/auto-social-media/workspaces/muha-social-*`. This is resolved relative
@@ -42,6 +54,15 @@ You can override it with an **existing** parent directory:
 
 ```sh
 node examples/auto-social-media/main.ts /existing/output-directory
+```
+
+For example, create a parent with spaces and Chinese characters in PowerShell,
+then pass the entire path as one quoted argument:
+
+```powershell
+$outputRoot = Join-Path $env:TEMP 'Muha 文章产出'
+New-Item -ItemType Directory -Force -Path $outputRoot | Out-Null
+node examples/auto-social-media/main.ts "$outputRoot"
 ```
 
 Do not literally pass a placeholder path. Each invocation creates a separate
@@ -191,3 +212,11 @@ apply; workspaces and prompts are not a security boundary.
 
 Controlled terminal tests do not call models or validate editorial quality.
 Paid real-model verification needs separately agreed harness/model and budget.
+
+After building the repository, run `npm run test:examples` (Windows PowerShell:
+`npm.cmd run test:examples`). The suite includes a real Core/Pi Adapter/pinned
+SDK workflow using only a loopback provider and local Skill fixtures. It checks
+Skill discovery, two serial native Sessions, exact topic handoff, retained
+artifacts and owned Runtime close with Chinese/space paths and CRLF input.
+Windows CI runs it explicitly; the full SDK suite includes it on both platforms.
+No real credentials, external Skill downloads or provider charges are involved.
