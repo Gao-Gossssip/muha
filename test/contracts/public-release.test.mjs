@@ -9,6 +9,7 @@ import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
 import { validateRegistryProvenance } from "../../scripts/registry-provenance.mjs";
 import { validatePublicationManifest } from "../../scripts/publication-candidate.mjs";
 import { publicationFiles } from "../../scripts/delivery-manifest.mjs";
+import { publicationRequiredFiles } from "../../scripts/native-resources.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
 const revision = "a".repeat(40), version = "0.1.15";
@@ -21,8 +22,8 @@ const candidate = () => ({
       .filter(entry => entry.role !== "umbrella").map(entry => [entry.packageName, version])) :
       item.role === "adapter" ? { "@muha-sdk/core": version } : {},
     sha256: "d".repeat(64), integrity: "sha512-ZA==",
-    resources: ["package.json", "LICENSE", "README.md", ...item.requiredFiles].map(path => ({ path })),
-    files: ["package.json", "LICENSE", "README.md", "dist/index.d.ts", ...item.requiredFiles].map(path => ({ path })),
+    resources: ["package.json", "LICENSE", "README.md", ...publicationRequiredFiles(item)].map(path => ({ path })),
+    files: ["package.json", "LICENSE", "README.md", "dist/index.d.ts", ...publicationRequiredFiles(item)].map(path => ({ path })),
   })),
 });
 
@@ -47,6 +48,9 @@ test("publication rejects diagnostics, changed sources, mixed versions and missi
     release => { release.packages[0].files = release.packages[0].files.filter(item => item.path !== "dist/index.d.ts"); },
     release => { release.packages[0].files.push({ path: "dist/docs/private.md" }); },
     release => { release.packages[0].files.push({ path: "src/runtime.ts" }); },
+    release => { release.packages[0].resources = release.packages[0].resources.filter(item => item.path !== "dist/acp-supervisor.exe"); },
+    release => { release.packages[0].files = release.packages[0].files.filter(item => item.path !== "dist/acp-supervisor"); },
+    release => { const agy = release.packages.find(item => item.name === "@muha-sdk/agy-adapter"); agy.resources = agy.resources.filter(item => item.path !== "dist/agy-supervisor.exe"); },
   ];
   for (const mutate of mutations) {
     const release = candidate();
@@ -128,4 +132,22 @@ test("publication refuses a pending Pi runtime even when its historical qualific
   const current = JSON.parse(await readFile(new URL("../../scripts/fixtures/sdk-runtime-sha256.json", import.meta.url), "utf8"));
   assert.throws(() => assertPiPublicationQualification(current), /Latest Pi runtime/,
     "Pi 1.2.0 still requires separately authorized real-model qualification");
+});
+
+test("dual-platform publication requires full Windows qualification independently of Pi", async () => {
+  const { assertPublicationQualification } = await import("../../scripts/publication-qualification.mjs");
+  const linuxPi = { harness: "pi", platform: "linux-x64", sdkVersion: "1.2.0", status: "PASS" };
+  const windows = ["core", "codex", "opencode", "kimi", "pi", "agy"].map(harness =>
+    ({ harness, platform: "win32-x64", status: "PASS", ...(harness === "pi" ? { sdkVersion: "1.2.0" } : {}) }));
+  const complete = [linuxPi, ...windows];
+  assert.doesNotThrow(() => assertPublicationQualification({ requalifications: complete }));
+  for (const harness of ["core", "codex", "opencode", "kimi", "agy"]) {
+    const changed = complete.map(item => item.harness === harness ? { ...item, status: "PENDING", realSmokeStatus: "PASS" } : item);
+    assert.throws(() => assertPublicationQualification({ requalifications: changed }), new RegExp(`Windows ${harness} full qualification`));
+    assert.throws(() => assertPublicationQualification({ requalifications: complete.filter(item => item.harness !== harness) }), /Windows/);
+  }
+  assert.throws(() => assertPublicationQualification({ requalifications: windows }), /Linux Pi/);
+  assert.throws(() => assertPublicationQualification({ requalifications: [{ ...linuxPi, sdkVersion: "1.0.4" }, ...windows] }), /Linux Pi/);
+  assert.throws(() => assertPublicationQualification({ requalifications: [...complete, { ...windows[0], status: "PENDING" }] }), /Windows core/,
+    "a newer pending Windows implementation supersedes its historical PASS");
 });

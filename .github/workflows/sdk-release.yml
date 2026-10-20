@@ -27,10 +27,50 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  native-build:
+    if: inputs.action == 'prepare' && github.ref == 'refs/heads/main'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            platform: linux-x64
+          - os: windows-2022
+            platform: win32-x64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: '22.20.0'
+      - name: Require the reviewed main source
+        env:
+          REVIEWED_REVISION: ${{ inputs.revision }}
+        run: node scripts/release-workflow.mjs source
+      - run: npm install --global npm@11.15.0
+      - run: npm ci
+      - run: node scripts/verify-sdk-source.mjs
+      - run: npm run build --silent
+      - name: Export source-bound native helpers
+        run: node scripts/platform-artifacts.mjs export --output .scratch/native-artifact
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: native-${{ matrix.platform }}
+          path: .scratch/native-artifact/*
+          if-no-files-found: error
+          retention-days: 7
+
   prepare:
     if: inputs.action == 'prepare' && github.ref == 'refs/heads/main'
+    needs: native-build
     runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      manifest_sha256: ${{ steps.manifest.outputs.manifest_sha256 }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
@@ -45,12 +85,21 @@ jobs:
       - run: npm run check
       - run: npm audit --omit=dev --audit-level=low
       - run: node scripts/verify-sdk-source.mjs
+      - name: Download both native builds from this preparation run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name native-linux-x64 --dir .scratch/native-artifacts/linux-x64
+          gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name native-win32-x64 --dir .scratch/native-artifacts/win32-x64
+      - name: Assemble both targets after the final source build
+        run: node scripts/platform-artifacts.mjs assemble --input .scratch/native-artifacts
       - run: node scripts/pack-local-release.mjs --candidate --output .scratch/npm-candidate
       - name: Install the exact prepared cohort before artifact upload
         env:
           MUHA_RELEASE_DIRECTORY: .scratch/npm-candidate
         run: node --test test/contracts/package-install.test.mjs
-      - run: node scripts/release-workflow.mjs summary
+      - id: manifest
+        run: node scripts/release-workflow.mjs summary
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: npm-candidate
@@ -59,6 +108,40 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
+
+  prepared-consumers:
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022]
+        node: ['22.20.0', 'lts/*']
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --global npm@11.15.0
+      - name: Download the unchanged prepared cohort from this run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name npm-candidate --dir .scratch/npm-candidate
+      - name: Verify source and the prepared manifest digest
+        env:
+          REVIEWED_REVISION: ${{ inputs.revision }}
+          REVIEWED_MANIFEST_SHA256: ${{ needs.prepare.outputs.manifest_sha256 }}
+        run: node scripts/release-workflow.mjs inspect
+      - run: npm ci
+      - run: npm run build --silent
+      - name: Cold installs of the identical dual-platform tarballs
+        env:
+          MUHA_RELEASE_DIRECTORY: .scratch/npm-candidate
+        run: node --test --test-concurrency=2 test/contracts/package-install.test.mjs
 
   publish:
     if: inputs.action == 'publish' && github.ref == 'refs/heads/main'
@@ -89,11 +172,12 @@ jobs:
 
   registry-consumers:
     needs: publish
-    runs-on: ubuntu-22.04
-    timeout-minutes: 30
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-22.04, windows-2022]
         node: ['22.20.0', 'lts/*']
     permissions:
       contents: read

@@ -140,7 +140,7 @@ test("both publisher entry modes fail on missing OIDC before loading artifacts o
 test("only upload and post-consumer promotion request OIDC and use the pinned publishing CLI", async () => {
   const source = await readFile(new URL("../../.github/workflows/sdk-release.yml", import.meta.url), "utf8");
   const jobs = Object.fromEntries([...source.matchAll(/^  ([a-z-]+):\n([\s\S]*?)(?=^  [a-z-]+:\n|$(?![\s\S]))/gm)].map(match => [match[1], match[2]]));
-  assert.deepEqual(Object.keys(jobs), ["prepare", "publish", "registry-consumers", "promote"]);
+  assert.deepEqual(Object.keys(jobs), ["native-build", "prepare", "prepared-consumers", "publish", "registry-consumers", "promote"]);
   assert.doesNotMatch(source, /NODE_AUTH_TOKEN|NPM_PUBLISH_TOKEN|NPM_TOKEN|registry-url:/);
   for (const name of ["publish", "promote"]) {
     assert.match(jobs[name], /id-token: write/);
@@ -149,11 +149,27 @@ test("only upload and post-consumer promotion request OIDC and use the pinned pu
     assert.match(jobs[name], /REVIEWED_REVISION:/);
     assert.match(jobs[name], /REVIEWED_MANIFEST_SHA256:/);
   }
-  for (const name of ["prepare", "registry-consumers"]) {
+  for (const name of ["native-build", "prepare", "prepared-consumers", "registry-consumers"]) {
     assert.doesNotMatch(jobs[name], /id-token: write/);
     assert.match(jobs[name], /npm install --global npm@11\.15\.0/);
   }
   assert.match(jobs.promote, /needs: \[publish, registry-consumers\]/);
+  assert.match(jobs.prepare, /needs: native-build/);
+  assert.match(jobs["native-build"], /os: windows-2022\s+platform: win32-x64/);
+  assert.match(jobs["native-build"], /os: ubuntu-22\.04\s+platform: linux-x64/);
+  assert.ok(jobs.prepare.indexOf("npm run check") < jobs.prepare.indexOf("platform-artifacts.mjs assemble"));
+  assert.ok(jobs.prepare.indexOf("platform-artifacts.mjs assemble") < jobs.prepare.indexOf("pack-local-release.mjs --candidate"));
+  assert.match(jobs.prepare, /gh run download \$\{\{ github.run_id \}\}.*native-linux-x64/);
+  assert.match(jobs.prepare, /gh run download \$\{\{ github.run_id \}\}.*native-win32-x64/);
+  assert.match(jobs["prepared-consumers"], /needs: prepare/);
+  assert.match(jobs["prepared-consumers"], /needs.prepare.outputs.manifest_sha256/);
+  assert.match(jobs["prepared-consumers"], /release-workflow\.mjs inspect/);
+  for (const name of ["prepared-consumers", "registry-consumers"]) {
+    assert.match(jobs[name], /os: \[ubuntu-22\.04, windows-2022\]/);
+    assert.match(jobs[name], /node: \['22\.20\.0', 'lts\/\*'\]/);
+    assert.match(jobs[name], /runs-on: \$\{\{ matrix.os \}\}/);
+    assert.match(jobs[name], /package-install\.test\.mjs/);
+  }
   assert.match(jobs["registry-consumers"], /Cold public Registry installs and lockfile npm ci/);
   assert.match(jobs.publish, /publish-public-release\.mjs publish/);
   assert.match(jobs.promote, /publish-public-release\.mjs promote/);

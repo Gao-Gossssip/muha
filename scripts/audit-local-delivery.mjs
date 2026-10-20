@@ -10,7 +10,7 @@ import { deliveryResources, isPublicationFile, publicationFiles, validateDeliver
 import { auditProductionDependencies } from "./dependency-audit.mjs";
 import { bindDependencyLicenseEvidence } from "./dependency-license-evidence.mjs";
 
-export async function auditLocalDelivery(root = resolve(import.meta.dirname, "..")) {
+export async function auditLocalDelivery(root = resolve(import.meta.dirname, ".."), { publication = false } = {}) {
 const workspace = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
 const lockBytes = await readFile(join(root, "package-lock.json"));
 const lock = JSON.parse(lockBytes);
@@ -80,7 +80,7 @@ for (const delivery of MUHA_DELIVERY_PACKAGES) {
     throw error;
   });
   if (binding !== undefined) problems.push(`${manifest.name}: unreviewed binding.gyp (${digest(binding)})`);
-  for (const { path, expectedSha256 } of await deliveryResources(root, delivery)) {
+  for (const { path, expectedSha256 } of await deliveryResources(root, delivery, { publication })) {
     try {
       const absolute = join(root, "packages", delivery.directory, path);
       const metadata = await stat(absolute);

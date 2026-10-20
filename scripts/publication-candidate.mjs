@@ -4,6 +4,7 @@ import { lstat, readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { isPublicationFile, publicationFiles, validateDeliveryDependencies, MUHA_DELIVERY_PACKAGES } from "./delivery-manifest.mjs";
 import { assertPackedResourceMatches } from "./packed-resource.mjs";
+import { publicationRequiredFiles } from "./native-resources.mjs";
 
 const digest = (bytes, algorithm = "sha256", encoding = "hex") =>
   createHash(algorithm).update(bytes).digest(encoding);
@@ -95,7 +96,7 @@ export function validatePublicationManifest(release, { revision, version }) {
         !Array.isArray(item.resources) || !Array.isArray(item.files)) {
       throw new Error(`${item.name}: missing artifact or file evidence`);
     }
-    for (const path of ["package.json", "LICENSE", "README.md", ...delivery.requiredFiles]) {
+    for (const path of ["package.json", "LICENSE", "README.md", ...publicationRequiredFiles(delivery)]) {
       if (!item.resources.some(resource => resource.path === path) || !item.files.some(file => file.path === path)) {
         throw new Error(`${item.name}: missing required artifact resource ${path}`);
       }
