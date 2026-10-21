@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { delimiter, dirname, join, resolve } from "node:path";
 import test from "node:test";
 
-import { createMuhaRuntime } from "@muha-sdk/core";
+import { createControlledRuntime as createMuhaRuntime } from "../support/controlled-runtime.mjs";
 import { openCodeAdapter } from "@muha-sdk/opencode-adapter";
 import { readV2Evidence } from "../support/v2-evidence.mjs";
 
@@ -23,8 +23,12 @@ async function withV2Runtime(env, action) {
       harnesses: [openCodeAdapter({
         env: { PATH: [fakeBin, dirname(process.execPath)].join(delimiter),
           MUHA_V2_EVIDENCE_FILE: evidenceFile, MUHA_V2_PID_FILE: pidFile, ...env },
-        startupTimeoutMs: 2_000,
-        shutdownTimeoutMs: 2_000,
+        // These are prepared peers for Turn-failure assertions, not startup
+        // watchdog probes. Windows process/ownership preparation can exceed
+        // 2s under the full matrix; dedicated negative startup cases below
+        // keep their explicit 500ms deadlines.
+        startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000,
+        shutdownTimeoutMs: process.platform === "win32" ? 10_000 : 2_000,
       })],
       dataDir: join(root, "diagnostics"),
     });
