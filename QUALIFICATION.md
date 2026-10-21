@@ -1,5 +1,60 @@
 # SDK qualification and migration provenance
 
+## Bounded follow-up acceptance (2026-10-21)
+
+Pi, Codex, OpenCode and Kimi now have accepted native Windows evidence. Pi also
+passed its separately authorized complete Linux SDK matrix; OpenCode and Kimi
+received affected Linux regressions while preserving unchanged historical
+capability evidence. This is not an all-Harness Windows or release acceptance:
+AGY is explicitly deferred for exhausted quota, and shared Core's complete
+Windows qualification remains PENDING until the platform gate is closed.
+
+| Harness | Native Windows model selection | Actual attempts / original limit |
+| --- | --- | --- |
+| Codex 0.163.0 | `gpt-6-luna` | 20 / 20 |
+| OpenCode 2.0.28 | text `opencode-go/deepseek-v4.1-flash`; images `opencode-go/qwen3.8-flash` | 20 / 20 |
+| Kimi 2.1.1 | `deepseek/deepseek-flash` | 20 / 20 |
+| Pi SDK 1.2.0 | text `opencode-go/deepseek-v4.1-flash`; images `opencode-go/qwen3.8-flash` | 16 / 20 |
+
+The three new CLI matrices used concurrency one, zero Muha retries and a
+120-second per-attempt cap. User-approved wall-clock renewals retained every
+attempt; the final renewal excludes tool-approval waiting. Original failed
+fixtures and untriggered cases remain recorded, not erased or counted as PASS.
+The 16 required cases per CLI are assembled from their successful receipts,
+with source scopes preserved where only an independent Adapter unit changed.
+
+Codex passed a real typed Question and caller answer, MCP proof, all four
+permission decisions, native file/Skill effects, model/effort, image inputs,
+history and interruption/continuation. Only an isolated test `CODEX_HOME`
+enabled `default_mode_request_user_input` and retained the user's existing
+Windows sandbox setting; original configuration/auth digests remained unchanged
+and the temporary authentication/configuration copies were removed. Muha still
+only detects the feature and warns. Luna reasoning remains an accepted omission,
+not a fabricated reasoning stream. A post-close independent audit inspected
+1,094 native records and checked credential exclusion.
+
+OpenCode's final source passed both image formats on Windows 2.0.28 and Linux
+2.0.11. Windows permission tests use an owned Git project to avoid sharing native
+saved-approval state with unrelated non-Git temporary directories; no user rule
+was rewritten. Caller allow/deny, native deny-all, typed Question and immediate
+post-interrupt continuation passed. Native diagnostic records contained no
+scheduled retries. Linux used the original three-attempt limit: one retained
+pre-provider structural failure, then two successful fixed-source image Turns.
+
+Kimi's fixed cancellation path passed real interruption followed immediately by
+continuation on both platforms. Linux used two authorized Turns. Windows used
+the last two original attempts in a fresh Session after an earlier failed
+qualification Session retained a queued prompt; that polluted fixture's result
+is not counted as an interruption PASS. All other capability cases retain their
+verified earlier source scope. Temporary native Workspace trust was revoked
+and unregistered after each qualification run.
+
+Codex's unchanged runtime qualified on `9faf0bf99a997a57bdc24d7f563d3be823f922ac`;
+the affected OpenCode and Kimi runtime resources qualified on
+`6103a0136ef4e8d5227f38d8c4801368f5082048`. Pi retains its source recorded below.
+No version bump, npm upload, Registry acceptance or consumer application test
+is implied by these results.
+
 ## OpenCode canonical media correction candidate (2026-10-21)
 
 Native Windows OpenCode 2.0.28 admitted the image Turn but failed before provider
@@ -18,10 +73,10 @@ Assets never fall back to top-level data, and mixed/ambiguous representations,
 URL/ref assets and changed bytes/MIME fail closed. This preserves the previously
 accepted V2 version rather than adding another integration route.
 
-This one OpenCode runtime resource is pending affected Linux image regression
-and the remaining Windows capability qualification. New platform-specific PENDING
-entries block publication even after Pi's independent PASS. No other runtime
-resource or dependency lock was changed for this correction. AGY remains deferred.
+The one affected OpenCode runtime resource passed the bounded Linux image
+regression and Windows follow-up above. Historical PENDING records remain below
+their later PASS receipts. No dependency lock was changed for this correction.
+AGY and shared Core's complete Windows gate remain independently pending.
 
 ## Kimi native cancellation settlement candidate (2026-10-21)
 
@@ -31,8 +86,8 @@ the previous Turn's tail and failed with `Turn event preceded turn.started`.
 The Adapter now keeps cancellation pending until native terminal settlement,
 using its bounded shutdown timeout; acknowledgement alone is not evidence that a
 Session can be reused. A controlled delayed-ack/late-Tool regression covers
-immediate continuation without replay. New Linux and Windows entries are PENDING
-until affected real-model regression; earlier successful capabilities retain
+immediate continuation without replay. The authorized Linux and Windows affected
+real-model regressions above now pass; earlier successful capabilities retain
 their original resource and source scope. No consumer or release acceptance is
 implied, and temporary Codex feature configuration does not alter Adapter behavior.
 

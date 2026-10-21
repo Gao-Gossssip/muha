@@ -77,7 +77,9 @@ test("OpenCode v2 fixture evidence remains complete during concurrent requests",
     try { await requests; } catch (error) { throw new Error(`Fixture request failed: ${error.cause?.code ?? error.message}; ${stderr}`, { cause: error }); }
     if (parseFailure) throw parseFailure;
     assert.ok(reads >= 300);
-    await readV2Evidence(evidenceFile, snapshot => snapshot.authenticated === 121);
+    const final = await readV2Evidence(evidenceFile, snapshot => snapshot.authenticated === 121);
+    assert.equal(final.requests.length, 121, "coalescing must retain every cumulative request receipt");
+    assert.ok(final.requests.every(path => path === "/api/info"));
   } finally {
     clearTimeout(releaseTimer);
     if (holder) {

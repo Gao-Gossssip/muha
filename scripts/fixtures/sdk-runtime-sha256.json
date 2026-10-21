@@ -836,6 +836,56 @@
       "reason": "Real immediate continuation after abort failed; keep successful earlier capability receipts but require fixed-source interruption regression",
       "models": { "text": "deepseek/deepseek-flash" },
       "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }]
+    },
+    {
+      "harness": "codex", "platform": "win32-x64", "authorizationDate": "2026-10-21", "status": "PASS",
+      "sourceSnapshot": "9faf0bf99a997a57bdc24d7f563d3be823f922ac", "cliVersion": "0.163.0",
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
+      "changedResources": [], "models": { "text": "gpt-6-luna", "image": "gpt-6-luna" },
+      "realAttempts": 20, "attemptLimit": 20, "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0,
+      "reasoning": "ACCEPTED_OMISSION",
+      "checks": ["text-streaming-usage", "multi-turn-memory", "native-file-tool", "workspace-skill", "native-listing", "new-runtime-resume", "model-effort-create-resume-idle", "ordered-and-pure-images", "real-mcp-proof", "auto-approve", "interactive-deny", "interactive-allow", "auto-deny", "typed-question-caller-answer", "interrupt-immediate-continue", "post-close-native-diagnostics-credential-exclusion"],
+      "questionFeature": "Only the authorized isolated test CODEX_HOME enabled default_mode_request_user_input; inherited Windows sandbox configuration was preserved; auth/config copies removed and original hashes unchanged",
+      "nativeRecordsIndependentlyAudited": 1094,
+      "scope": "Codex Windows only; its runtime digests are unchanged by subsequent OpenCode/Kimi fixes. Failed or untriggered qualification attempts remain in the original count. Core and AGY gates are not promoted."
+    },
+    {
+      "harness": "opencode", "platform": "linux-x64", "authorizationDate": "2026-10-21", "status": "PASS",
+      "sourceSnapshot": "6103a0136ef4e8d5227f38d8c4801368f5082048", "cliVersion": "2.0.11",
+      "models": { "image": "opencode-go/qwen3.8-flash" }, "realAttempts": 3, "attemptLimit": 3,
+      "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0, "nativeScheduledRetries": 0,
+      "checks": ["ordered-file-base64-images", "pure-image", "one-color-word", "native-order-metadata", "owned-close"],
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "updatedSha256": "da1700ee08987a235910b6419e5cbecf865fec3626faec0a4962a56c43046516" }],
+      "scope": "Affected image-hook regression only; first old-source structural failure retained, two fixed-source Turns passed; unchanged historical capabilities are preserved."
+    },
+    {
+      "harness": "opencode", "platform": "win32-x64", "authorizationDate": "2026-10-21", "status": "PASS",
+      "sourceSnapshot": "6103a0136ef4e8d5227f38d8c4801368f5082048", "cliVersion": "2.0.28",
+      "preservedEvidenceSources": ["5090dc7e396f8819d06b45514599eff130a0526e", "9faf0bf99a997a57bdc24d7f563d3be823f922ac"],
+      "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
+      "realAttempts": 20, "attemptLimit": 20, "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0,
+      "checks": ["text-reasoning-usage", "multi-turn-memory", "native-file-tool", "workspace-skill", "native-listing", "new-runtime-resume", "model-effort-create-resume-idle", "ordered-and-pure-images", "real-mcp-proof", "auto-approve", "interactive-deny", "interactive-allow", "native-deny-all", "typed-question-caller-answer", "interrupt-immediate-continue", "post-close-native-diagnostics"],
+      "nativeScheduledRetries": 0,
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "updatedSha256": "da1700ee08987a235910b6419e5cbecf865fec3626faec0a4962a56c43046516" }],
+      "scope": "All required cases assembled with unchanged-capability receipts from earlier sources; final image hook and remaining cases passed on the fixed source. Permissions use an owned isolated Git project without user policy changes. Core and AGY gates remain independent."
+    },
+    {
+      "harness": "kimi", "platform": "linux-x64", "authorizationDate": "2026-10-21", "status": "PASS",
+      "sourceSnapshot": "6103a0136ef4e8d5227f38d8c4801368f5082048", "models": { "text": "deepseek/deepseek-flash" },
+      "realAttempts": 2, "attemptLimit": 2, "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0,
+      "checks": ["real-native-shell-interrupt", "native-cancellation-before-continuation", "immediate-continue-memory", "no-old-tool-events", "owned-close", "fixture-trust-revoked-unregistered"],
+      "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }],
+      "scope": "Affected cancellation-settlement regression only; unchanged historical Linux capabilities are preserved."
+    },
+    {
+      "harness": "kimi", "platform": "win32-x64", "authorizationDate": "2026-10-21", "status": "PASS",
+      "sourceSnapshot": "6103a0136ef4e8d5227f38d8c4801368f5082048", "cliVersion": "2.1.1",
+      "preservedEvidenceSources": ["5090dc7e396f8819d06b45514599eff130a0526e", "9faf0bf99a997a57bdc24d7f563d3be823f922ac"],
+      "models": { "text": "deepseek/deepseek-flash", "image": "deepseek/deepseek-flash" },
+      "realAttempts": 20, "attemptLimit": 20, "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0,
+      "checks": ["text-reasoning-usage", "multi-turn-memory", "native-file-tool", "workspace-skill", "native-listing", "new-runtime-resume", "model-effort-create-resume-idle", "ordered-and-pure-images", "real-mcp-proof", "auto-approve", "interactive-deny", "interactive-allow", "auto-deny", "typed-question-caller-answer", "native-cancellation-before-immediate-continuation", "post-close-native-diagnostics", "fixture-trust-revoked-unregistered"],
+      "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }],
+      "scope": "Fixed-source interruption and immediate continuation passed in a fresh Session. Earlier unchanged-capability receipts remain scoped to their original sources. Failed duplicate-reply, old-source interruption and polluted queued-prompt fixtures remain in the attempt count. Core and AGY gates remain independent."
     }
   ]
 }
