@@ -94,7 +94,16 @@ export function restoreOrderedMessages(event: ContextEvent): void {
       }
       if (part.index !== nextImage) throw new Error("Muha ordered image index is invalid");
       const image = images[nextImage];
-      if (image === undefined || image.mediaType !== part.mime || sha256(bytes(image.data)) !== part.sha256) {
+      if (image === undefined) throw new Error("Muha ordered image is missing");
+      // OpenCode's canonical media part owns a Media.Asset. The former
+      // top-level mediaType/data fields are not the v2.0.28 context shape.
+      // Inspect only inline bytes; never fetch a URL/ref or bypass the hash.
+      const asset = image.media;
+      const source = record(asset) ? asset.source : undefined;
+      if (!record(source) || (source.type !== "base64" && source.type !== "bytes") ||
+          (source.type === "base64" && typeof source.data !== "string") ||
+          (record(asset) && asset.mediaType !== undefined && asset.mediaType !== part.mime) ||
+          source.mediaType !== part.mime || sha256(bytes(source.data)) !== part.sha256) {
         throw new Error("Muha ordered image changed before model dispatch");
       }
       restored.push(image);

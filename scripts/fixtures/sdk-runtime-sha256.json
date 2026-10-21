@@ -205,7 +205,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts",
-      "sha256": "345d691523d5fd822d5cfafbc50ee734944e6b5c0a10350e288deb7069f29287"
+      "sha256": "dfff0b58f88c847de244503f98177b0a24c9ffe98877b3569516d86e6cb47a84"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
@@ -740,6 +740,74 @@
         "reason": "Native Session creation rejected the fixed model before a Turn"
       },
       "ciFixScope": "Canonical temporary-directory paths changed; paid smoke remains limited to its recorded earlier snapshot"
+    },
+    {
+      "harness": "pi",
+      "sdkVersion": "1.2.0",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-20",
+      "status": "PASS",
+      "sourceSnapshot": "5090dc7e396f8819d06b45514599eff130a0526e",
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
+      "qualifiedRuntimeResourceCount": 69,
+      "changedResources": [],
+      "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
+      "realAttempts": 18,
+      "attemptLimit": 20,
+      "sharedPiAttemptLimit": 40,
+      "perAttemptSecondsLimit": 120,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "reasoning": "PASS",
+      "qualificationFixtureFailuresRetained": [15, 16],
+      "checks": ["text-streaming-reasoning-usage", "multi-turn-context", "native-tool-file-effect", "workspace-skill", "model-effort-create-resume-idle", "ordered-and-pure-images", "persisted-native-image-order", "native-session-listing", "external-native-sdk-history", "actual-provider-rejection-recovery", "interrupt-continue", "sdk-loss-owned-tool-reclamation", "new-runtime-recovery-after-sdk-loss", "post-close-native-diagnostics-credential-exclusion"],
+      "nativeSubscriptionRecords": 759,
+      "scope": "Pi only; Linux fixture corrections preserved failed attempts and used no runtime source changes. Other harness and platform qualifications remain independently scoped."
+    },
+    {
+      "harness": "pi",
+      "sdkVersion": "1.2.0",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-20",
+      "status": "PASS",
+      "sourceSnapshot": "5090dc7e396f8819d06b45514599eff130a0526e",
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
+      "qualifiedRuntimeResourceCount": 69,
+      "changedResources": [],
+      "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
+      "realAttempts": 16,
+      "attemptLimit": 20,
+      "sharedPiAttemptLimit": 40,
+      "perAttemptSecondsLimit": 120,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "reasoning": "PASS",
+      "checks": ["text-streaming-reasoning-usage", "multi-turn-context", "native-tool-file-effect", "workspace-skill", "model-effort-create-resume-idle", "ordered-and-pure-images", "persisted-native-image-order", "native-session-listing", "external-native-sdk-history", "actual-provider-rejection-recovery", "interrupt-continue", "sdk-loss-owned-tool-reclamation", "new-runtime-recovery-after-sdk-loss", "post-close-native-diagnostics-credential-exclusion"],
+      "nativeSubscriptionRecords": 1237,
+      "scope": "Pi only on native Windows. This PASS does not clear Core or the other adapters' pending full Windows matrices."
+    },
+    {
+      "harness": "opencode",
+      "platform": "linux-x64",
+      "changeDate": "2026-10-21",
+      "status": "PENDING",
+      "reason": "Canonical OpenCode v2.0.28 Media.Asset correction; affected image regression still requires bounded real-model authorization and acceptance",
+      "sourceBeforeChange": "5090dc7e396f8819d06b45514599eff130a0526e",
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "sha256": "345d691523d5fd822d5cfafbc50ee734944e6b5c0a10350e288deb7069f29287", "updatedSha256": "dfff0b58f88c847de244503f98177b0a24c9ffe98877b3569516d86e6cb47a84" }],
+      "models": { "image": "opencode-go/qwen3.8-flash" },
+      "scope": "Only OpenCode's inline media hook changed; earlier Pi and other harness evidence retains its original resource scope."
+    },
+    {
+      "harness": "opencode",
+      "platform": "win32-x64",
+      "changeDate": "2026-10-21",
+      "status": "PENDING",
+      "reason": "Real Windows image admission found a legacy top-level media assumption; canonical Media.Asset correction and remaining native capability matrix need requalification",
+      "sourceBeforeChange": "5090dc7e396f8819d06b45514599eff130a0526e",
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "sha256": "345d691523d5fd822d5cfafbc50ee734944e6b5c0a10350e288deb7069f29287", "updatedSha256": "dfff0b58f88c847de244503f98177b0a24c9ffe98877b3569516d86e6cb47a84" }],
+      "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
+      "realImageStatusBeforeFix": "FAIL",
+      "scope": "The seven earlier Windows attempts are not a full PASS; preserve their source and failures."
     }
   ]
 }

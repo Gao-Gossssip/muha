@@ -1,12 +1,70 @@
 # SDK qualification and migration provenance
 
+## OpenCode canonical media correction candidate (2026-10-21)
+
+Native Windows OpenCode 2.0.28 admitted the image Turn but failed before provider
+dispatch with `Muha ordered image changed before model dispatch`. The hook read
+the retired top-level `mediaType/data` fields instead of the canonical
+`part.media.source` Asset documented in the fixed upstream implementation:
+[context lowering](https://github.com/anomalyco/opencode/blob/v2.0.28/packages/core/src/session/runner/to-llm-message.ts)
+and [Media Asset](https://github.com/anomalyco/opencode/blob/v2.0.28/packages/ai/src/media.ts).
+This was not a model-color hallucination. The correction accepts canonical inline
+base64/byte Assets, preserves native objects and still checks MIME, SHA256,
+image counts, indices and text order. URL/ref assets, changed bytes/MIME and the
+retired top-level shape fail closed. No automatic route or legacy fallback is added.
+
+This one OpenCode runtime resource is pending affected Linux image regression
+and the remaining Windows capability qualification. New platform-specific PENDING
+entries block publication even after Pi's independent PASS. No other runtime
+resource or dependency lock was changed for this correction. AGY remains deferred.
+
+## Pi SDK 1.2.0 dual-platform requalification (2026-10-20)
+
+Separately authorized real-model qualification passed on source
+`5090dc7e396f8819d06b45514599eff130a0526e`, with the unchanged 69 pinned
+runtime/build/license resources and lockfile digest
+`eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e`.
+Linux x64 / Node 24.18.0 used 18 actual attempts, including two retained
+qualification-fixture failures; native Windows x64 / Node 22.23.3 used 16.
+Both used the exact SDK 1.2.0, `opencode-go/deepseek-v4.1-flash` for text and
+`opencode-go/qwen3.8-flash` for images, concurrency one, no hidden Muha/provider
+retries, and a shared 40-attempt limit with 20 per platform and 120 seconds per
+attempt. The original 90-minute wall-clock window expired during tool approval
+waits; the user explicitly renewed time without resetting attempt counts.
+
+Passed cases cover streamed text/reasoning/usage, multi-Turn and new-Runtime
+history, native file Tools, workspace Skills, model/effort at create/resume/idle,
+ordered file/base64 and pure-image input, native listing and external SDK history,
+actual provider rejection and recovery, interruption/continuation, and SDK loss
+with owned native Tool reclamation and explicit new-Runtime recovery. Post-close
+audits observed 759 Linux and 1,237 Windows native subscription records, checked
+credential exclusion and removed temporary credential copies. Native history
+retained `image/text/image/text` and image-only order. No live diagnostic reader
+or new public SQL interface is implied.
+
+Linux fixture failures came from matching the supervisor's worker argument as
+another SDK process and then reading an old PID marker; both refused to signal
+an unproven target. The corrected unique-marker test passed within the original
+attempt limit. A no-Turn, expired-budget preflight Runtime correctly had no
+subscription events; independent post-close aggregation verified actual model
+hosts without additional inference. Original failures remain in private evidence.
+No qualified runtime source was changed to obtain these results.
+
+Pi now passes on both recorded platforms. This does not qualify the other four
+Windows adapters or the complete shared-Core matrix. Their latest pending entries
+continue to block publication; AGY's new paid testing is explicitly deferred by
+the maintainer because its quota is exhausted. Dual-platform source-bound
+assembly has passed a local rehearsal using real Linux and Windows builds, but
+Registry publication and complete cold-install acceptance remain separate gates.
+
 ## Native Windows x64 candidate (2026-10-15/18)
 
 This branch adds a native Windows ownership helper, private NTFS diagnostic
 storage checks and a Windows pipe transport for Pi. Earlier Linux qualification
 records below retain their original source and platform scope. The candidate's
-full Windows qualification remains PENDING; the latest Pi entry blocks
-publication. Multi-platform release assembly is also pending.
+full Windows qualification at that snapshot remains PENDING. The Pi and assembly
+follow-up above supersedes only those two pending work items, not other adapters'
+full Windows qualification or Registry acceptance.
 
 The user authorized real Windows model tests with the repository Profiles.
 On Windows 11 x64 / Node 22.23.3, Codex 0.162.1 (`gpt-5.6-luna`), OpenCode

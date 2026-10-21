@@ -129,9 +129,6 @@ test("publication refuses a pending Pi runtime even when its historical qualific
   assert.throws(() => assertPiPublicationQualification({ requalifications: [
     { ...passed, sdkVersion: "1.0.4" },
   ] }), /Latest Pi runtime/, "a historical SDK PASS cannot qualify the current SDK");
-  const current = JSON.parse(await readFile(new URL("../../scripts/fixtures/sdk-runtime-sha256.json", import.meta.url), "utf8"));
-  assert.throws(() => assertPiPublicationQualification(current), /Latest Pi runtime/,
-    "Pi 1.2.0 still requires separately authorized real-model qualification");
 });
 
 test("dual-platform publication requires full Windows qualification independently of Pi", async () => {
@@ -150,4 +147,8 @@ test("dual-platform publication requires full Windows qualification independentl
   assert.throws(() => assertPublicationQualification({ requalifications: [{ ...linuxPi, sdkVersion: "1.0.4" }, ...windows] }), /Linux Pi/);
   assert.throws(() => assertPublicationQualification({ requalifications: [...complete, { ...windows[0], status: "PENDING" }] }), /Windows core/,
     "a newer pending Windows implementation supersedes its historical PASS");
+  const linuxOpenCode = { harness: "opencode", platform: "linux-x64", status: "PENDING" };
+  assert.throws(() => assertPublicationQualification({ requalifications: [...complete, linuxOpenCode] }), /Linux opencode/,
+    "Windows success must not hide a later pending Linux image hook change");
+  assert.doesNotThrow(() => assertPublicationQualification({ requalifications: [...complete, { ...linuxOpenCode, status: "PASS" }] }));
 });
