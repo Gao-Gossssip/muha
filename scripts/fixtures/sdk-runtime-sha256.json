@@ -173,7 +173,7 @@
     },
     {
       "path": "packages/kimi-adapter/src/kimi-process.ts",
-      "sha256": "5dccbc3064d966c1f0e3f84501357eaa8c223d740357f103753980e7c5285df2"
+      "sha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2"
     },
     {
       "path": "packages/kimi-adapter/src/workspace-configurator.ts",
@@ -205,7 +205,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts",
-      "sha256": "dfff0b58f88c847de244503f98177b0a24c9ffe98877b3569516d86e6cb47a84"
+      "sha256": "da1700ee08987a235910b6419e5cbecf865fec3626faec0a4962a56c43046516"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
@@ -808,6 +808,34 @@
       "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
       "realImageStatusBeforeFix": "FAIL",
       "scope": "The seven earlier Windows attempts are not a full PASS; preserve their source and failures."
+    },
+    {
+      "harness": "opencode", "platform": "linux-x64", "changeDate": "2026-10-21", "status": "PENDING",
+      "sourceBeforeChange": "9faf0bf99a997a57bdc24d7f563d3be823f922ac",
+      "reason": "Retain independently validated v2.0.11 inline and v2.0.28 Asset shapes; Linux ordered/pure-image regression pending",
+      "models": { "image": "opencode-go/qwen3.8-flash" },
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "updatedSha256": "da1700ee08987a235910b6419e5cbecf865fec3626faec0a4962a56c43046516" }]
+    },
+    {
+      "harness": "opencode", "platform": "win32-x64", "changeDate": "2026-10-21", "status": "PENDING",
+      "sourceBeforeChange": "9faf0bf99a997a57bdc24d7f563d3be823f922ac",
+      "reason": "Disjoint V2 media union needs image regression; Windows permission/Question/interruption cases remain incomplete",
+      "models": { "text": "opencode-go/deepseek-v4.1-flash", "image": "opencode-go/qwen3.8-flash" },
+      "changedResources": [{ "path": "packages/opencode-adapter/src/opencode-v2-order-plugin.ts", "updatedSha256": "da1700ee08987a235910b6419e5cbecf865fec3626faec0a4962a56c43046516" }]
+    },
+    {
+      "harness": "kimi", "platform": "linux-x64", "changeDate": "2026-10-21", "status": "PENDING",
+      "sourceBeforeChange": "9faf0bf99a997a57bdc24d7f563d3be823f922ac",
+      "reason": "Abort acceptance is not terminal settlement; affected interrupt/immediate-continuation regression pending authorization and acceptance",
+      "models": { "text": "deepseek/deepseek-flash" },
+      "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }]
+    },
+    {
+      "harness": "kimi", "platform": "win32-x64", "changeDate": "2026-10-21", "status": "PENDING",
+      "sourceBeforeChange": "9faf0bf99a997a57bdc24d7f563d3be823f922ac",
+      "reason": "Real immediate continuation after abort failed; keep successful earlier capability receipts but require fixed-source interruption regression",
+      "models": { "text": "deepseek/deepseek-flash" },
+      "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }]
     }
   ]
 }

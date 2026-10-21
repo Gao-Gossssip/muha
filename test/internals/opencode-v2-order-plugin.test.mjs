@@ -75,7 +75,8 @@ for (const [name, mutate] of [
   ["non-string base64 source", part => { part.media.source.data = Buffer.from([1, 2, 3]); }],
   ["URL source", part => { part.media.source = { type: "url", url: "https://invalid.example/image.png", mediaType: "image/png" }; }],
   ["provider ref", part => { part.media.source = { type: "ref", provider: "controlled", id: "file", mediaType: "image/png" }; }],
-  ["legacy top-level shape", part => { part.mediaType = part.media.source.mediaType; part.data = part.media.source.data; delete part.media; }],
+  ["ambiguous top-level and Asset shape", part => { part.mediaType = part.media.source.mediaType; part.data = part.media.source.data; }],
+  ["invalid Asset with valid top-level bytes", part => { part.mediaType = part.media.source.mediaType; part.data = part.media.source.data; part.media = null; }],
   ["absent Asset", part => { delete part.media; }],
 ]) test(`OpenCode v2 canonical media rejects ${name} without replacing the content`, () => {
   const picture = image([1, 2, 3]), order = imageOrder(0, picture);
@@ -83,4 +84,14 @@ for (const [name, mutate] of [
   mutate(picture);
   assert.throws(() => restoreOrderedMessages({ messages: [message] }), /image changed/);
   assert.equal(message.content[0], picture);
+});
+
+test("OpenCode v2.0.11 inline shape retains exact bytes, MIME and mixed order", () => {
+  const raw = Buffer.from([1, 2, 3]);
+  for (const mutate of [undefined, p => { p.data = Buffer.from([4]).toString("base64"); }, p => { p.mediaType = "image/jpeg"; }]) {
+    const picture = { type: "media", mediaType: "image/png", data: raw.toString("base64") };
+    const message = { metadata: { muhaOrderedInput: { version: 1, textSha256: hash("after"), parts: [{ type: "image", index: 0, mime: "image/png", sha256: hash(raw) }, { type: "text", length: 5 }] } }, content: [{ type: "text", text: "after" }, picture] };
+    if (mutate) { mutate(picture); assert.throws(() => restoreOrderedMessages({ messages: [message] }), /image changed/); }
+    else { restoreOrderedMessages({ messages: [message] }); assert.equal(message.content[0], picture); assert.equal(message.content[1].text, "after"); }
+  }
 });

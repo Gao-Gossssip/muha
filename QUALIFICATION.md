@@ -10,13 +10,31 @@ the retired top-level `mediaType/data` fields instead of the canonical
 and [Media Asset](https://github.com/anomalyco/opencode/blob/v2.0.28/packages/ai/src/media.ts).
 This was not a model-color hallucination. The correction accepts canonical inline
 base64/byte Assets, preserves native objects and still checks MIME, SHA256,
-image counts, indices and text order. URL/ref assets, changed bytes/MIME and the
-retired top-level shape fail closed. No automatic route or legacy fallback is added.
+image counts, indices and text order. The first affected Linux probe exposed
+that installed v2.0.11 still uses the top-level inline shape described in its
+[fixed upstream source](https://github.com/anomalyco/opencode/blob/v2.0.11/packages/core/src/session/runner/to-llm-message.ts).
+Both V2 wire shapes are now checked as disjoint alternatives: invalid canonical
+Assets never fall back to top-level data, and mixed/ambiguous representations,
+URL/ref assets and changed bytes/MIME fail closed. This preserves the previously
+accepted V2 version rather than adding another integration route.
 
 This one OpenCode runtime resource is pending affected Linux image regression
 and the remaining Windows capability qualification. New platform-specific PENDING
 entries block publication even after Pi's independent PASS. No other runtime
 resource or dependency lock was changed for this correction. AGY remains deferred.
+
+## Kimi native cancellation settlement candidate (2026-10-21)
+
+Windows real-model qualification observed an acknowledged REST abort before the
+native Tool result and `turn.ended`. Immediate continuation consequently received
+the previous Turn's tail and failed with `Turn event preceded turn.started`.
+The Adapter now keeps cancellation pending until native terminal settlement,
+using its bounded shutdown timeout; acknowledgement alone is not evidence that a
+Session can be reused. A controlled delayed-ack/late-Tool regression covers
+immediate continuation without replay. New Linux and Windows entries are PENDING
+until affected real-model regression; earlier successful capabilities retain
+their original resource and source scope. No consumer or release acceptance is
+implied, and temporary Codex feature configuration does not alter Adapter behavior.
 
 ## Pi SDK 1.2.0 dual-platform requalification (2026-10-20)
 
@@ -27,8 +45,8 @@ runtime/build/license resources and lockfile digest
 Linux x64 / Node 24.18.0 used 18 actual attempts, including two retained
 qualification-fixture failures; native Windows x64 / Node 22.23.3 used 16.
 Both used the exact SDK 1.2.0, `opencode-go/deepseek-v4.1-flash` for text and
-`opencode-go/qwen3.8-flash` for images, concurrency one, no hidden Muha/provider
-retries, and a shared 40-attempt limit with 20 per platform and 120 seconds per
+`opencode-go/qwen3.8-flash` for images, concurrency one, Muha retries and native
+retry settings disabled, and a shared 40-attempt limit with 20 per platform and 120 seconds per
 attempt. The original 90-minute wall-clock window expired during tool approval
 waits; the user explicitly renewed time without resetting attempt counts.
 

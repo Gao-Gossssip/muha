@@ -275,6 +275,11 @@ const server = createServer(async (request, response) => {
         return json(response, 400, envelope(null, 40001, "image rejected"));
       }
       const promptId = `prompt_fake_${nextPrompt++}`;
+      if (scenario === "delayed-abort") {
+        if (session.fixtureActive) evidence.promptOverlap = true;
+        session.fixtureActive = true;
+        session.fixtureTurn = (session.fixtureTurn ?? 0) + 1;
+      }
       evidence.prompts.push({
         sessionId: session.id,
         promptId,
@@ -294,7 +299,17 @@ const server = createServer(async (request, response) => {
         created_at: new Date().toISOString(),
       }));
       setTimeout(() => {
-        if (scenario === "multi-step" || scenario === "step-gap" || scenario === "legacy-mixed") {
+        if (scenario === "delayed-abort") {
+          const turnId = session.fixtureTurn;
+          emit(session, "turn.started", { type: "turn.started", turnId, agentId: "main", promptId });
+          if (turnId === 1) {
+            emit(session, "tool.call.started", { type: "tool.call.started", turnId, toolCallId: "delayed_tool", name: "shell", args: { command: "wait" } });
+          } else {
+            emit(session, "assistant.delta", { type: "assistant.delta", turnId, delta: "continued" }, true, 0);
+            session.fixtureActive = false;
+            emit(session, "turn.ended", { type: "turn.ended", turnId, reason: "completed" });
+          }
+        } else if (scenario === "multi-step" || scenario === "step-gap" || scenario === "legacy-mixed") {
           emitStepScenario(session);
         } else if (scenario.startsWith("rich")) {
           emitRichTurn(session);
@@ -310,6 +325,13 @@ const server = createServer(async (request, response) => {
     if (request.method === "POST" && abortMatch) {
       const session = sessions.get(decodeURIComponent(abortMatch[1]));
       if (!session) return json(response, 404, envelope(null, 40420, "session not found"));
+      if (scenario === "delayed-abort" && session.fixtureActive) {
+        setTimeout(() => {
+          emit(session, "tool.result", { type: "tool.result", turnId: session.fixtureTurn, toolCallId: "delayed_tool", output: "Interrupted", isError: true });
+          session.fixtureActive = false;
+          emit(session, "turn.ended", { type: "turn.ended", turnId: session.fixtureTurn, reason: "cancelled" });
+        }, 150);
+      }
       return json(response, 200, envelope({ aborted: true, at_seq: session.seq }));
     }
     return json(response, 404, envelope(null, 40400, "not found"));
