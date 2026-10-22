@@ -4,8 +4,10 @@ Pi uses the checksum-verified high-level input patch for SDK 1.2.0. See
 [qualification and limitations](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md)
 for source versions and acceptance. The older Pi/Pi grilling result belongs to
 SDK 0.84.2. Both that result and the later SDK 1.0.4 real-model evidence remain
-historical; SDK 1.2.0 real-model requalification is pending and publication is
-blocked until it passes. Controlled tests do not replace that acceptance.
+historical; SDK 1.2.0 passed separately authorized Linux and native Windows
+real-model requalification. Acceptance remains scoped to its recorded source
+and dependency combination; formal publication and Registry installation are
+separate gates. Controlled tests do not replace that acceptance.
 
 ```ts
 import { createMuhaRuntime } from "@muha-sdk/core";

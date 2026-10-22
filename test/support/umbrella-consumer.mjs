@@ -88,7 +88,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
       for (const resource of item.resources) {
         const path = join(consumer, "node_modules", item.name, resource.path);
         assert.equal(createHash("sha256").update(await readFile(path)).digest("hex"), resource.sha256);
-        if (resource.mode & 0o111) assert.ok((await lstat(path)).mode & 0o111);
+        if (process.platform !== "win32" && (resource.mode & 0o111)) assert.ok((await lstat(path)).mode & 0o111);
       }
     }
     const cores = (await run("npm", ["ls", "@muha-sdk/core", "--all", "--parseable"], { cwd: consumer, env })).stdout;

@@ -1,5 +1,6 @@
-// Local diagnostics describe the host build. A multi-platform publication
-// candidate remains subject to separate platform assembly and qualification.
+import { publicationRequiredFiles } from "./native-resources.mjs";
+// Local diagnostics describe the host build. Publication requires the assembled
+// resources of both qualified native targets.
 const supervisorFiles = name => process.platform === "win32"
   ? [`dist/${name}.exe`, "dist/windows-supervisor.c", "dist/windows-private.c", "dist/windows-private.h"]
   : [`dist/${name}`, `dist/${name}.c`, `dist/${name}-glibc-compat.c`];
@@ -108,8 +109,9 @@ export function validateDeliveryDependencies(delivery, dependencies, version) {
   }
 }
 
-export async function deliveryResources(root, delivery) {
-  const resources = ["package.json", "LICENSE", "README.md", ...delivery.requiredFiles]
+export async function deliveryResources(root, delivery, { publication = false } = {}) {
+  const resources = ["package.json", "LICENSE", "README.md",
+    ...(publication ? publicationRequiredFiles(delivery) : delivery.requiredFiles)]
     .map(path => ({ path }));
   if (delivery.harness === "pi") {
     resources.find(item => item.path === "dist/PI-SDK-LICENSE").expectedSha256 =

@@ -13,24 +13,40 @@ const evidenceFile = process.env.MUHA_V2_EVIDENCE_FILE;
 if (process.env.MUHA_V2_PID_FILE) await writeFile(process.env.MUHA_V2_PID_FILE, String(process.pid));
 const evidence = { unauthenticated: 0, authenticated: 0, requests: [], created: 0, removed: 0,
   createdPermissions: [], prompts: [], permissions: [], forms: [], interrupts: [] };
-let evidenceWrite = Promise.resolve();
+let evidenceWrite;
+let pendingEvidenceSnapshot;
 let evidenceSequence = 0;
 function persistEvidence() {
   if (!evidenceFile) return Promise.resolve();
-  const snapshot = JSON.stringify(evidence);
-  const temporaryFile = `${evidenceFile}.${process.pid}.${++evidenceSequence}.tmp`;
-  evidenceWrite = evidenceWrite.then(async () => {
-    await writeFile(temporaryFile, snapshot);
-    const deadline = Date.now() + 5000;
-    for (;;) {
-      try { await rename(temporaryFile, evidenceFile); break; }
-      catch (error) {
-        if (process.platform !== "win32" || !["EPERM", "EBUSY", "EACCES"].includes(error.code) || Date.now() >= deadline) throw error;
-        await new Promise(resolve => setTimeout(resolve, 25));
+  // Evidence is a cumulative snapshot, not an event journal. Coalesce pending
+  // snapshots while a Windows sharing lock delays the single atomic writer;
+  // otherwise a burst leaves a long queue of obsolete snapshots after every
+  // HTTP request has completed. All callers still await the complete flush.
+  pendingEvidenceSnapshot = JSON.stringify(evidence);
+  evidenceWrite ??= Promise.resolve().then(flushEvidence);
+  return evidenceWrite;
+}
+async function flushEvidence() {
+  try {
+    while (pendingEvidenceSnapshot !== undefined) {
+      const snapshot = pendingEvidenceSnapshot;
+      pendingEvidenceSnapshot = undefined;
+      const temporaryFile = `${evidenceFile}.${process.pid}.${++evidenceSequence}.tmp`;
+      await writeFile(temporaryFile, snapshot);
+      const deadline = Date.now() + 5000;
+      for (;;) {
+        try { await rename(temporaryFile, evidenceFile); break; }
+        catch (error) {
+          if (process.platform !== "win32" || !["EPERM", "EBUSY", "EACCES"].includes(error.code) || Date.now() >= deadline) throw error;
+          await new Promise(resolve => setTimeout(resolve, 25));
+        }
       }
     }
-  });
-  return evidenceWrite;
+  } finally {
+    evidenceWrite = undefined;
+    // A caller may arrive between the last loop test and this finalizer.
+    if (pendingEvidenceSnapshot !== undefined) await persistEvidence();
+  }
 }
 const sessions = new Map();
 const streams = new Set();

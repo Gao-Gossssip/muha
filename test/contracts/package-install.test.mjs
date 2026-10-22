@@ -652,7 +652,7 @@ async function verifyRegistryLockAndReinstall(consumer, env, names) {
     for (const resource of reviewed.resources) {
       const absolute = join(consumer, "node_modules", name, resource.path);
       assert.equal(createHash("sha256").update(await readFile(absolute)).digest("hex"), resource.sha256);
-      if (resource.mode & 0o111) assert.ok((await lstat(absolute)).mode & 0o111);
+      if (process.platform !== "win32" && (resource.mode & 0o111)) assert.ok((await lstat(absolute)).mode & 0o111);
     }
   }
   assert.equal(lock.packages[""].overrides, undefined);

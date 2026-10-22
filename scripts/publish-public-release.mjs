@@ -3,19 +3,20 @@ import { spawnSync } from "node:child_process";
 import { appendFile, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { assertPiPublicationQualification } from "./publication-qualification.mjs";
+import { fileURLToPath } from "node:url";
+import { assertPublicationQualification } from "./publication-qualification.mjs";
 import { readPublicationCandidate } from "./publication-candidate.mjs";
 import { readReleaseVersion } from "./release-version.mjs";
 import { publishedMetadata, verifyInstallMetadata, verifyLatest, verifyPublishedPackage } from "./registry-readback.mjs";
 import { assertPublicationNpmVersion, assertPublicationOidcContext, publicationNpmEnvironment } from "./publication-oidc.mjs";
 
 const registry = "https://registry.npmjs.org/";
-const root = new URL("../", import.meta.url).pathname;
-const directory = new URL("../.scratch/npm-candidate/", import.meta.url).pathname;
+const root = fileURLToPath(new URL("../", import.meta.url));
+const directory = fileURLToPath(new URL("../.scratch/npm-candidate/", import.meta.url));
 const revision = process.env.REVIEWED_REVISION;
 const mode = process.argv[2];
 assertPublicationOidcContext(process.env, mode);
-assertPiPublicationQualification(JSON.parse(await readFile(new URL("./fixtures/sdk-runtime-sha256.json", import.meta.url))));
+assertPublicationQualification(JSON.parse(await readFile(new URL("./fixtures/sdk-runtime-sha256.json", import.meta.url))));
 const version = await readReleaseVersion(root);
 const candidate = await readPublicationCandidate(directory, {
   revision, version, manifestSha256: process.env.REVIEWED_MANIFEST_SHA256,

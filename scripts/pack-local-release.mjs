@@ -43,7 +43,7 @@ if (candidate) {
     { encoding: "utf8" });
   if (policy.status !== 0) throw new Error(`Publication source policy failed: ${policy.stderr}`);
 }
-const audit = await auditLocalDelivery(repositoryRoot);
+const audit = await auditLocalDelivery(repositoryRoot, { publication: candidate });
 if (audit.problems.length) throw new Error(`Delivery audit failed:\n${audit.problems.join("\n")}`);
 if (!preview && audit.licenseBlockers.length) {
   throw new Error(`Candidate license audit failed:\n${audit.licenseBlockers.join("\n")}`);

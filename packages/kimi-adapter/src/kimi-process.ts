@@ -815,6 +815,9 @@ class KimiTurnCapture implements AdapterTurn {
   readonly #locallyResolvedQuestions = new Set<string>();
   #usage = { inputTokens: 0, outputTokens: 0, cachedInputTokens: 0 };
   #disposed = false;
+  #nativeEnded = false;
+  #resolveSettled: () => void = () => undefined;
+  readonly #settled = new Promise<void>((resolve) => { this.#resolveSettled = resolve; });
 
   constructor(
     readonly process: KimiProcess,
@@ -1024,6 +1027,7 @@ class KimiTurnCapture implements AdapterTurn {
         return;
       }
       if (envelope.type === "turn.ended") {
+        this.#nativeEnded = true;
         const reason = requireProtocolString(payload.reason, "Kimi Turn end reason");
         if (reason === "completed") {
           this.#startAssistant(payload);
@@ -1058,6 +1062,14 @@ class KimiTurnCapture implements AdapterTurn {
 
   async interrupt(): Promise<void> {
     await this.process.abortTurn(this.session.nativeSessionId, this.#nativeTurnId);
+    // The REST acknowledgement only accepts cancellation. Native Tools and
+    // terminal events may still be in flight, so it is not a reuse boundary.
+    await withTimeout(this.#settled,
+      this.process.options.shutdownTimeoutMs ?? defaultTimeoutMs,
+      () => harnessCommandFailure("interruptTurn", "Kimi did not settle the interrupted native Turn", "abort_not_settled"));
+    if (!this.#nativeEnded) {
+      throw harnessCommandFailure("interruptTurn", "Kimi lost the native Turn before cancellation settled", "abort_not_settled");
+    }
   }
 
   async respondToApproval(nativeRequestId: string, decision: "allowOnce" | "deny"): Promise<void> {
@@ -1090,6 +1102,7 @@ class KimiTurnCapture implements AdapterTurn {
     this.#disposed = true;
     this.#unsubscribe?.();
     this.#queue.end();
+    this.#resolveSettled();
   }
 
   #startAssistant(payload: JsonObject): void {

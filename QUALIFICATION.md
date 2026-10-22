@@ -1,12 +1,204 @@
 # SDK qualification and migration provenance
 
+## Windows qualification closure (2026-10-22)
+
+AGY and the independent shared-Core Windows platform gate now pass on source
+`de380ad6dad6ea732fa964c0af77b90485f6fb79`. This supersedes only their earlier
+PENDING platform entries; the dated evidence and failures below remain historical.
+All five official Adapters now have complete native Windows qualification with
+their recorded models, source scopes and accepted exceptions.
+
+AGY CLI 1.4.5 / native Windows x64 / Node 22.23.3 used
+`claude-sonnet-5-5-low`, concurrency one, zero Muha retries, a 120-second
+per-attempt cap and a separately confirmed 20-attempt / 90-minute budget.
+It used 19 attempts: 18 required cases passed; one retained fixture failure
+incorrectly required nonempty text after native permission denial. AGY had
+delivered an explicit completed empty Assistant Message, which is valid under
+the existing contract and is distinct from a missing or unfinished message.
+The corrected case passed with native `denied_actions`, an error Tool result,
+no file write and matching terminal/result. Three other fixture setup failures
+occurred before inference and remain recorded separately.
+
+Passed real cases cover ordered text, message deltas and usage, multi-Turn
+memory, same- and new-Runtime resume, invalid model selection and recovery,
+native file Tools, Skill payloads shared across independent native Projects,
+and `autoApprove` to `harnessManaged` policy transitions without editing native
+rules. Real native Tool interruption, Session close, CLI loss and Runtime close
+each reclaimed the owned Tool and detached child; interruption allowed immediate
+continuation, while fatal CLI loss required an explicit new Runtime. Sonnet 5.5
+also accepted `effort=low` at creation and resume with `selectedOnly` observation;
+idle effort/model setters remain unsupported. This does not rewrite the
+historical Sonnet 4.6 effort limitation or claim every effort value works.
+
+An independent post-close audit re-read all 18 successful cases and 152 native
+semantic records, checked terminal payloads, SQLite integrity and SID-based
+private NTFS ACLs. Native permission modes changed from `always-proceed` to
+`request-review` under the same reference. No credentials were copied; native
+records passed credential-field and bearer-pattern checks. Exact credential-value
+scanning was unavailable at the three known plaintext credential paths and is
+not claimed. Successful phase before/after native settings fingerprints matched.
+Launching the same Windows CLI from a WSL UNC working directory returned a
+misleading sign-in error; model inventory and qualification succeeded from
+native Windows drive directories without reauthentication or auth changes.
+
+Shared Core was closed through an explicit evidence audit, not automatically
+from Adapter PASS flags. Its native Windows focused suite passed 130/130 with
+zero skips, covering Runtime guards/rollback/fatal closure, Session and Turn
+conformance, profile enforcement, retry ownership, Workspace operations, private
+store/lease/fault handling and actual native helper ownership/ACL behavior.
+Both six-job Linux/Windows CI matrices passed at the qualified source. Every
+Core and relevant Adapter resource was compared with each Harness's accepted
+source: Codex `9faf0bf`, OpenCode/Kimi `6103a01`, Pi `5090dc7`, and AGY
+`de380ad`. The unchanged resources preserve earlier real evidence; controlled
+failure injections are not described as new provider calls. The existing Luna
+reasoning omission and helper-loss reclamation boundaries remain unchanged.
+
+No runtime resource or external dependency changed to obtain this acceptance.
+The subsequent seven-package 0.1.17 version/internal-pin update is metadata-only;
+the qualification receipts retain the actual tested source and lockfile.
+Qualification eligibility does not imply a main merge, formal dual-platform
+candidate, npm upload, Registry install/lockfile replay or consumer acceptance.
+
+## Bounded follow-up acceptance (2026-10-21)
+
+Pi, Codex, OpenCode and Kimi now have accepted native Windows evidence. Pi also
+passed its separately authorized complete Linux SDK matrix; OpenCode and Kimi
+received affected Linux regressions while preserving unchanged historical
+capability evidence. This is not an all-Harness Windows or release acceptance:
+AGY is explicitly deferred for exhausted quota, and shared Core's complete
+Windows qualification remains PENDING until the platform gate is closed.
+
+| Harness | Native Windows model selection | Actual attempts / original limit |
+| --- | --- | --- |
+| Codex 0.163.0 | `gpt-6-luna` | 20 / 20 |
+| OpenCode 2.0.28 | text `opencode-go/deepseek-v4.1-flash`; images `opencode-go/qwen3.8-flash` | 20 / 20 |
+| Kimi 2.1.1 | `deepseek/deepseek-flash` | 20 / 20 |
+| Pi SDK 1.2.0 | text `opencode-go/deepseek-v4.1-flash`; images `opencode-go/qwen3.8-flash` | 16 / 20 |
+
+The three new CLI matrices used concurrency one, zero Muha retries and a
+120-second per-attempt cap. User-approved wall-clock renewals retained every
+attempt; the final renewal excludes tool-approval waiting. Original failed
+fixtures and untriggered cases remain recorded, not erased or counted as PASS.
+The 16 required cases per CLI are assembled from their successful receipts,
+with source scopes preserved where only an independent Adapter unit changed.
+
+Codex passed a real typed Question and caller answer, MCP proof, all four
+permission decisions, native file/Skill effects, model/effort, image inputs,
+history and interruption/continuation. Only an isolated test `CODEX_HOME`
+enabled `default_mode_request_user_input` and retained the user's existing
+Windows sandbox setting; original configuration/auth digests remained unchanged
+and the temporary authentication/configuration copies were removed. Muha still
+only detects the feature and warns. Luna reasoning remains an accepted omission,
+not a fabricated reasoning stream. A post-close independent audit inspected
+1,094 native records and checked credential exclusion.
+
+OpenCode's final source passed both image formats on Windows 2.0.28 and Linux
+2.0.11. Windows permission tests use an owned Git project to avoid sharing native
+saved-approval state with unrelated non-Git temporary directories; no user rule
+was rewritten. Caller allow/deny, native deny-all, typed Question and immediate
+post-interrupt continuation passed. Native diagnostic records contained no
+scheduled retries. Linux used the original three-attempt limit: one retained
+pre-provider structural failure, then two successful fixed-source image Turns.
+
+Kimi's fixed cancellation path passed real interruption followed immediately by
+continuation on both platforms. Linux used two authorized Turns. Windows used
+the last two original attempts in a fresh Session after a history-influenced
+model response did not attempt the requested Tool. Independent native-record
+inspection confirmed that response belonged to the newly accepted promptId,
+not an older queued prompt. That untriggered case is not counted as an
+interruption PASS. All other capability cases retain their
+verified earlier source scope. Temporary native Workspace trust was revoked
+and unregistered after each qualification run.
+
+Codex's unchanged runtime qualified on `9faf0bf99a997a57bdc24d7f563d3be823f922ac`;
+the affected OpenCode and Kimi runtime resources qualified on
+`6103a0136ef4e8d5227f38d8c4801368f5082048`. Pi retains its source recorded below.
+No version bump, npm upload, Registry acceptance or consumer application test
+is implied by these results.
+
+## OpenCode canonical media correction candidate (2026-10-21)
+
+Native Windows OpenCode 2.0.28 admitted the image Turn but failed before provider
+dispatch with `Muha ordered image changed before model dispatch`. The hook read
+the retired top-level `mediaType/data` fields instead of the canonical
+`part.media.source` Asset documented in the fixed upstream implementation:
+[context lowering](https://github.com/anomalyco/opencode/blob/v2.0.28/packages/core/src/session/runner/to-llm-message.ts)
+and [Media Asset](https://github.com/anomalyco/opencode/blob/v2.0.28/packages/ai/src/media.ts).
+This was not a model-color hallucination. The correction accepts canonical inline
+base64/byte Assets, preserves native objects and still checks MIME, SHA256,
+image counts, indices and text order. The first affected Linux probe exposed
+that installed v2.0.11 still uses the top-level inline shape described in its
+[fixed upstream source](https://github.com/anomalyco/opencode/blob/v2.0.11/packages/core/src/session/runner/to-llm-message.ts).
+Both V2 wire shapes are now checked as disjoint alternatives: invalid canonical
+Assets never fall back to top-level data, and mixed/ambiguous representations,
+URL/ref assets and changed bytes/MIME fail closed. This preserves the previously
+accepted V2 version rather than adding another integration route.
+
+The one affected OpenCode runtime resource passed the bounded Linux image
+regression and Windows follow-up above. Historical PENDING records remain below
+their later PASS receipts. No dependency lock was changed for this correction.
+AGY and shared Core's complete Windows gate remain independently pending.
+
+## Kimi native cancellation settlement candidate (2026-10-21)
+
+Windows real-model qualification observed an acknowledged REST abort before the
+native Tool result and `turn.ended`. Immediate continuation consequently received
+the previous Turn's tail and failed with `Turn event preceded turn.started`.
+The Adapter now keeps cancellation pending until native terminal settlement,
+using its bounded shutdown timeout; acknowledgement alone is not evidence that a
+Session can be reused. A controlled delayed-ack/late-Tool regression covers
+immediate continuation without replay. The authorized Linux and Windows affected
+real-model regressions above now pass; earlier successful capabilities retain
+their original resource and source scope. No consumer or release acceptance is
+implied, and temporary Codex feature configuration does not alter Adapter behavior.
+
+## Pi SDK 1.2.0 dual-platform requalification (2026-10-20)
+
+Separately authorized real-model qualification passed on source
+`5090dc7e396f8819d06b45514599eff130a0526e`, with the unchanged 69 pinned
+runtime/build/license resources and lockfile digest
+`eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e`.
+Linux x64 / Node 24.18.0 used 18 actual attempts, including two retained
+qualification-fixture failures; native Windows x64 / Node 22.23.3 used 16.
+Both used the exact SDK 1.2.0, `opencode-go/deepseek-v4.1-flash` for text and
+`opencode-go/qwen3.8-flash` for images, concurrency one, Muha retries and native
+retry settings disabled, and a shared 40-attempt limit with 20 per platform and 120 seconds per
+attempt. The original 90-minute wall-clock window expired during tool approval
+waits; the user explicitly renewed time without resetting attempt counts.
+
+Passed cases cover streamed text/reasoning/usage, multi-Turn and new-Runtime
+history, native file Tools, workspace Skills, model/effort at create/resume/idle,
+ordered file/base64 and pure-image input, native listing and external SDK history,
+actual provider rejection and recovery, interruption/continuation, and SDK loss
+with owned native Tool reclamation and explicit new-Runtime recovery. Post-close
+audits observed 759 Linux and 1,237 Windows native subscription records, checked
+credential exclusion and removed temporary credential copies. Native history
+retained `image/text/image/text` and image-only order. No live diagnostic reader
+or new public SQL interface is implied.
+
+Linux fixture failures came from matching the supervisor's worker argument as
+another SDK process and then reading an old PID marker; both refused to signal
+an unproven target. The corrected unique-marker test passed within the original
+attempt limit. A no-Turn, expired-budget preflight Runtime correctly had no
+subscription events; independent post-close aggregation verified actual model
+hosts without additional inference. Original failures remain in private evidence.
+No qualified runtime source was changed to obtain these results.
+
+Pi now passes on both recorded platforms. This does not qualify the other four
+Windows adapters or the complete shared-Core matrix. Their latest pending entries
+continue to block publication; AGY's new paid testing is explicitly deferred by
+the maintainer because its quota is exhausted. Dual-platform source-bound
+assembly has passed a local rehearsal using real Linux and Windows builds, but
+Registry publication and complete cold-install acceptance remain separate gates.
+
 ## Native Windows x64 candidate (2026-10-15/18)
 
 This branch adds a native Windows ownership helper, private NTFS diagnostic
 storage checks and a Windows pipe transport for Pi. Earlier Linux qualification
 records below retain their original source and platform scope. The candidate's
-full Windows qualification remains PENDING; the latest Pi entry blocks
-publication. Multi-platform release assembly is also pending.
+full Windows qualification at that snapshot remains PENDING. The Pi and assembly
+follow-up above supersedes only those two pending work items, not other adapters'
+full Windows qualification or Registry acceptance.
 
 The user authorized real Windows model tests with the repository Profiles.
 On Windows 11 x64 / Node 22.23.3, Codex 0.162.1 (`gpt-5.6-luna`), OpenCode

@@ -11,18 +11,12 @@ import { createMuhaRuntime } from '@muha-sdk/core';
 import { DiagnosticEventStore } from '../../packages/core/dist/event-store.js';
 import { randomUUID } from 'node:crypto';
 import { spawnHarnessProcess, closeHarnessProcess, harnessEnvironment, harnessProcessExitCode, harnessProcessPid } from '@muha-sdk/core/internal/host-process';
+import { readFixturePids as readPids } from '../support/fixture-pids.mjs';
 
 const windows = { skip: process.platform !== 'win32', timeout: 10000 };
 const endpoint = fileURLToPath(new URL('../fixtures/acp-owned-process.mjs', import.meta.url));
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 async function waitFor(check) { for (let i = 0; i < 200; i++) { if (await check()) return; await delay(10); } throw new Error('Owned fixture did not settle'); }
-async function readPids(file) {
-  try { return JSON.parse(await readFile(file, 'utf8')); }
-  catch (error) {
-    if (error.code === 'ENOENT' || error instanceof SyntaxError) return [];
-    throw error;
-  }
-}
 
 test('Windows environment overrides replace and remove differently cased native keys', windows, () => {
   const merged = harnessEnvironment({ Path: 'test-only-path' });

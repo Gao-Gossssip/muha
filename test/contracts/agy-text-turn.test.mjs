@@ -23,7 +23,7 @@ test("AGY creates an independent Workspace-bound Session and preserves ordered t
       harnesses: [agyAdapter({
         env: { HOME: join(root, "native-home"), PATH: [fakeBin, dirname(process.execPath)].join(delimiter),
           MUHA_FAKE_AGY_EVIDENCE: join(root, "native-arguments.json") },
-        startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+        startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
       })],
     });
     const session = await runtime.createSession({

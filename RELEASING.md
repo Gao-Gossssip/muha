@@ -11,8 +11,14 @@ Release consumers may install `@muha-sdk/muha` alone or select individual adapte
    require separately authorized bounded real-model qualification.
 3. Push reviewed source and dispatch [sdk-release](.github/workflows/sdk-release.yml)
    with `action=prepare` and its full main commit SHA. This runs controlled checks
-   on Ubuntu 22.04 / Node 22.20.0, checks dependency/license closure and produces
-   seven tarballs plus `README.md`, `SHA256SUMS` and `release.json`.
+   on Ubuntu 22.04 / Node 22.20.0 and builds native helpers separately on
+   Ubuntu 22.04 and Windows 2022. Each native artifact binds its platform,
+   version, commit, Git tree, lockfile and qualified-resource manifest digest.
+   Assembly validates both complete allowlists before modifying package outputs,
+   after the final source build. It checks dependency/license closure and produces
+   seven dual-platform tarballs plus `README.md`, `SHA256SUMS` and `release.json`.
+   The unchanged tarballs must cold-install on Linux and Windows, using Node
+   22.20.0 and LTS, before the preparation run is successful.
 4. Review that artifact and its manifest SHA256. Dispatch `action=publish` with
    the same source SHA, successful preparation run ID and manifest SHA256.
    Publication downloads the original artifacts, without rebuilding them.
@@ -20,12 +26,21 @@ Release consumers may install `@muha-sdk/muha` alone or select individual adapte
    GitHub Actions OIDC trusted publishing, npm provenance and the `candidate` tag.
    Existing immutable versions must match
    the reviewed archive and provenance before the workflow can resume.
-6. Anonymous public Registry consumers on Node 22.20.0 and LTS install Core,
+6. Anonymous public Registry consumers on Linux and Windows, each using Node
+   22.20.0 and LTS, install Core,
    each adapter pair, all adapters, and `@muha-sdk/muha` alone. Their byte integrity,
    native resources, ESM/TypeScript and lifecycle contracts, dependency trees,
    and lockfile `npm ci` must pass before the explicit `latest` promotion job.
 7. Read back all seven versions and `latest` tags, then create the source tag
    and public GitHub Release using the reviewed artifacts and registry receipt.
+
+Formal candidates require both `linux-x64` and `win32-x64` helpers in Core and
+AGY; consumers never compile these helpers during installation. Host-only
+diagnostic packages are not publishable candidates. All latest Windows Core and
+adapter qualification entries and the current Pi SDK qualification on both
+platforms must be `PASS`. Historical smoke receipts and controlled fixtures
+cannot clear a `PENDING` real-model qualification. Qualification evidence remains
+scoped to the source, platform and dependencies it actually exercised.
 
 Registry propagation is handled through read-only verification, bounded by
 60 attempts and five minutes per operation. Identity, byte or provenance

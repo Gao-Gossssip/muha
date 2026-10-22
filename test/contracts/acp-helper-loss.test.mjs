@@ -11,6 +11,10 @@ import { codexAdapter } from "@muha-sdk/codex-adapter";
 import { createOfficialHarnessRegistration, readOfficialHarnessRegistration } from "../../packages/core/dist/internal.js";
 import { acpOptions, controlledCodexAdapter, controlledOpenCodeAdapter } from "../fixtures/acp-harness/options.mjs";
 
+// Hosted Windows cold starts and CIM ownership proofs are test administration,
+// not the post-loss reaction budget. Keep bounded() unchanged after injection.
+const testTimeoutMs = process.platform === "win32" ? 45000 : 10000;
+
 async function bounded(promise) {
   let timer;
   try {
@@ -28,6 +32,7 @@ function endpoint(root, name, scenario) {
     MUHA_FAKE_ACP_EVIDENCE_FILE: evidenceFile,
     MUHA_FAKE_ACP_HOLD_STDIO: "1",
   });
+  if (process.platform === "win32") options.startupTimeoutMs = 10000;
   options.args.push(`--test-owner=${root}`);
   return { options, processFile, evidenceFile };
 }
@@ -41,7 +46,7 @@ async function processes(endpoint) {
 }
 
 async function receivedRequest(endpoint, method) {
-  const deadline = Date.now() + 2500;
+  const deadline = Date.now() + (process.platform === "win32" && method === "initialize" ? 15000 : 2500);
   while (Date.now() < deadline) {
     const evidence = await readFile(endpoint.evidenceFile, "utf8").then(text => {
       try { return JSON.parse(text); } catch { return undefined; }
@@ -83,7 +88,7 @@ function observe(turn, requestType) {
   return { requested, completed };
 }
 
-for (const lostKind of ["opencode", "codex"]) test(`${lostKind} ACP helper loss fails its Turn, invalidates interactions and irreversibly closes the whole Runtime`, { timeout: 10000 }, async () => {
+for (const lostKind of ["opencode", "codex"]) test(`${lostKind} ACP helper loss fails its Turn, invalidates interactions and irreversibly closes the whole Runtime`, { timeout: testTimeoutMs }, async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-acp-helper-runtime-"));
   const lostInteraction = lostKind === "opencode" ? "approval" : "question";
   const peerInteraction = lostKind === "opencode" ? "question" : "approval";
@@ -161,12 +166,12 @@ for (const lostKind of ["opencode", "codex"]) test(`${lostKind} ACP helper loss 
   }
 });
 
-test("ACP helper loss during initialization rejects promptly and rolls back the peer without claiming cleanup", { timeout: 10000 }, async () => {
+test("ACP helper loss during initialization rejects promptly and rolls back the peer without claiming cleanup", { timeout: testTimeoutMs }, async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-acp-helper-initialize-"));
   const lost = endpoint(root, "lost", "stall-initialize");
   const peer = endpoint(root, "peer", "normal");
   // Failure must be driven by helper loss, not this later startup deadline.
-  lost.options.startupTimeoutMs = 5000;
+  lost.options.startupTimeoutMs = process.platform === "win32" ? 20000 : 5000;
   const initializing = createMuhaRuntime({ harnesses: [
     controlledOpenCodeAdapter({ acp: lost.options }), controlledCodexAdapter({ acp: peer.options }),
   ], dataDir: join(root, "data") }).then(runtime => ({ runtime }), error => ({ error }));
@@ -200,7 +205,7 @@ test("ACP helper loss during initialization rejects promptly and rolls back the 
   }
 });
 
-test("ACP helper loss settles an unanswered public control without waiting for its watchdog", { timeout: 10000 }, async () => {
+test("ACP helper loss settles an unanswered public control without waiting for its watchdog", { timeout: testTimeoutMs }, async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-acp-helper-control-"));
   const lost = endpoint(root, "lost", "stall-create");
   let runtime;
@@ -227,7 +232,7 @@ test("ACP helper loss settles an unanswered public control without waiting for i
   }
 });
 
-test("ACP helper loss during caller close stays closed and reports cleanup failure on repeated close", { timeout: 10000 }, async () => {
+test("ACP helper loss during caller close stays closed and reports cleanup failure on repeated close", { timeout: testTimeoutMs }, async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-acp-helper-close-"));
   const lost = endpoint(root, "lost", "stall-close");
   let runtime;

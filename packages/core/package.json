@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/core",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Common runtime primitives for Muha SDK coding harness integrations.",
   "type": "module",
   "scripts": {

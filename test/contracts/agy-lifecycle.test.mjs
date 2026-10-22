@@ -7,6 +7,7 @@ import test from "node:test";
 import { processSnapshot, assertProcessGone } from "../support/host-process.mjs";
 import { agyAdapter } from "@muha-sdk/agy-adapter";
 import { createMuhaRuntime } from "@muha-sdk/core";
+const preparedStartupTimeoutMs = process.platform === "win32" ? 10_000 : 2_000;
 
 test("AGY missing CLI rejects Runtime initialization without crashing the consumer", async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-agy-missing-"));
@@ -25,7 +26,7 @@ test("AGY cleanup failure closes Runtime, settles its Turn, and aggregates a Har
     await mkdir(workspacePath);
     runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
       env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter) },
-      startupTimeoutMs: 2_000, shutdownTimeoutMs: 500,
+      startupTimeoutMs: preparedStartupTimeoutMs, shutdownTimeoutMs: 500,
     })] });
     const session = await runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "harnessManaged" });
     const turn = await session.startTurn([{ type: "text", text: "Wait without tools." }]);
@@ -55,7 +56,7 @@ test("AGY process loss fails its Turn, interrupts other Sessions, and irreversib
   try {
     runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
       env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter) },
-      startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+      startupTimeoutMs: preparedStartupTimeoutMs, shutdownTimeoutMs: 2_000,
     })] });
     const workspaces = [join(root, "first"), join(root, "second")];
     const sessions = [];
@@ -93,7 +94,7 @@ test("AGY interruption stops detached work and the same Session handle can conti
   try {
     runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
       env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter) },
-      startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+      startupTimeoutMs: preparedStartupTimeoutMs, shutdownTimeoutMs: 2_000,
     })] });
     const session = await runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "autoApprove" });
     const reference = structuredClone(session.reference);

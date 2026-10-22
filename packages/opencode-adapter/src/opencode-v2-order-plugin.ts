@@ -94,7 +94,22 @@ export function restoreOrderedMessages(event: ContextEvent): void {
       }
       if (part.index !== nextImage) throw new Error("Muha ordered image index is invalid");
       const image = images[nextImage];
-      if (image === undefined || image.mediaType !== part.mime || sha256(bytes(image.data)) !== part.sha256) {
+      if (image === undefined) throw new Error("Muha ordered image is missing");
+      // V2.0.11 uses inline top-level data; V2.0.28 owns a Media.Asset.
+      // These are disjoint validated wire shapes, not a fallback after a
+      // failed Asset check. Never fetch a URL/ref or bypass the byte hash.
+      const asset = image.media;
+      const source = record(asset) ? asset.source : undefined;
+      const inlineV2 = !Object.hasOwn(image, "media") &&
+        image.mediaType === part.mime && typeof image.data === "string" &&
+        sha256(bytes(image.data)) === part.sha256;
+      const canonicalV2 = Object.hasOwn(image, "media") &&
+        !Object.hasOwn(image, "mediaType") && !Object.hasOwn(image, "data") &&
+        record(source) && (source.type === "base64" || source.type === "bytes") &&
+        !(source.type === "base64" && typeof source.data !== "string") &&
+        !(record(asset) && asset.mediaType !== undefined && asset.mediaType !== part.mime) &&
+        source.mediaType === part.mime && sha256(bytes(source.data)) === part.sha256;
+      if (!inlineV2 && !canonicalV2) {
         throw new Error("Muha ordered image changed before model dispatch");
       }
       restored.push(image);

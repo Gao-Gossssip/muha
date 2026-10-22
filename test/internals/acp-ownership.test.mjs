@@ -3,26 +3,34 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { setTimeout as delay } from "node:timers/promises";
 import { AcpConnection } from "../../packages/core/dist/acp/connection.js";
 import { AcpOwnedProcess } from "../../packages/core/dist/acp/owned-process.js";
+import { readFixturePids } from "../support/fixture-pids.mjs";
 
 const alive = pid => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
-test("helper death reports ownership loss even while native descendants hold stdout open", { timeout: 4000 }, async () => {
+test("helper death reports ownership loss even while native descendants hold stdout open", { timeout: process.platform === "win32" ? 30000 : 4000 }, async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-acp-helper-loss-"));
   const pidsFile = join(root, "pids.json");
+  const release = join(root, "release");
   const losses = [];
   const owned = new AcpOwnedProcess(process.execPath,
     [fileURLToPath(new URL("../fixtures/acp-owned-process.mjs", import.meta.url))],
-    { ...process.env, MUHA_TEST_OWNED_PIDS: pidsFile }, 150, message => losses.push(message));
+    { ...process.env, MUHA_TEST_OWNED_PIDS: pidsFile, MUHA_TEST_OWNED_PIDS_RELEASE: release }, 150, message => losses.push(message));
   let pids = [];
   try {
-    for (let i = 0; i < 100 && !pids.length; i++) {
-      pids = await readFile(pidsFile, "utf8").then(JSON.parse, () => []);
+    const deadline = Date.now() + (process.platform === "win32" ? 10000 : 1500);
+    while (await readFile(pidsFile, "utf8").catch(error => { if (error.code === "ENOENT") return ""; throw error; }) !== "[") {
+      assert.ok(Date.now() < deadline, "owned fixture writer must reach its partial receipt"); await delay(10);
+    }
+    assert.deepEqual(await readFixturePids(pidsFile), [], "partial JSON must not prove readiness");
+    await writeFile(release, "release");
+    while (!pids.length && Date.now() < deadline) {
+      pids = await readFixturePids(pidsFile);
       if (!pids.length) await delay(10);
     }
     assert.equal(pids.length, 3);
@@ -58,7 +66,7 @@ test("ACP close reaps SIGTERM-resistant descendants, is repeatable, and preserve
   let pids = [];
   try {
     await connection.connect(1);
-    pids = JSON.parse(await readFile(pidsFile, "utf8"));
+    pids = await readFixturePids(pidsFile);
     assert.equal(pids.length, 3);
     assert.ok(pids.every(alive));
     const closes = Promise.all([connection.close(), connection.close()]);
@@ -70,7 +78,7 @@ test("ACP close reaps SIGTERM-resistant descendants, is repeatable, and preserve
     assert.deepEqual(losses, []);
   } finally {
     // Rescue only the explicit fixture PIDs when running the intentionally-red test.
-    if (pids.length === 0) pids = await readFile(pidsFile, "utf8").then(JSON.parse, () => []);
+    if (pids.length === 0) pids = await readFixturePids(pidsFile);
     for (const pid of pids.reverse()) if (alive(pid)) process.kill(pid, "SIGKILL");
     await connection.close();
     unrelated.kill("SIGKILL");

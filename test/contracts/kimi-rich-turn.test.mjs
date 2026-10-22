@@ -314,6 +314,32 @@ test("Kimi maps an ordinary MCP Tool without negotiating an elicitation capabili
   }
 });
 
+test("Kimi abort acknowledgement waits for native Tool and Turn settlement before immediate continuation", async () => {
+  const fixture = await createFixture("abort-settlement", "delayed-abort");
+  let session;
+  try {
+    session = await fixture.runtime.createSession({ harness: "kimi", workspacePath: fixture.workspace, approvalPolicy: "autoApprove" });
+    const first = await session.startTurn([{ type: "text", text: "start native tool" }]);
+    const events = [];
+    for await (const event of first) {
+      events.push(event);
+      if (event.type === "tool.started") await first.interrupt();
+    }
+    assert.equal((await first.result).status, "interrupted");
+    assert.equal(events.filter(e => /^turn\.(completed|failed|interrupted)$/.test(e.type)).length, 1);
+    const next = await session.startTurn([{ type: "text", text: "continue immediately" }]);
+    const nextEvents = [];
+    for await (const event of next) nextEvents.push(event);
+    assert.equal((await next.result).status, "completed");
+    assert.equal((await next.result).message.text, "continued");
+    assert.equal(nextEvents.some(e => e.type === "tool.completed"), false, "no old Tool result in the new Turn");
+    const evidence = JSON.parse(await readFile(fixture.evidenceFile, "utf8"));
+    assert.notEqual(evidence.promptOverlap, true, "next prompt must not queue behind an unsettled native Turn");
+  } finally {
+    await session?.close(); await fixture.close();
+  }
+});
+
 async function createFixture(name, scenario = "rich") {
   const root = await mkdtemp(join(tmpdir(), `muha-kimi-${name}-rich-`));
   const workspace = join(root, "workspace");
