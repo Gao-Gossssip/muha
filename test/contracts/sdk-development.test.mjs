@@ -18,10 +18,17 @@ test('a fresh SDK checkout has exactly seven locked workspaces and guarded devel
   assert.doesNotMatch(JSON.stringify(root.scripts), /orchestrator/);
   assert.deepEqual(Object.keys(lock.packages).filter(path => /^packages\//.test(path)).sort(),
     directories.map(name => `packages/${name}`).sort());
+  const core = JSON.parse(await readFile(new URL('../../packages/core/package.json', import.meta.url), 'utf8'));
+  const version = core.version;
+  assert.match(version, /^\d+\.\d+\.\d+$/, 'the SDK cohort must use one stable release version');
   for (const name of directories) {
     const manifest = JSON.parse(await readFile(new URL(`../../packages/${name}/package.json`, import.meta.url), 'utf8'));
-    assert.equal(manifest.version, '0.1.16');
+    assert.equal(manifest.version, version, `${name} differs from the SDK cohort`);
+    assert.equal(lock.packages[`packages/${name}`].version, version, `${name} has a stale locked version`);
     assert.equal(manifest.private, undefined);
     assert.deepEqual(manifest.dependencies, lock.packages[`packages/${name}`].dependencies);
+    for (const [dependency, pin] of Object.entries(manifest.dependencies ?? {})) {
+      if (dependency.startsWith('@muha-sdk/')) assert.equal(pin, version, `${name} must pin ${dependency} exactly`);
+    }
   }
 });
