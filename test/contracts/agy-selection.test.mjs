@@ -15,7 +15,7 @@ test("AGY rejects an explicit native selection error while keeping the Runtime a
   try {
     runtime = await createMuhaRuntime({ dataDir: join(root, "diagnostics"), harnesses: [agyAdapter({
       env: { HOME: join(root, "home"), PATH: [resolve(import.meta.dirname, "../fixtures/harness-bin"), dirname(process.execPath)].join(delimiter) },
-      startupTimeoutMs: 2_000, shutdownTimeoutMs: 2_000,
+      startupTimeoutMs: process.platform === "win32" ? 10_000 : 2_000, shutdownTimeoutMs: 2_000,
     })] });
     const session = await runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "harnessManaged", model: "fake-opus" });
     await assert.rejects(runtime.createSession({ harness: "agy", workspacePath, approvalPolicy: "harnessManaged", model: "invalid-model" }),
