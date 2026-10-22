@@ -2,8 +2,10 @@
 
 The stage-five AGY CLI Adapter for Muha SDK. It uses the caller-installed and
 authenticated `agy` command on `PATH`; it never installs AGY or falls back to an
-SDK or API integration. The current first-version qualification uses Claude
-Sonnet 4.6; see the [acceptance results](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md).
+SDK or API integration. Historical Linux qualification uses Claude Sonnet 4.6;
+native Windows qualification uses CLI 1.4.5 and `claude-sonnet-5-5-low`.
+See the [acceptance results](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md)
+for exact source/platform scopes. Use `agy models` to check native identifiers.
 
 ```js
 import { createMuhaRuntime } from "@muha-sdk/core";
@@ -14,7 +16,7 @@ try {
   const session = await runtime.createSession({
     harness: "agy",
     workspacePath: process.cwd(),
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-5-5-low",
     approvalPolicy: "autoApprove",
   });
   const turn = await session.startTurn([{ type: "text", text: "Describe this project." }]);
@@ -39,7 +41,9 @@ Model and effort can be selected at create/resume and expose only caller
 selections (`selectedOnly`); idle setters, listing, image input, structured
 approvals/questions, reasoning streaming, and Muha-managed Workspace MCP are
 unsupported. The accepted Claude Sonnet 4.6 model rejects an explicit
-`--effort`; omit effort for that model. Native identifiers are not Muha aliases.
+`--effort`; omit effort for that model. The Windows Sonnet 5.5 qualification
+accepted `effort: "low"` at creation and resume; this does not qualify all effort
+values or add idle setters. Native identifiers are not Muha aliases.
 
 AGY cannot disable its native print timeout using `0` or `-1s`. This Adapter
 uses `--print-timeout 60m` and emits `MUHA_AGY_NATIVE_TURN_TIMEOUT` when activated.

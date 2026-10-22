@@ -886,6 +886,39 @@
       "checks": ["text-reasoning-usage", "multi-turn-memory", "native-file-tool", "workspace-skill", "native-listing", "new-runtime-resume", "model-effort-create-resume-idle", "ordered-and-pure-images", "real-mcp-proof", "auto-approve", "interactive-deny", "interactive-allow", "auto-deny", "typed-question-caller-answer", "native-cancellation-before-immediate-continuation", "post-close-native-diagnostics", "fixture-trust-revoked-unregistered"],
       "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }],
       "scope": "Fixed-source interruption and immediate continuation passed in a fresh Session. Earlier unchanged-capability receipts remain scoped to their original sources. Failed duplicate-reply, old-source interruption and a history-influenced no-Tool fixture remain in the attempt count. Independent promptId inspection confirmed the untriggered response belonged to its newly accepted prompt, not an old queued prompt. Core and AGY gates remain independent."
+    },
+    {
+      "harness": "agy", "platform": "win32-x64", "authorizationDate": "2026-10-22", "status": "PASS",
+      "sourceSnapshot": "de380ad6dad6ea732fa964c0af77b90485f6fb79", "cliVersion": "1.4.5", "nodeVersion": "22.23.3",
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
+      "changedResources": [], "qualifiedRuntimeResourceCount": 69,
+      "models": { "text": "claude-sonnet-5-5-low" },
+      "realAttempts": 19, "successfulRequiredCases": 18, "attemptLimit": 20,
+      "perAttemptSecondsLimit": 120, "wallClockSecondsLimit": 5400, "concurrency": 1, "maxRetries": 0,
+      "effort": { "status": "PASS", "value": "low", "selectionAt": ["createSession", "resumeSession"], "observation": "selectedOnly", "idleSelection": "UNSUPPORTED" },
+      "checks": ["ordered-text-streaming-usage", "multi-turn-memory", "same-runtime-resume", "new-runtime-resume", "invalid-model-selection-recovery", "native-file-tool", "workspace-skill-resource", "independent-project-shared-skill", "autoapprove-native-command", "harness-managed-native-denial", "interrupt-detached-tool", "immediate-continuation", "session-close-detached-tool", "native-cli-loss-fatal-runtime-close", "new-runtime-recovery-after-native-loss", "runtime-close-detached-tool", "effort-create-selection", "effort-resume-selection", "unsupported-capability-rejection", "empty-workspace-configuration", "post-close-private-native-store-audit"],
+      "nativeRecordsIndependentlyAudited": 152,
+      "retainedFixtureFailures": { "paidAttempts": [9], "beforeInference": 3, "reason": "Initial setup expected a private instead of public missing-session error and used an invalid image; paid fixture incorrectly required nonempty text on explicit native permission denial. Original records remain; corrected case independently passed." },
+      "credentials": { "copiesCreated": false, "fieldAndBearerPatternScan": "PASS", "exactValueScan": "NOT_AVAILABLE at the three known plaintext credential paths" },
+      "scope": "Full declared AGY Windows matrix on one fixed source. Explicit native empty final messages are preserved, not confused with missing or unfinished messages. Native rules/auth configuration remain unmanaged. Sonnet 4.6 effort and historical Linux evidence retain their original scopes; no all-effort or new Linux qualification is implied."
+    },
+    {
+      "harness": "core", "platform": "win32-x64", "authorizationDate": "2026-10-22", "status": "PASS",
+      "sourceSnapshot": "de380ad6dad6ea732fa964c0af77b90485f6fb79",
+      "lockfileSha256": "eccb9324be5a71cbce7470b58d50d58555f7cdbf8e86e33aa048acfde081ec7e",
+      "changedResources": [], "qualifiedRuntimeResourceCount": 69,
+      "controlled": { "nodeVersion": "22.23.3", "tests": 130, "pass": 130, "fail": 0, "skip": 0, "testFiles": 18 },
+      "ciRuns": [39703109485, 39703110221], "requiredJobsPerRun": 6,
+      "sourceEquivalence": [
+        { "harness": "codex", "acceptedSource": "9faf0bf99a997a57bdc24d7f563d3be823f922ac", "coreAndAdapterResourcesVerified": 35 },
+        { "harness": "opencode", "acceptedSource": "6103a0136ef4e8d5227f38d8c4801368f5082048", "coreAndAdapterResourcesVerified": 35 },
+        { "harness": "kimi", "acceptedSource": "6103a0136ef4e8d5227f38d8c4801368f5082048", "coreAndAdapterResourcesVerified": 30 },
+        { "harness": "pi", "acceptedSource": "5090dc7e396f8819d06b45514599eff130a0526e", "coreAndAdapterResourcesVerified": 41 },
+        { "harness": "agy", "acceptedSource": "de380ad6dad6ea732fa964c0af77b90485f6fb79", "coreAndAdapterResourcesVerified": 32 }
+      ],
+      "coverage": ["runtime-init-guards-rollback-irreversible-close-aggregation", "workspace-session-reference-history", "turn-sequencing-one-terminal-final-assistant-message", "interruption-close-native-ownership-and-loss", "private-diagnostic-store-provenance-lease-integrity-and-faults", "profile-enforcement-empty-configuration-and-opt-in-retry-ownership"],
+      "paidCallsAddedByCoreAudit": 0,
+      "scope": "Independent platform closure explicitly maps 130 native Windows controlled contracts and source-equivalent five-Harness real evidence. Not automatic promotion from Adapter status flags, a new five-Harness paid rerun, generic all-model support, formal artifact/Registry acceptance or permission to merge main. Existing accepted reasoning, timeout and supervisor-loss limits remain unchanged."
     }
   ]
 }

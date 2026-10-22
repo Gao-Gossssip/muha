@@ -1,5 +1,64 @@
 # SDK qualification and migration provenance
 
+## Windows qualification closure (2026-10-22)
+
+AGY and the independent shared-Core Windows platform gate now pass on source
+`de380ad6dad6ea732fa964c0af77b90485f6fb79`. This supersedes only their earlier
+PENDING platform entries; the dated evidence and failures below remain historical.
+All five official Adapters now have complete native Windows qualification with
+their recorded models, source scopes and accepted exceptions.
+
+AGY CLI 1.4.5 / native Windows x64 / Node 22.23.3 used
+`claude-sonnet-5-5-low`, concurrency one, zero Muha retries, a 120-second
+per-attempt cap and a separately confirmed 20-attempt / 90-minute budget.
+It used 19 attempts: 18 required cases passed; one retained fixture failure
+incorrectly required nonempty text after native permission denial. AGY had
+delivered an explicit completed empty Assistant Message, which is valid under
+the existing contract and is distinct from a missing or unfinished message.
+The corrected case passed with native `denied_actions`, an error Tool result,
+no file write and matching terminal/result. Three other fixture setup failures
+occurred before inference and remain recorded separately.
+
+Passed real cases cover ordered text, message deltas and usage, multi-Turn
+memory, same- and new-Runtime resume, invalid model selection and recovery,
+native file Tools, Skill payloads shared across independent native Projects,
+and `autoApprove` to `harnessManaged` policy transitions without editing native
+rules. Real native Tool interruption, Session close, CLI loss and Runtime close
+each reclaimed the owned Tool and detached child; interruption allowed immediate
+continuation, while fatal CLI loss required an explicit new Runtime. Sonnet 5.5
+also accepted `effort=low` at creation and resume with `selectedOnly` observation;
+idle effort/model setters remain unsupported. This does not rewrite the
+historical Sonnet 4.6 effort limitation or claim every effort value works.
+
+An independent post-close audit re-read all 18 successful cases and 152 native
+semantic records, checked terminal payloads, SQLite integrity and SID-based
+private NTFS ACLs. Native permission modes changed from `always-proceed` to
+`request-review` under the same reference. No credentials were copied; native
+records passed credential-field and bearer-pattern checks. Exact credential-value
+scanning was unavailable at the three known plaintext credential paths and is
+not claimed. Successful phase before/after native settings fingerprints matched.
+Launching the same Windows CLI from a WSL UNC working directory returned a
+misleading sign-in error; model inventory and qualification succeeded from
+native Windows drive directories without reauthentication or auth changes.
+
+Shared Core was closed through an explicit evidence audit, not automatically
+from Adapter PASS flags. Its native Windows focused suite passed 130/130 with
+zero skips, covering Runtime guards/rollback/fatal closure, Session and Turn
+conformance, profile enforcement, retry ownership, Workspace operations, private
+store/lease/fault handling and actual native helper ownership/ACL behavior.
+Both six-job Linux/Windows CI matrices passed at the qualified source. Every
+Core and relevant Adapter resource was compared with each Harness's accepted
+source: Codex `9faf0bf`, OpenCode/Kimi `6103a01`, Pi `5090dc7`, and AGY
+`de380ad`. The unchanged resources preserve earlier real evidence; controlled
+failure injections are not described as new provider calls. The existing Luna
+reasoning omission and helper-loss reclamation boundaries remain unchanged.
+
+No runtime resource or external dependency changed to obtain this acceptance.
+The subsequent seven-package 0.1.17 version/internal-pin update is metadata-only;
+the qualification receipts retain the actual tested source and lockfile.
+Qualification eligibility does not imply a main merge, formal dual-platform
+candidate, npm upload, Registry install/lockfile replay or consumer acceptance.
+
 ## Bounded follow-up acceptance (2026-10-21)
 
 Pi, Codex, OpenCode and Kimi now have accepted native Windows evidence. Pi also
