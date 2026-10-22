@@ -885,7 +885,7 @@
       "realAttempts": 20, "attemptLimit": 20, "perAttemptSecondsLimit": 120, "concurrency": 1, "maxRetries": 0,
       "checks": ["text-reasoning-usage", "multi-turn-memory", "native-file-tool", "workspace-skill", "native-listing", "new-runtime-resume", "model-effort-create-resume-idle", "ordered-and-pure-images", "real-mcp-proof", "auto-approve", "interactive-deny", "interactive-allow", "auto-deny", "typed-question-caller-answer", "native-cancellation-before-immediate-continuation", "post-close-native-diagnostics", "fixture-trust-revoked-unregistered"],
       "changedResources": [{ "path": "packages/kimi-adapter/src/kimi-process.ts", "updatedSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2" }],
-      "scope": "Fixed-source interruption and immediate continuation passed in a fresh Session. Earlier unchanged-capability receipts remain scoped to their original sources. Failed duplicate-reply, old-source interruption and polluted queued-prompt fixtures remain in the attempt count. Core and AGY gates remain independent."
+      "scope": "Fixed-source interruption and immediate continuation passed in a fresh Session. Earlier unchanged-capability receipts remain scoped to their original sources. Failed duplicate-reply, old-source interruption and a history-influenced no-Tool fixture remain in the attempt count. Independent promptId inspection confirmed the untriggered response belonged to its newly accepted prompt, not an old queued prompt. Core and AGY gates remain independent."
     }
   ]
 }

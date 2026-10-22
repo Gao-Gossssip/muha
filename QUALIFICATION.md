@@ -43,9 +43,11 @@ pre-provider structural failure, then two successful fixed-source image Turns.
 
 Kimi's fixed cancellation path passed real interruption followed immediately by
 continuation on both platforms. Linux used two authorized Turns. Windows used
-the last two original attempts in a fresh Session after an earlier failed
-qualification Session retained a queued prompt; that polluted fixture's result
-is not counted as an interruption PASS. All other capability cases retain their
+the last two original attempts in a fresh Session after a history-influenced
+model response did not attempt the requested Tool. Independent native-record
+inspection confirmed that response belonged to the newly accepted promptId,
+not an older queued prompt. That untriggered case is not counted as an
+interruption PASS. All other capability cases retain their
 verified earlier source scope. Temporary native Workspace trust was revoked
 and unregistered after each qualification run.
 
