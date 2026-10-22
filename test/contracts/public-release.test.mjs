@@ -7,7 +7,7 @@ import { join, resolve } from "node:path";
 import test from "node:test";
 import { MUHA_DELIVERY_PACKAGES } from "../../scripts/delivery-manifest.mjs";
 import { validateRegistryProvenance } from "../../scripts/registry-provenance.mjs";
-import { validatePublicationManifest } from "../../scripts/publication-candidate.mjs";
+import { splitTarListing, validatePublicationManifest } from "../../scripts/publication-candidate.mjs";
 import { publicationFiles } from "../../scripts/delivery-manifest.mjs";
 import { publicationRequiredFiles } from "../../scripts/native-resources.mjs";
 
@@ -25,6 +25,22 @@ const candidate = () => ({
     resources: ["package.json", "LICENSE", "README.md", ...publicationRequiredFiles(item)].map(path => ({ path })),
     files: ["package.json", "LICENSE", "README.md", "dist/index.d.ts", ...publicationRequiredFiles(item)].map(path => ({ path })),
   })),
+});
+
+test("publication tar listings accept LF and native Windows CRLF without changing filenames", () => {
+  const paths = ["package/LICENSE", "package/dist/a path.js", "package/dist/index.d.ts"];
+  for (const newline of ["\n", "\r\n"]) {
+    assert.deepEqual(splitTarListing(paths.join(newline) + newline), paths);
+    const verbose = paths.map(path => `-rw-r--r--  0 0 0 12 Oct 22 12:00 ${path}`);
+    assert.deepEqual(splitTarListing(verbose.join(newline) + newline), verbose);
+  }
+});
+
+test("publication listing normalization does not hide duplicate or unsafe archive paths", () => {
+  const paths = ["package/dist/index.js", "package/dist/index.js", "package/../private", "package/dist/a\rb.js", "package\\dist\\index.js"];
+  assert.deepEqual(splitTarListing(paths.join("\r\n") + "\r\n"), paths);
+  assert.equal(splitTarListing("lrwxrwxrwx link\r\n")[0].startsWith("-"), false,
+    "non-regular entries remain visible to the archive safety gate");
 });
 
 test("publication rejects diagnostics, changed sources, mixed versions and missing runtime resources", () => {
