@@ -32,8 +32,8 @@ export async function readPublicationCandidate(directory, { revision, version, m
     if (digest(packed) !== item.sha256 || `sha512-${digest(packed, "sha512", "base64")}` !== item.integrity) {
       throw new Error(`${item.name}: candidate tarball checksum mismatch`);
     }
-    const contents = tar(["-tzf", archive]).trim().split("\n");
-    if (tar(["-tvzf", archive]).trim().split("\n").some(line => !line.startsWith("-"))) {
+    const contents = splitTarListing(tar(["-tzf", archive]));
+    if (splitTarListing(tar(["-tvzf", archive])).some(line => !line.startsWith("-"))) {
       throw new Error(`${item.name}: archive may contain only regular files`);
     }
     if (JSON.stringify(contents.toSorted()) !== JSON.stringify(item.files.map(file => `package/${file.path}`).toSorted())) {
@@ -110,6 +110,12 @@ export function validatePublicationManifest(release, { revision, version }) {
       }
     }
   }
+}
+
+// Windows tar writes CRLF even for an archive prepared on Linux. Normalize
+// listing delimiters only; keep archive paths and extracted content unchanged.
+export function splitTarListing(output) {
+  return output.trim().split(/\r?\n/);
 }
 
 function tar(args) {
