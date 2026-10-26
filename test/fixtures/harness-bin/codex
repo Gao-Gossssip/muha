@@ -112,6 +112,7 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
         process.exitCode = 68;
         break;
       }
+      await waitForStartupGate("MUHA_FAKE_CODEX_INITIALIZE_GATE");
       process.stdout.write(
         `${JSON.stringify({
           id: request.id,
@@ -185,6 +186,7 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
     }
     if (request.method === "thread/start") {
       if (rejectUnexpectedSandbox(request)) continue;
+      await waitForStartupGate("MUHA_FAKE_CODEX_THREAD_START_GATE");
       if (process.env.MUHA_FAKE_SESSION_REQUEST_FILE) {
         await writeFile(process.env.MUHA_FAKE_SESSION_REQUEST_FILE, JSON.stringify(request.params));
       }
@@ -1242,4 +1244,15 @@ function agentMessage(id, text) {
 
 function sendNotification(method, params) {
   process.stdout.write(`${JSON.stringify({ method, params })}\n`);
+}
+
+async function waitForStartupGate(name) {
+  const path = process.env[name];
+  if (!path) return;
+  await writeFile(`${path}.waiting`, String(process.pid));
+  for (;;) {
+    try { await readFile(path); return; }
+    catch (error) { if (error.code !== "ENOENT") throw error; }
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
 }
