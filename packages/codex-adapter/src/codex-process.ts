@@ -56,6 +56,7 @@ export class CodexProcess implements LiveHarnessAdapter {
   readonly #notificationListeners = new Set<NotificationListener>();
   readonly #threadHandles = new Map<string, number>();
   readonly #questionFeatureWarnings = new Map<string, "disabled" | "unknown">();
+  readonly #questionFeatureChecks = new Map<string, symbol>();
   #child: ChildProcessWithoutNullStreams | undefined;
   #processGroupId: number | undefined;
   #lines: Interface | undefined;
@@ -157,8 +158,10 @@ export class CodexProcess implements LiveHarnessAdapter {
     if (options.effort !== undefined) {
       await this.validateEffort(options.effort, model, "createSession");
     }
-    await this.#checkQuestionFeature(nativeSessionId, options.workspacePath, "createSession");
-    return new CodexSession(this, nativeSessionId, model, options.effort);
+    const session = new CodexSession(this, nativeSessionId, model, options.effort);
+    // Feature discovery is diagnostic and must not delay Session admission.
+    void this.#checkQuestionFeature(session, options.workspacePath, "createSession").catch(() => {});
+    return session;
   }
 
   async resumeSession(options: AdapterResumeSessionOptions): Promise<AdapterSession> {
@@ -183,26 +186,31 @@ export class CodexProcess implements LiveHarnessAdapter {
     if (options.effort !== undefined) {
       await this.validateEffort(options.effort, model, "resumeSession");
     }
-    await this.#checkQuestionFeature(options.nativeSessionId, options.workspacePath, "resumeSession");
-    return new CodexSession(this, options.nativeSessionId, model, options.effort);
+    const session = new CodexSession(this, options.nativeSessionId, model, options.effort);
+    void this.#checkQuestionFeature(session, options.workspacePath, "resumeSession").catch(() => {});
+    return session;
   }
 
   async #checkQuestionFeature(
-    threadId: string,
+    session: CodexSession,
     workspacePath: string,
     operation: HarnessErrorData["operation"],
   ): Promise<void> {
+    const check = Symbol();
+    this.#questionFeatureChecks.set(workspacePath, check);
     let enabled: boolean | undefined;
     try {
       const cursors = new Set<string>();
       const deadline = Date.now() + questionFeatureCheckTimeoutMs;
       let cursor: string | undefined;
       for (;;) {
+        if (session.closed || this.#shutdown.signal.aborted ||
+            this.#questionFeatureChecks.get(workspacePath) !== check) break;
         const remainingMs = deadline - Date.now();
         if (remainingMs <= 0 || cursors.size >= 20) throw new Error("Codex feature discovery exceeded its bound");
         const result = asObject(await this.#request(
           "experimentalFeature/list",
-          { threadId, limit: 50, ...(cursor === undefined ? {} : { cursor }) },
+          { threadId: session.nativeSessionId, limit: 50, ...(cursor === undefined ? {} : { cursor }) },
           operation,
           remainingMs,
         ), "experimentalFeature/list result");
@@ -223,6 +231,11 @@ export class CodexProcess implements LiveHarnessAdapter {
     } catch {
       // Feature discovery is diagnostic, not a Session admission requirement.
     }
+    // A delayed observation cannot outlive its handle or supersede a newer
+    // check for the same Workspace. Shutdown rejects all pending requests.
+    if (this.#questionFeatureChecks.get(workspacePath) !== check) return;
+    this.#questionFeatureChecks.delete(workspacePath);
+    if (session.closed || this.#shutdown.signal.aborted) return;
     if (enabled === true) {
       this.#questionFeatureWarnings.delete(workspacePath);
       return;

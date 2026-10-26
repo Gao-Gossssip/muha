@@ -16,8 +16,10 @@ independent Questions are not answered automatically.
 When creating or resuming a Session, the native Adapter asks Codex for that
 thread's effective `default_mode_request_user_input` feature value. If it is
 disabled, Node emits `MUHA_CODEX_QUESTION_FEATURE_DISABLED`; if Codex cannot
-report the value, Node emits `MUHA_CODEX_QUESTION_FEATURE_UNKNOWN`. These
-warnings do not reject the Session or change Codex configuration. Codex applies
+report the value, Node emits `MUHA_CODEX_QUESTION_FEATURE_UNKNOWN`. Discovery runs
+in the background with a five-second bound; it does not delay Session creation
+or resumption. Observations from closed handles and superseded checks are ignored.
+These warnings do not reject the Session or change Codex configuration. Codex applies
 trusted project `.codex/config.toml` over user-level config, so a project can
 enable or disable the feature independently of the global setting. Muha keeps
 its native App Server connection stable-only (`capabilities: null`).

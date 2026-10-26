@@ -24,6 +24,8 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
   let turnRequestCount = 0;
   let interruptCount = 0;
   let resumeClosingObserved = false;
+  const pendingFeatureRequests = [];
+  let featureRequestCount = 0;
   for await (const line of lines) {
     const request = JSON.parse(line);
     if (
@@ -150,6 +152,13 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
       break;
     }
     if (request.method === "experimentalFeature/list") {
+      featureRequestCount += 1;
+      const featureScenario = process.env.MUHA_FAKE_CODEX_QUESTION_FEATURE;
+      if (featureScenario === "pending") continue;
+      if (featureScenario === "after-close" || (featureScenario === "out-of-order" && featureRequestCount === 1)) {
+        pendingFeatureRequests.push(request);
+        continue;
+      }
       if (typeof request.params?.threadId !== "string" || request.params.threadId.length === 0) {
         process.stdout.write(`${JSON.stringify({ id: request.id, error: {
           code: "invalid_request", message: "threadId is required for effective feature values",
@@ -164,6 +173,13 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
             enabled: process.env.MUHA_FAKE_CODEX_QUESTION_FEATURE !== "disabled" }],
           nextCursor: null,
         } })}\n`);
+      }
+      if (featureScenario === "out-of-order") {
+        for (const pending of pendingFeatureRequests.splice(0)) {
+          process.stdout.write(JSON.stringify({ id: pending.id, result: {
+            data: [{ name: "default_mode_request_user_input", enabled: false }], nextCursor: null,
+          } }) + "\n");
+        }
       }
       continue;
     }
@@ -225,6 +241,11 @@ if (!["app-server --stdio", "app-server --stdio -c thread_unload_delay_secs=0"].
       continue;
     }
     if (request.method === "thread/unsubscribe") {
+      for (const pending of pendingFeatureRequests.splice(0)) {
+        process.stdout.write(JSON.stringify({ id: pending.id, result: {
+          data: [{ name: "default_mode_request_user_input", enabled: false }], nextCursor: null,
+        } }) + "\n");
+      }
       if (process.argv.includes("thread_unload_delay_secs=0")) loadedPolicies.delete(request.params.threadId);
       process.stdout.write(`${JSON.stringify({ id: request.id, result: { status: "unsubscribed" } })}\n`);
       sendNotification("thread/status/changed", { threadId: request.params.threadId, status: { type: "notLoaded" } });

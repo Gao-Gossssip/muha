@@ -61,7 +61,7 @@
     },
     {
       "path": "packages/codex-adapter/src/codex-process.ts",
-      "sha256": "8f6cf686290c2e0771c2956e9f809f96deb765cf012eba8b51e2ab93e96827d5"
+      "sha256": "0751e6e9865575891c23b19b0f281d579f5055efd2a8a0967fdce35d48acb12a"
     },
     {
       "path": "packages/codex-adapter/src/index.ts",
@@ -1293,6 +1293,40 @@
       ],
       "realAttempts": 0,
       "scope": "Development candidate for Session-free native Model catalog discovery. Historical PASS receipts retain their recorded source scope; new behavior requires separately authorized bounded real qualification before publication."
+    },
+    {
+      "harness": "codex",
+      "platform": "linux-x64",
+      "candidateDate": "2026-10-26",
+      "status": "PENDING",
+      "sourceBase": "64d38080729c745bcde3a496c83f5e274060d87f",
+      "feature": "background-session-question-feature-diagnostic",
+      "changedResources": [
+        {
+          "path": "packages/codex-adapter/src/codex-process.ts",
+          "previousSha256": "8f6cf686290c2e0771c2956e9f809f96deb765cf012eba8b51e2ab93e96827d5",
+          "updatedSha256": "0751e6e9865575891c23b19b0f281d579f5055efd2a8a0967fdce35d48acb12a"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Only Codex diagnostic scheduling and stale-warning suppression changed. Controlled no-response tests do not qualify real inference; existing historical evidence retains its source and platform scope."
+    },
+    {
+      "harness": "codex",
+      "platform": "win32-x64",
+      "candidateDate": "2026-10-26",
+      "status": "PENDING",
+      "sourceBase": "64d38080729c745bcde3a496c83f5e274060d87f",
+      "feature": "background-session-question-feature-diagnostic",
+      "changedResources": [
+        {
+          "path": "packages/codex-adapter/src/codex-process.ts",
+          "previousSha256": "8f6cf686290c2e0771c2956e9f809f96deb765cf012eba8b51e2ab93e96827d5",
+          "updatedSha256": "0751e6e9865575891c23b19b0f281d579f5055efd2a8a0967fdce35d48acb12a"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Only Codex diagnostic scheduling and stale-warning suppression changed. Controlled no-response tests do not qualify real inference; existing historical evidence retains its source and platform scope."
     }
   ]
 }

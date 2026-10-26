@@ -1,5 +1,24 @@
 # SDK qualification and migration provenance
 
+## Codex background Session diagnostic candidate (2026-10-26)
+
+Codex's effective Question-feature discovery now runs in the background after
+Session admission. The existing five-second bound and native per-thread query
+remain; closed handles, shutdown and superseded Workspace checks cannot emit
+stale warnings. Model, effort and applied permission validation still complete
+before a Session is exposed. No user configuration is rewritten.
+
+Controlled evidence reproduces the previous five-second Session creation stall
+when feature discovery never responds. Regressions cover creation, usable Turns,
+resume and close with that diagnostic pending, delayed/out-of-order responses,
+independent Workspaces and the retained warning timeout. This is a latency fix
+for the reproduced path, not proof of the user's environment's complete cause.
+
+Only the Codex process runtime resource changed. Its new Linux and Windows
+entries remain PENDING with zero real attempts; earlier evidence retains its
+original source and platform scope. No real inference, platform requalification,
+publication or consumer-application acceptance is claimed.
+
 ## Native model catalog development candidate (2026-10-24)
 
 This candidate adds Session-free `runtime.listModels({ harness, workspacePath })`
