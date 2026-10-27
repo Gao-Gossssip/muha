@@ -6,6 +6,33 @@ import test from 'node:test';
 
 const root = resolve(import.meta.dirname, '../..');
 
+test('contributor and agent guidance preserve the protected main workflow and separate release authority', async () => {
+  const contributing = (await readFile(join(root, 'CONTRIBUTING.md'), 'utf8')).replace(/\s+/g, ' ');
+  for (const concept of [
+    /topic branch.*pull request targeting `main`/,
+    /Direct pushes, force pushes and deletion of `main` are blocked/,
+    /squash only/, /up to date with `main`/, /resolve review threads/,
+    /required check from GitHub Actions/,
+    /required approval count is zero/, /no standing bypass/,
+    /agents need explicit user authorization/,
+    /Add Windows checks only after that implementation is accepted and merged/,
+    /PR checks do not call paid models or publish packages/,
+    /manually dispatched OIDC release workflow/,
+    /merging a PR does not publish an npm release/,
+  ]) assert.match(contributing, concept);
+  for (const name of ['contract (22.20.0)', 'contract (lts/*)', 'contract (current)']) {
+    assert.ok(contributing.includes(`\`${name}\``), name);
+  }
+
+  const agents = (await readFile(join(root, 'AGENTS.md'), 'utf8')).replace(/\s+/g, ' ');
+  for (const concept of [
+    /topic branch and pull request/, /never push directly, force-push or delete `main`/,
+    /no standing bypass/, /Zero required approvals/,
+    /does not authorize an agent to merge/,
+    /explicit user authorization before merging a pull request or changing\/bypassing protection/,
+  ]) assert.match(agents, concept);
+});
+
 test('root READMEs explain motivation, the embedded SDK approach and application-level use cases', async () => {
   for (const [file, headings, concepts] of [
     ['README.md', ['Why Muha', 'How it works', 'What you can build', 'Install'],

@@ -17,6 +17,12 @@ This repository contains the `@muha-sdk/muha` SDK entry package, Core and five o
   tree. [Qualification](QUALIFICATION.md) distinguishes preserved real evidence
   from migration tests. Real models require explicit authorization.
 - Write new specs under the ignored local `docs/proposal/` directory.
+- Use a topic branch and pull request for changes to `main`; never push directly,
+  force-push or delete `main`. Required GitHub Actions checks and resolved review
+  threads gate squash merges, with an up-to-date base and no standing bypass.
+  Zero required approvals supports solo maintenance; it does not authorize an
+  agent to merge. Obtain explicit user authorization before merging a pull
+  request or changing/bypassing protection, even when sharing the owner's credentials.
 
 Orchestrator development belongs in its separate private project. Public visibility,
 npm publication and consumer application validation are independently approved work.
