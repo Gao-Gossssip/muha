@@ -56,7 +56,7 @@ test("the official packages share one installable ESM contract", async () => {
     "@agentclientprotocol/sdk": "1.4.0",
     "add-mcp": "2.0.0",
     skills: "1.5.21",
-    zod: "4.6.5",
+    zod: "4.6.7",
   });
   for (const adapter of [manifests[1], manifests[3]]) {
     assert.deepEqual(adapter.dependencies, {

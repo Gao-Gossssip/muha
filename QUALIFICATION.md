@@ -1,5 +1,20 @@
 # SDK qualification and migration provenance
 
+## SDK 0.1.18 release preparation (2026-10-27)
+
+All seven packages and their internal dependencies move together to 0.1.18.
+The root and npm entry-package READMEs include the updated introduction and
+banner. Core's exact Zod dependency moves from 4.6.5 to compatible patched 4.6.7;
+all other external lock entries and the exact Pi SDK 1.2.0 remain unchanged.
+
+The dependency change is included in Core's pending affected qualification.
+Model catalog discovery and Codex background diagnostics retain the source and
+platform boundaries below. Their Linux and Windows records remain PENDING;
+controlled CI and native empty-Session timings are not real-model acceptance.
+Production audit still reports the Pi SDK's exact undici 8.10.2 dependency.
+No qualification status or publication audit gate is weakened to prepare this
+version. Version metadata and merge authorization do not imply npm publication.
+
 ## Codex background Session diagnostic candidate (2026-10-26)
 
 Codex's effective Question-feature discovery now runs in the background after

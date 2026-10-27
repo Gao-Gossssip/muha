@@ -15,12 +15,14 @@ test('contributor and agent guidance preserve the protected main workflow and se
     /required check from GitHub Actions/,
     /required approval count is zero/, /no standing bypass/,
     /agents need explicit user authorization/,
-    /Add Windows checks only after that implementation is accepted and merged/,
+    /accepted Linux and native Windows implementation/,
+    /active branch-protection requirements/,
     /PR checks do not call paid models or publish packages/,
     /manually dispatched OIDC release workflow/,
     /merging a PR does not publish an npm release/,
   ]) assert.match(contributing, concept);
-  for (const name of ['contract (22.20.0)', 'contract (lts/*)', 'contract (current)']) {
+  for (const name of ['contract (22.20.0)', 'contract (lts/*)', 'contract (current)',
+    'windows-contract (22.20.0)', 'windows-contract (lts/*)', 'windows-contract (current)']) {
     assert.ok(contributing.includes(`\`${name}\``), name);
   }
 

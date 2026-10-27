@@ -1,27 +1,95 @@
-# Muha
+<h1 align="center">Muha</h1>
 
-[English](https://github.com/Gao-Sijie/muha/blob/main/README.md) | [简体中文](https://github.com/Gao-Sijie/muha/blob/main/README.zh-CN.md)
+<p align="center">
+  <strong>One TypeScript API for multiple coding agents.</strong>
+</p>
 
-One TypeScript API for Codex, OpenCode, Kimi Code, Pi, and AGY.
+<p align="center">Codex · OpenCode · Pi · Agy · ...</p>
 
-Use your coding agents from scripts and applications: create sessions, stream
-responses and tool activity, interrupt work, and resume native conversations.
-Each agent keeps its own models, tools, permissions, and conversation history.
+<p align="center">
+  <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm version"></a>
+  <a href="https://github.com/Gao-Sijie/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Sijie/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
+  <a href="https://github.com/Gao-Sijie/muha/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#examples">Examples</a> ·
+  <strong>English</strong> ·
+  <a href="https://github.com/Gao-Sijie/muha/blob/main/README.zh-CN.md">简体中文</a>
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Gao-Sijie/muha/main/assets/muha-banner.png" width="960" alt="One TypeScript API connects through Muha to Codex, OpenCode, Pi, Agy and other harnesses">
+</p>
+
+Muha is a lightweight TypeScript SDK for using coding agents in scripts and apps.
+Choose harnesses and models, connect tasks in code, and keep their native capabilities.
+A harness is a full agent runtime with models, tools, permissions, and history,
+not just a model API.
+
+## Why Muha
+
+- **Task-aware spending** Use cost-effective models for routine work and stronger
+  setups for difficult steps, combining existing subscriptions and providers.
+- **Automated handoffs** Connect research, writing, and review in code, passing
+  material and handling results without repeated terminal operations.
+- **Less integration glue** Manage startup, sessions, events, and interactions
+  across harnesses through one API instead of rebuilding each integration.
+
+## How it works
+
+- **Lightweight TypeScript API** Manage Sessions, Turns, streams, interactions,
+  interruption, and opt-in retries in ordinary Node.js code, without a workflow DSL.
+- **Explicit Session creation and resumption** Choose a harness, workspace, and
+  supported model settings with `createSession`. Reuse Sessions for ongoing tasks,
+  or save a reference and restore native context with `resumeSession`.
+- **Structured Questions** Receive agent follow-up questions as events, with
+  typed choices, text, numbers, and other inputs. Collect answers through a
+  terminal, chat interface, or form.
+- **Workspace Skills and MCP** Use `configureWorkspace` to write Skill sources
+  and MCP Server settings into the selected harnesses' native project files,
+  ready for Sessions in that workspace.
+- **No extra deployment** No separate Muha server, container platform, or
+  additional sandbox layer is required. Adapters may manage local helpers or native
+  services; Muha is not a security isolation boundary.
+
+## What you can build
+
+- **Flexible workflows** Reuse Sessions for ongoing context or create a fresh
+  Session per independent task. A Session permits one active Turn at a time;
+  parallel tasks use separate Sessions.
+- **Harness and model comparisons** Run the same task in separate Sessions for
+  evaluations, prompt experiments, or cross-checks. Your application supplies
+  scoring and cost estimates; Muha supplies a common execution API.
+- **Agent-led orchestration** Expose Muha as tools or scripts so an orchestrator
+  harness can delegate to others and collect results. Your code owns routing,
+  planning, and scheduling.
+- **Applications and scripts** Build chat, research-to-draft pipelines,
+  code-review tools, or batch file processing with the same execution controls.
+
+## Boundaries
+
+- Muha is not a built-in workflow scheduler or orchestrator.
+- A Session stays bound to its harness and workspace; switching harnesses requires
+  a new Session, without automatic conversation-history migration.
+- Muha uses each harness's configured API provider or subscription. It provides
+  no common API for switching providers and does not automatically select the cheapest model.
+- Optional features follow each harness's capability declaration. A common API
+  does not promise identical capabilities or outputs.
 
 ## Install
+
+Supports **Windows and Linux**. macOS is not currently supported.
 
 ```sh
 npm install @muha-sdk/muha
 ```
 
-Requires Node.js **22.20.0 or newer** on **Linux x64 with glibc 2.28 or newer**,
-including WSL2 environments that meet these requirements. Muha ships its own
-native helpers prebuilt; you do not need to clone or build this repository.
+**A one-line prompt for your agent:**
 
-This installs Core and all five adapters. Enable only the agents you use.
-Codex, OpenCode, Kimi Code, and AGY need their native tools installed and
-authenticated on `PATH`. Pi's SDK is included as an npm dependency; configure
-its native authentication and model before using it.
+> Read <https://github.com/Gao-Sijie/muha>, install the project, and check which Harness CLIs are available in the current environment.
 
 ## Quick start
 
@@ -64,30 +132,22 @@ The example denies tool actions that request approval and dismisses follow-up
 questions. Choose a supported approval policy and handle questions for your
 workflow; policy details differ between agents.
 
-## Choose an agent
+## Examples
 
-| Agent | Adapter | Setup |
+Browse the [examples catalog](https://github.com/Gao-Sijie/muha/blob/main/examples/README.md) for runnable scenarios, each
+with its own source and setup guide.
+
+Both examples require the complete `@muha-sdk/muha` installation and offer only
+locally installed harnesses; installing all native CLIs is unnecessary. Pi's SDK
+comes with Muha, while other harnesses need their native CLI on `PATH`.
+
+| Project | Overview | Location |
 | --- | --- | --- |
-| [Codex](https://github.com/Gao-Sijie/muha/blob/main/packages/codex-adapter/README.md) | `codexAdapter()` | Install and authenticate `codex` |
-| [OpenCode](https://github.com/Gao-Sijie/muha/blob/main/packages/opencode-adapter/README.md) | `openCodeAdapter()` | Install and authenticate `opencode` v2 |
-| [Kimi Code](https://github.com/Gao-Sijie/muha/blob/main/packages/kimi-adapter/README.md) | `kimiAdapter()` | Install and authenticate `kimi` |
-| [Pi](https://github.com/Gao-Sijie/muha/blob/main/packages/pi-adapter/README.md) | `piAdapter()` | SDK installed with Muha; configure native auth/model |
-| [AGY](https://github.com/Gao-Sijie/muha/blob/main/packages/agy-adapter/README.md) | `agyAdapter()` | Install and authenticate `agy` |
+| [Multi-Harness Chat](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/README.md) | Single-file server and chat UI: five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/) |
+| [AI Topic & Writing](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/README.md) | Interactive command-line research-to-draft workflow using `content-strategy` and `khazix-writer`. Independently choose each agent's harness/model/effort, stream model replies in the terminal and inspect the retained workspace. Real models require explicit consent. | [examples/auto-social-media/](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/) |
 
-Pass your chosen adapters to `createMuhaRuntime({ harnesses: [...] })`.
-Only configured agents start. Pi and AGY require an explicit supported policy,
-such as `harnessManaged`; they do not support the default `interactive` policy.
-
-## More ways to use Muha
-
-- Keep `session.reference` to resume the same native conversation.
-- Read `runtime.getHarnessCapabilities(...)` before using optional features.
-- Use `turn.interrupt()` to stop a running turn.
-- Configure workspace Skills and MCP where supported by your chosen agent.
-
-See the [API guide](https://github.com/Gao-Sijie/muha/blob/main/packages/core/README.md) and [verified versions and
-limitations](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md). A common API preserves agent-specific behavior;
-it does not promise identical answers or a shared model catalog.
+Examples live in this GitHub repository, not the npm package. Adding examples
+does not require a new SDK release. See [example contribution guidance](https://github.com/Gao-Sijie/muha/blob/main/CONTRIBUTING.md#examples).
 
 ## Install only what you need
 
@@ -102,9 +162,9 @@ Import directly from those packages and keep them on the same Muha release.
 ## Troubleshooting
 
 If an enabled agent cannot start, check its native tool is on `PATH` and its
-authentication is configured. The adapter guides above list setup requirements.
-If your package manager blocks dependency install scripts, review its reported
-dependencies and script policy. Keep normal install behavior for dependencies;
+authentication is configured. If your package manager blocks dependency install
+scripts, review its reported dependencies and script policy. Keep normal install
+behavior for dependencies;
 compiling Muha from source is not a required setup step.
 
 ## Contributing
