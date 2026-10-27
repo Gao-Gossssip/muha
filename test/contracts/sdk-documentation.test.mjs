@@ -22,10 +22,12 @@ test('root READMEs explain motivation, the embedded SDK approach and application
     assert.ok(positions.every(position => position >= 0), file);
     assert.deepEqual([...positions].sort((a, b) => a - b), positions, file);
     for (const concept of concepts) assert.match(contents.replace(/\s+/g, ' '), concept, file);
-    const introduction = contents.slice(positions[0], positions.at(-1));
-    const points = introduction.split('\n').filter(line => line.startsWith('- '));
-    assert.equal(points.length, 10, file);
-    assert.ok(points.every(line => /^- \*\*[^*]+\*\* \S/.test(line)), file);
+    for (const heading of headings.slice(0, -1)) {
+      const section = contents.split(`## ${heading}\n`)[1].split('\n## ')[0];
+      const points = section.split('\n').filter(line => line.startsWith('- '));
+      assert.ok(points.length > 0, `${file}: ${heading}`);
+      assert.ok(points.every(line => /^- \*\*[^*]+\*\* \S/.test(line)), `${file}: ${heading}`);
+    }
   }
 });
 
