@@ -196,3 +196,12 @@ For Codex, OpenCode, Kimi, and Pi, use `await session.setModel(id)` between Turn
 to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
+
+## SDK 0.1.18 security note
+
+The included Pi SDK 1.2.0 pins undici 8.10.2, retaining known denial-of-service
+and Subresource Integrity risks under an explicit exception for this release:
+[GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685),
+[GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472), and
+[GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c).
+See the [release exception](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception) for its exact scope.

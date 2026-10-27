@@ -12,8 +12,10 @@ Model catalog discovery and Codex background diagnostics retain the source and
 platform boundaries below. Their Linux and Windows records remain PENDING;
 controlled CI and native empty-Session timings are not real-model acceptance.
 Production audit still reports the Pi SDK's exact undici 8.10.2 dependency.
-No qualification status or publication audit gate is weakened to prepare this
-version. Version metadata and merge authorization do not imply npm publication.
+On 2026-10-27 the maintainer explicitly accepted the 0.1.18-only audit exception
+documented in RELEASING.md for its three known advisories. Other findings and all
+qualification gates remain blocking. No qualification status is promoted merely
+to prepare this version; metadata and merge authority do not imply publication.
 
 ## Codex background Session diagnostic candidate (2026-10-26)
 

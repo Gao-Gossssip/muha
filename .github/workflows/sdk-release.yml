@@ -83,7 +83,7 @@ jobs:
       - run: npm install --global npm@11.15.0
       - run: npm ci
       - run: npm run check
-      - run: npm audit --omit=dev --audit-level=low
+      - run: node scripts/release-audit.mjs
       - run: node scripts/verify-sdk-source.mjs
       - name: Download both native builds from this preparation run
         env:
