@@ -161,12 +161,19 @@ test("Pi lists available SDK chat models without creating a Session or making a 
 test("AGY Model query cancellation reclaims the owned CLI before Runtime.close resolves", async t => {
   const f = await fixture(t, profiles[3]);
   const pidFile = join(f.root, "model-query.pid");
+  // Reproduce the empty snapshot between creating the PID file and writing it.
+  await writeFile(pidFile, "");
   await f.set({ hang: true, pidFile });
   const query = f.runtime.listModels(f.options);
   const rejected = assert.rejects(query, error => error.data?.code === "RUNTIME_CLOSED");
   let pid;
   for (let attempt = 0; attempt < 200; attempt++) {
-    try { pid = Number(await readFile(pidFile, "utf8")); break; } catch {}
+    try {
+      const candidate = Number(await readFile(pidFile, "utf8"));
+      if (Number.isSafeInteger(candidate) && candidate > 1) { pid = candidate; break; }
+    } catch (error) {
+      if (error.code !== "ENOENT") throw error;
+    }
     await new Promise(resolve => setTimeout(resolve, 10));
   }
   assert.ok(pid, "native catalog command started");
