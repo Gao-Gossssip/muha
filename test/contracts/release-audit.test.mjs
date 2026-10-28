@@ -3,7 +3,9 @@ import test from "node:test";
 import { auditRelease, validateReleaseAudit } from "../../scripts/release-audit.mjs";
 
 function fixture() {
-  const urls = ["GHSA-4qv8-2p9j-2685", "GHSA-f72v-6w45-q472", "GHSA-xjj6-f33q-929c"];
+  const urls = ["GHSA-4qv8-2p9j-2685", "GHSA-f72v-6w45-q472", "GHSA-xjj6-f33q-929c",
+    "GHSA-4w7w-5xrc-9h26", "GHSA-2m5v-pch6-74hx", "GHSA-qrxm-fqhp-jwvm",
+    "GHSA-9fm3-97px-rjf6", "GHSA-55wc-3pg8-jfw6"];
   return {
     lock: { packages: {
       ...Object.fromEntries(["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "muha"]
@@ -24,7 +26,7 @@ test("release audit discloses exactly the approved 0.1.18 residual findings", ()
   const { report, lock } = fixture();
   const result = validateReleaseAudit(report, lock);
   assert.equal(result.status, "PASS_WITH_APPROVED_0_1_18_EXCEPTION");
-  assert.equal(result.acceptedResidualAdvisories.length, 3);
+  assert.equal(result.acceptedResidualAdvisories.length, 8);
 });
 
 test("new packages, advisories, direct SDK findings and critical severity stay blocked", () => {
