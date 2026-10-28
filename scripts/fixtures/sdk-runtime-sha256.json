@@ -1371,6 +1371,980 @@
       ],
       "realAttempts": 0,
       "scope": "Session-free Model listing reuses the existing bounded read-only ordered-plugin readiness check. No default-model query or mutation, Session or inference. Existing Session admission and model validation semantics are unchanged; authorized affected catalog/selection qualification remains pending."
+    },
+    {
+      "harness": "core",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/core/src/acp/driver.ts",
+          "previousSha256": "cbc52af64c4a5243c97954fa24cb4afe524ff95536ab7b91841c6566370edd55",
+          "updatedSha256": "03a589f597ebca2e4d48808792d7d779254eda6840fc64ca18182bff9e651a7d"
+        },
+        {
+          "path": "packages/core/src/capabilities.ts",
+          "previousSha256": "96b8107aa9fc19226ed1c5504e8214867cb6162c3b7c63e6a1739ddb7ca93556",
+          "updatedSha256": "bebcd4afb116008f82679292d31449918a8e83e70ca4334f07894ff947221b49"
+        },
+        {
+          "path": "packages/core/src/errors.ts",
+          "previousSha256": "a4222d797d30321453e516ed54be5e54bd7798b9f1fc9c30d4e4824d92367c1d",
+          "updatedSha256": "d8c1be7b42a4a2f0e19c7d31e4651d22b6ffe3ba996f79a1e600fad6890f0f34"
+        },
+        {
+          "path": "packages/core/src/index.ts",
+          "previousSha256": "0a6b148a07049f5e984dc95b8fc7ce2766e31c612fa39a2b5f81b0e0df4908d6",
+          "updatedSha256": "bf8952a9b5433d93de13913c81f7d63ccac2fb9a854927d53c78897732aa7147"
+        },
+        {
+          "path": "packages/core/src/internal.ts",
+          "previousSha256": "3db4ced4ad3507f3459404ce380d2f19d7d58fcd82b8d8259330b88fc39791af",
+          "updatedSha256": "7d67d9ce5298416bc521c99ce195d9836a48b69f14ddc9ae22da6a4775a737a6"
+        },
+        {
+          "path": "packages/core/src/models.ts",
+          "previousSha256": null,
+          "updatedSha256": "2569990c9ec6f6ab503fb8603b145a1e6c223947a1fa1b326375a5a0af96c9e6"
+        },
+        {
+          "path": "packages/core/src/runtime.ts",
+          "previousSha256": "4c3d4bd67607de87bc7e531014f4e164fac86dc1971222679cdcf2d62fa56926",
+          "updatedSha256": "f16a482faed5febf175956d563670c846204043fe4528dea94ef4576fbf3adb7"
+        },
+        {
+          "path": "packages/core/src/session.ts",
+          "previousSha256": "b022a510365162ce19fedc3828f590c8656c7de2efeaf5a920e241986438304b",
+          "updatedSha256": "c72366d466387dec2f761683a2f45b5867ca271080b9c5ea0ad1b0086704ba4a"
+        }
+      ],
+      "qualifiedUnitResources": 27,
+      "unitResourceSetSha256": "58f313b74fb7923a5bf6322f7935bdd054b34ba83372ec8480a3708f7d7208c1",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "realAttempts": 0,
+      "mappedRealAttempts": 25,
+      "paidCallsAddedByCoreAudit": 0,
+      "sourceEquivalence": {
+        "baseline": "d1710665836f6d485db9b52ca6a0616e00510096",
+        "unchangedCoreResources": 19,
+        "changedCoreResources": 8,
+        "externalChanges": [
+          {
+            "name": "zod",
+            "previous": "4.6.5",
+            "current": "4.6.7"
+          }
+        ]
+      },
+      "controlled": {
+        "sdkTests": 710,
+        "sdkPass": 693,
+        "sdkSkip": 17,
+        "piTests": 64,
+        "piPass": 64,
+        "fail": 0
+      },
+      "coverage": [
+        "closed-input-and-capability-enforcement-before-native-actions",
+        "canonical-Workspace-options-snapshot-and-no-directory-or-Session-creation",
+        "immutable-whitelisted-catalog-values-deduplication-and-conflict-rejection",
+        "control-deadline-and-close-preemption",
+        "native-common-lifecycle-stable-reference-one-terminal-and-final-message",
+        "native-tool-bytes-and-new-Runtime-history-across-five-Harnesses",
+        "rejected-selection-state-preservation-and-continuation",
+        "host-owned-private-native-records-and-owned-close"
+      ],
+      "realEvidenceMapping": [
+        {
+          "harness": "codex",
+          "attempts": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "nativeRecords": 232
+        },
+        {
+          "harness": "opencode",
+          "attempts": [
+            6,
+            7,
+            8,
+            9,
+            10
+          ],
+          "nativeRecords": 154
+        },
+        {
+          "harness": "kimi",
+          "attempts": [
+            11,
+            12,
+            13,
+            14,
+            15
+          ],
+          "nativeRecords": 245
+        },
+        {
+          "harness": "pi",
+          "attempts": [
+            16,
+            17,
+            18,
+            19,
+            20
+          ],
+          "nativeRecords": 187
+        },
+        {
+          "harness": "agy",
+          "attempts": [
+            21,
+            22,
+            23,
+            24,
+            25
+          ],
+          "nativeRecords": 53
+        }
+      ],
+      "scope": "Independent affected-boundary audit: eight Core catalog/type/dispatch/error-admission resources reviewed; nineteen existing Core runtime/native-ownership/store resources retain baseline hashes. Complete controlled suites and five-Harness native common-boundary evidence extend the preserved historical platform qualification. No new paid Core matrix, all-model equivalence, new optional-capability claim or automatic promotion from Adapter flags."
+    },
+    {
+      "harness": "codex",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-background-session-diagnostics",
+      "changedResources": [
+        {
+          "path": "packages/codex-adapter/src/codex-acp.ts",
+          "previousSha256": "646ce8f809468fefeaf8b3b9ce81e0f16000fca57660575040f1af8ea2cd7441",
+          "updatedSha256": "e66d2f3920dd742075755d2e3687b38ddd039b4ef63397de2d651633aa235922"
+        },
+        {
+          "path": "packages/codex-adapter/src/codex-process.ts",
+          "previousSha256": "2b6ecdc62f2b13c1553a8ffc0929575a9e00e05c1352f8c90b5888003aee6aca",
+          "updatedSha256": "0751e6e9865575891c23b19b0f281d579f5055efd2a8a0967fdce35d48acb12a"
+        },
+        {
+          "path": "packages/codex-adapter/src/index.ts",
+          "previousSha256": "48e2f1e845df2f75c74e2f61eefae683ec1ec38cc2b6fd7ea9dfcd0865092522",
+          "updatedSha256": "8fb1c4a52fa9d221b36d18f4dba07c111036b751b2fca78e46260dec5ee29611"
+        }
+      ],
+      "qualifiedUnitResources": 9,
+      "unitResourceSetSha256": "d492cca607f31f4eb66d10da4fd1eab872b7e154a744b1e30e2b8ffa99d78201",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "gpt-6-luna"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "nativeRecordsIndependentlyAudited": 232,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "startupTimingsMs": [
+        {
+          "stage": "runtime.initialize",
+          "elapsedMs": 351
+        },
+        {
+          "stage": "first-session.create",
+          "elapsedMs": 133
+        },
+        {
+          "stage": "second-session.create",
+          "elapsedMs": 103
+        },
+        {
+          "stage": "runtime.close-before-resume",
+          "elapsedMs": 25
+        },
+        {
+          "stage": "runtime.initialize",
+          "elapsedMs": 289
+        },
+        {
+          "stage": "new-runtime.resume",
+          "elapsedMs": 318
+        },
+        {
+          "stage": "runtime.final-close",
+          "elapsedMs": 23
+        }
+      ],
+      "questionFeature": "Inherited effective default_mode_request_user_input remained disabled; expected nonblocking warnings observed. No user configuration rewrite or new real-Question qualification."
+    },
+    {
+      "harness": "opencode",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/opencode-adapter/src/index.ts",
+          "previousSha256": "28952c7f19de5e116eb4a3ef61408e6eb5f78da669cdd9a8786177d409020a34",
+          "updatedSha256": "e5582b6d086ba084b49976226884a2a4eaba36c09fd194ee3ded0f56e88a1e13"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-acp.ts",
+          "previousSha256": "4ba43200d4eccd34ef4c8222db9991f04398a5e93cbeee2bd939adb87fba6cd2",
+          "updatedSha256": "cf45bfa6bfb54b08771a0821994ba2a61e870ac1f166f4a07ed6e4a1f0a2b8d5"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-process.ts",
+          "previousSha256": "013ca98b9cfe4e5db8454cd28a430a8e2d70c451212c0b5b12108d15cbdde83c",
+          "updatedSha256": "2e388cac4f9b9cbcce1eb54df82b3d8d4cb8f3aef19674e4bbf1039c97438e78"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
+          "previousSha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82",
+          "updatedSha256": "4b262c6bba1721c3ac8d471f9405d8c89d50518d99bec6676c26a23cc8f0a064"
+        }
+      ],
+      "qualifiedUnitResources": 9,
+      "unitResourceSetSha256": "fad951c3136d54d4fe1e854c2a669ec85380ed1faac1413407bd22333654dac2",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "nativeRecordsIndependentlyAudited": 154,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability."
+    },
+    {
+      "harness": "kimi",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/kimi-adapter/src/index.ts",
+          "previousSha256": "1908c70548dd8158ebda9bdd0b0baa7c8f97e95a8d3df2a0b8024c3a35f58e5e",
+          "updatedSha256": "4384630bafa2bca0450936315f1a5e0edff22bfdb8753b501f25f0b150f54c11"
+        },
+        {
+          "path": "packages/kimi-adapter/src/kimi-process.ts",
+          "previousSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2",
+          "updatedSha256": "fc3fe5b4171a7587d79f4fe883a5dc70e3049df1303c751f945cc1def3bcae93"
+        }
+      ],
+      "qualifiedUnitResources": 4,
+      "unitResourceSetSha256": "aa930ce753960dd6985f63c904e2056b6a4490623c32f85d5384ce937b2d7895",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "deepseek/deepseek-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "nativeRecordsIndependentlyAudited": 245,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability."
+    },
+    {
+      "harness": "pi",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/index.ts",
+          "previousSha256": "3b585a1c4a9cd136f9bb8342fdd43738d7a14508b1ec0c661146b2147e1c5d03",
+          "updatedSha256": "7fbc59020bdcdc5edad355ae51af0ae2d8205b08714e9dbffcb685bec20b55e2"
+        },
+        {
+          "path": "packages/pi-adapter/src/pi-process.ts",
+          "previousSha256": "06439a06bf1eaa98a63dfb4150d87ac6ad8cbc147482b351e93dc221508e973d",
+          "updatedSha256": "b6827855739e628d25befd07a4ebdc33b0e5028fc7022d0f810b95a1e8704a31"
+        },
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "61e902cd6fc44a8712ed6f126ea66d8704e078851d97b6a67e2c2dd577bf528c",
+          "updatedSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0"
+        }
+      ],
+      "qualifiedUnitResources": 15,
+      "unitResourceSetSha256": "09326a26293380845e120ec141aca3a89b2d5d4261dcf177c0880bfea9229ca2",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "nativeRecordsIndependentlyAudited": 187,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "sdkVersion": "1.2.0"
+    },
+    {
+      "harness": "agy",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/agy-adapter/src/agy-process.ts",
+          "previousSha256": "176a2ba5bcf3e687029247c1f8f3ba197417dc471b84be891aeddc67f4ee194e",
+          "updatedSha256": "24c3ea513aad47a1eb417cb45ab71047a2b394f47ad4c51ef8ba6ed62a0290b3"
+        },
+        {
+          "path": "packages/agy-adapter/src/index.ts",
+          "previousSha256": "33b029cd402b98e6d61276f02ea6424b1867a5fcec4394d241039a103b2db2f3",
+          "updatedSha256": "26fb90eb8638f5fc23ee938c2a9c70b643783fedbe8f30b0335d8cdcf7088033"
+        },
+        {
+          "path": "packages/agy-adapter/src/model-query.ts",
+          "previousSha256": null,
+          "updatedSha256": "c5396bf396f4cab6bc84e966cec6e799444882215c61d8fadf465fd61c11e276"
+        }
+      ],
+      "qualifiedUnitResources": 7,
+      "unitResourceSetSha256": "04a124b416cf634fa5171d7486733c7be09178927e9c2c54ab8f451f160b183b",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "claude-sonnet-5-5-low"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        21,
+        22,
+        23,
+        24,
+        25
+      ],
+      "nativeRecordsIndependentlyAudited": 53,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-model-setter-honestly-unsupported",
+        "unsupported-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "idleModelSelection": "UNSUPPORTED_CAPABILITY"
+    },
+    {
+      "harness": "core",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/core/src/acp/driver.ts",
+          "previousSha256": "cbc52af64c4a5243c97954fa24cb4afe524ff95536ab7b91841c6566370edd55",
+          "updatedSha256": "03a589f597ebca2e4d48808792d7d779254eda6840fc64ca18182bff9e651a7d"
+        },
+        {
+          "path": "packages/core/src/capabilities.ts",
+          "previousSha256": "96b8107aa9fc19226ed1c5504e8214867cb6162c3b7c63e6a1739ddb7ca93556",
+          "updatedSha256": "bebcd4afb116008f82679292d31449918a8e83e70ca4334f07894ff947221b49"
+        },
+        {
+          "path": "packages/core/src/errors.ts",
+          "previousSha256": "a4222d797d30321453e516ed54be5e54bd7798b9f1fc9c30d4e4824d92367c1d",
+          "updatedSha256": "d8c1be7b42a4a2f0e19c7d31e4651d22b6ffe3ba996f79a1e600fad6890f0f34"
+        },
+        {
+          "path": "packages/core/src/index.ts",
+          "previousSha256": "0a6b148a07049f5e984dc95b8fc7ce2766e31c612fa39a2b5f81b0e0df4908d6",
+          "updatedSha256": "bf8952a9b5433d93de13913c81f7d63ccac2fb9a854927d53c78897732aa7147"
+        },
+        {
+          "path": "packages/core/src/internal.ts",
+          "previousSha256": "3db4ced4ad3507f3459404ce380d2f19d7d58fcd82b8d8259330b88fc39791af",
+          "updatedSha256": "7d67d9ce5298416bc521c99ce195d9836a48b69f14ddc9ae22da6a4775a737a6"
+        },
+        {
+          "path": "packages/core/src/models.ts",
+          "previousSha256": null,
+          "updatedSha256": "2569990c9ec6f6ab503fb8603b145a1e6c223947a1fa1b326375a5a0af96c9e6"
+        },
+        {
+          "path": "packages/core/src/runtime.ts",
+          "previousSha256": "4c3d4bd67607de87bc7e531014f4e164fac86dc1971222679cdcf2d62fa56926",
+          "updatedSha256": "f16a482faed5febf175956d563670c846204043fe4528dea94ef4576fbf3adb7"
+        },
+        {
+          "path": "packages/core/src/session.ts",
+          "previousSha256": "b022a510365162ce19fedc3828f590c8656c7de2efeaf5a920e241986438304b",
+          "updatedSha256": "c72366d466387dec2f761683a2f45b5867ca271080b9c5ea0ad1b0086704ba4a"
+        }
+      ],
+      "qualifiedUnitResources": 27,
+      "unitResourceSetSha256": "58f313b74fb7923a5bf6322f7935bdd054b34ba83372ec8480a3708f7d7208c1",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "realAttempts": 0,
+      "mappedRealAttempts": 25,
+      "paidCallsAddedByCoreAudit": 0,
+      "sourceEquivalence": {
+        "baseline": "d1710665836f6d485db9b52ca6a0616e00510096",
+        "unchangedCoreResources": 19,
+        "changedCoreResources": 8,
+        "externalChanges": [
+          {
+            "name": "zod",
+            "previous": "4.6.5",
+            "current": "4.6.7"
+          }
+        ]
+      },
+      "controlled": {
+        "tests": 113,
+        "pass": 113,
+        "fail": 0,
+        "skip": 0,
+        "testFiles": 9
+      },
+      "coverage": [
+        "closed-input-and-capability-enforcement-before-native-actions",
+        "canonical-Workspace-options-snapshot-and-no-directory-or-Session-creation",
+        "immutable-whitelisted-catalog-values-deduplication-and-conflict-rejection",
+        "control-deadline-and-close-preemption",
+        "native-common-lifecycle-stable-reference-one-terminal-and-final-message",
+        "native-tool-bytes-and-new-Runtime-history-across-five-Harnesses",
+        "rejected-selection-state-preservation-and-continuation",
+        "host-owned-private-native-records-and-owned-close"
+      ],
+      "realEvidenceMapping": [
+        {
+          "harness": "codex",
+          "attempts": [
+            26,
+            27,
+            28,
+            29,
+            30
+          ],
+          "nativeRecords": 243
+        },
+        {
+          "harness": "opencode",
+          "attempts": [
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "nativeRecords": 138
+        },
+        {
+          "harness": "kimi",
+          "attempts": [
+            36,
+            37,
+            38,
+            39,
+            40
+          ],
+          "nativeRecords": 219
+        },
+        {
+          "harness": "pi",
+          "attempts": [
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "nativeRecords": 156
+        },
+        {
+          "harness": "agy",
+          "attempts": [
+            46,
+            47,
+            48,
+            49,
+            50
+          ],
+          "nativeRecords": 51
+        }
+      ],
+      "scope": "Independent affected-boundary audit: eight Core catalog/type/dispatch/error-admission resources reviewed; nineteen existing Core runtime/native-ownership/store resources retain baseline hashes. Complete controlled suites and five-Harness native common-boundary evidence extend the preserved historical platform qualification. No new paid Core matrix, all-model equivalence, new optional-capability claim or automatic promotion from Adapter flags."
+    },
+    {
+      "harness": "codex",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-background-session-diagnostics",
+      "changedResources": [
+        {
+          "path": "packages/codex-adapter/src/codex-acp.ts",
+          "previousSha256": "646ce8f809468fefeaf8b3b9ce81e0f16000fca57660575040f1af8ea2cd7441",
+          "updatedSha256": "e66d2f3920dd742075755d2e3687b38ddd039b4ef63397de2d651633aa235922"
+        },
+        {
+          "path": "packages/codex-adapter/src/codex-process.ts",
+          "previousSha256": "2b6ecdc62f2b13c1553a8ffc0929575a9e00e05c1352f8c90b5888003aee6aca",
+          "updatedSha256": "0751e6e9865575891c23b19b0f281d579f5055efd2a8a0967fdce35d48acb12a"
+        },
+        {
+          "path": "packages/codex-adapter/src/index.ts",
+          "previousSha256": "48e2f1e845df2f75c74e2f61eefae683ec1ec38cc2b6fd7ea9dfcd0865092522",
+          "updatedSha256": "8fb1c4a52fa9d221b36d18f4dba07c111036b751b2fca78e46260dec5ee29611"
+        }
+      ],
+      "qualifiedUnitResources": 9,
+      "unitResourceSetSha256": "d492cca607f31f4eb66d10da4fd1eab872b7e154a744b1e30e2b8ffa99d78201",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "gpt-6-luna"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        26,
+        27,
+        28,
+        29,
+        30
+      ],
+      "nativeRecordsIndependentlyAudited": 243,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "startupTimingsMs": [
+        {
+          "stage": "runtime.initialize",
+          "elapsedMs": 369
+        },
+        {
+          "stage": "first-session.create",
+          "elapsedMs": 249
+        },
+        {
+          "stage": "second-session.create",
+          "elapsedMs": 29
+        },
+        {
+          "stage": "runtime.close-before-resume",
+          "elapsedMs": 72
+        },
+        {
+          "stage": "runtime.initialize",
+          "elapsedMs": 346
+        },
+        {
+          "stage": "new-runtime.resume",
+          "elapsedMs": 261
+        },
+        {
+          "stage": "runtime.final-close",
+          "elapsedMs": 60
+        }
+      ],
+      "questionFeature": "Inherited effective default_mode_request_user_input remained disabled; expected nonblocking warnings observed. No user configuration rewrite or new real-Question qualification."
+    },
+    {
+      "harness": "opencode",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/opencode-adapter/src/index.ts",
+          "previousSha256": "28952c7f19de5e116eb4a3ef61408e6eb5f78da669cdd9a8786177d409020a34",
+          "updatedSha256": "e5582b6d086ba084b49976226884a2a4eaba36c09fd194ee3ded0f56e88a1e13"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-acp.ts",
+          "previousSha256": "4ba43200d4eccd34ef4c8222db9991f04398a5e93cbeee2bd939adb87fba6cd2",
+          "updatedSha256": "cf45bfa6bfb54b08771a0821994ba2a61e870ac1f166f4a07ed6e4a1f0a2b8d5"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-process.ts",
+          "previousSha256": "013ca98b9cfe4e5db8454cd28a430a8e2d70c451212c0b5b12108d15cbdde83c",
+          "updatedSha256": "2e388cac4f9b9cbcce1eb54df82b3d8d4cb8f3aef19674e4bbf1039c97438e78"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
+          "previousSha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82",
+          "updatedSha256": "4b262c6bba1721c3ac8d471f9405d8c89d50518d99bec6676c26a23cc8f0a064"
+        }
+      ],
+      "qualifiedUnitResources": 9,
+      "unitResourceSetSha256": "fad951c3136d54d4fe1e854c2a669ec85380ed1faac1413407bd22333654dac2",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "nativeRecordsIndependentlyAudited": 138,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability."
+    },
+    {
+      "harness": "kimi",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/kimi-adapter/src/index.ts",
+          "previousSha256": "1908c70548dd8158ebda9bdd0b0baa7c8f97e95a8d3df2a0b8024c3a35f58e5e",
+          "updatedSha256": "4384630bafa2bca0450936315f1a5e0edff22bfdb8753b501f25f0b150f54c11"
+        },
+        {
+          "path": "packages/kimi-adapter/src/kimi-process.ts",
+          "previousSha256": "6588e2c883918c52b39be5ece1144370ddded129561ffe70acc148bf5bc38cb2",
+          "updatedSha256": "fc3fe5b4171a7587d79f4fe883a5dc70e3049df1303c751f945cc1def3bcae93"
+        }
+      ],
+      "qualifiedUnitResources": 4,
+      "unitResourceSetSha256": "aa930ce753960dd6985f63c904e2056b6a4490623c32f85d5384ce937b2d7895",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "deepseek/deepseek-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "nativeRecordsIndependentlyAudited": 219,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability."
+    },
+    {
+      "harness": "pi",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/index.ts",
+          "previousSha256": "3b585a1c4a9cd136f9bb8342fdd43738d7a14508b1ec0c661146b2147e1c5d03",
+          "updatedSha256": "7fbc59020bdcdc5edad355ae51af0ae2d8205b08714e9dbffcb685bec20b55e2"
+        },
+        {
+          "path": "packages/pi-adapter/src/pi-process.ts",
+          "previousSha256": "06439a06bf1eaa98a63dfb4150d87ac6ad8cbc147482b351e93dc221508e973d",
+          "updatedSha256": "b6827855739e628d25befd07a4ebdc33b0e5028fc7022d0f810b95a1e8704a31"
+        },
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "61e902cd6fc44a8712ed6f126ea66d8704e078851d97b6a67e2c2dd577bf528c",
+          "updatedSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0"
+        }
+      ],
+      "qualifiedUnitResources": 15,
+      "unitResourceSetSha256": "09326a26293380845e120ec141aca3a89b2d5d4261dcf177c0880bfea9229ca2",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        41,
+        42,
+        43,
+        44,
+        45
+      ],
+      "nativeRecordsIndependentlyAudited": 156,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-approved-model-reselection-preserves-reference",
+        "native-invalid-selection-rejection-preserves-state",
+        "owned-runtime-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "sdkVersion": "1.2.0"
+    },
+    {
+      "harness": "agy",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-27",
+      "qualificationDate": "2026-10-28",
+      "status": "PASS",
+      "sourceSnapshot": "80e482c075a89d732938269267faba013a9f602b",
+      "sourceTree": "ccf6b8ece00f0186554817b256f3cf0d939114ab",
+      "lockfileSha256": "6cfdf76fdf1c33336aca2a9374ceaeac62e81bb5b683a86ff3fe4fd6fe87b43b",
+      "qualifiedManifestSha256": "ceeafdabb154924baaecc2ff90bb87a06a3e5d07f46c06b6a2a075b54b5bb2bd",
+      "feature": "native-model-listing-and-affected-selection-regression",
+      "changedResources": [
+        {
+          "path": "packages/agy-adapter/src/agy-process.ts",
+          "previousSha256": "176a2ba5bcf3e687029247c1f8f3ba197417dc471b84be891aeddc67f4ee194e",
+          "updatedSha256": "24c3ea513aad47a1eb417cb45ab71047a2b394f47ad4c51ef8ba6ed62a0290b3"
+        },
+        {
+          "path": "packages/agy-adapter/src/index.ts",
+          "previousSha256": "33b029cd402b98e6d61276f02ea6424b1867a5fcec4394d241039a103b2db2f3",
+          "updatedSha256": "26fb90eb8638f5fc23ee938c2a9c70b643783fedbe8f30b0335d8cdcf7088033"
+        },
+        {
+          "path": "packages/agy-adapter/src/model-query.ts",
+          "previousSha256": null,
+          "updatedSha256": "c5396bf396f4cab6bc84e966cec6e799444882215c61d8fadf465fd61c11e276"
+        }
+      ],
+      "qualifiedUnitResources": 7,
+      "unitResourceSetSha256": "04a124b416cf634fa5171d7486733c7be09178927e9c2c54ab8f451f160b183b",
+      "budgetLedgerSha256": "a6306f4651486bb418998dc2c8dcd024e9cfb78216262357a606a21a416e8713",
+      "globalRealAttempts": 50,
+      "globalAttemptLimit": 60,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 7200,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "models": {
+        "text": "claude-sonnet-5-5-low"
+      },
+      "realAttempts": 5,
+      "attemptLimit": 6,
+      "attempts": [
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "nativeRecordsIndependentlyAudited": 51,
+      "checks": [
+        "distinct-new-session-and-owned-close",
+        "idle-model-setter-honestly-unsupported",
+        "owned-runtime-close",
+        "manual-same-reference-resume-after-metadata-became-readable",
+        "unsupported-selection-rejection-preserves-state",
+        "manual-runtime-owned-close"
+      ],
+      "credentialPatternScan": "PASS",
+      "scope": "Bounded affected model-catalog/selection qualification on the exact source and lock. Five completed Turns cover catalog/create agreement, same approved-model selection and conversation history, native file-tool bytes, fresh-Runtime resume with tool history, and continuation after selection rejection. Unchanged historical capabilities retain their original complete qualification scopes; this is not inference on a second model or a rerun of every image/Question/permission/crash capability.",
+      "idleModelSelection": "UNSUPPORTED_CAPABILITY",
+      "retainedControlFailure": {
+        "status": "FAIL",
+        "error": {
+          "code": "HARNESS_ERROR",
+          "operation": "resumeSession"
+        },
+        "paidTurnsBeforeFailure": 3,
+        "classification": "Original immediate resume rejected read-only native metadata. A separate read-only check later accepted the same identity and canonical Workspace on unchanged SDK source. Underlying transient cause is unconfirmed. No automatic retry, new identity or repeated earlier Turn."
+      }
     }
   ]
 }

@@ -1,5 +1,57 @@
 # SDK qualification and migration provenance
 
+## Affected 0.1.18 qualification closure (2026-10-28)
+
+Source `80e482c075a89d732938269267faba013a9f602b`, its unchanged exact lock,
+and both native Linux and Windows passed the authorized affected regression:
+fifty completed real Turns, five per Harness/platform, concurrency one, zero
+Muha retries, no repeated failed Turn, 120 seconds per Turn and sixty Turns
+maximum. The paid batch took 566.377 seconds including the retained setup and
+control investigation. Ten reserve Turns remain unused. Fixed models were Codex
+`gpt-6-luna`, OpenCode/Pi `opencode-go/deepseek-v4.1-flash`, Kimi
+`deepseek/deepseek-flash`, and AGY `claude-sonnet-5-5-low`.
+
+Native catalog/create agreement, same approved-model reselection and retained
+history, actual native file-tool bytes, tool-result history after resumption in
+a new Runtime, ordinary rejected-selection recovery, owned close and host-owned
+native records passed. AGY's idle setter remained honestly unsupported. This
+batch did not infer on a second model or repeat every optional image, Question,
+permission or process-crash case; unchanged historical coverage retains its
+original source and platform scope. Codex's inherited Question feature stayed
+disabled and emitted its expected nonblocking diagnostic; no user config changed.
+
+Two Windows fixture directory-ACL failures occurred before inference. The SDK
+correctly rejected broad existing temporary-directory permissions; the fixture
+now creates its directory with the existing private-directory helper. Windows
+AGY's first immediate resume control was rejected by the read-only metadata
+check before a fourth Turn. A later independent read accepted the same native
+identity, Project and canonical Workspace on unchanged SDK source. Manual
+continuation completed the remaining two Turns without repeating the first
+three or replacing the conversation. Its transient cause is unconfirmed;
+the original FAIL receipt remains and immediate metadata availability is not
+claimed. All fifty accepted Turns succeeded, and copied Pi credentials were
+removed with original credential hashes preserved.
+
+Core received an independent audit: eight catalog/type/dispatch/error resources
+changed from the pre-catalog baseline; nineteen existing runtime, ownership and
+store resources retained their hashes. The only external dependency change is
+Zod 4.6.5 to 4.6.7. Full Linux check passed 693 SDK tests with 17 existing
+conditional skips and all 64 Pi tests; a separate native Windows affected run
+passed 113 contracts without skips. Stable references, exactly one terminal and
+final response, tool bytes/history, all five native lifecycles and post-close
+records were independently checked on both platforms. The appended manifest
+entries extend preserved unchanged qualification and do not inherit PASS solely
+from Adapter flags. Required full Linux/Windows CI remains a merge gate.
+
+Publication is still blocked: a fresh production audit additionally reports
+GHSA-4w7w-5xrc-9h26, GHSA-2m5v-pch6-74hx, GHSA-qrxm-fqhp-jwvm,
+GHSA-9fm3-97px-rjf6 and GHSA-55wc-3pg8-jfw6 for the same undici 8.10.2.
+The maintainer's existing exception covers only the earlier three advisories.
+The committed guard rejects these five additions; no broader exception, upload
+or Registry consumer acceptance is implied by real qualification. Latest Pi SDK
+1.4.0 was rechecked and still pins undici 8.10.2.
+
+
 ## SDK 0.1.18 release preparation (2026-10-27)
 
 All seven packages and their internal dependencies move together to 0.1.18.
