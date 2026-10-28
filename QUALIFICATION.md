@@ -1,5 +1,100 @@
 # SDK qualification and migration provenance
 
+## Affected 0.1.18 qualification closure (2026-10-28)
+
+Source `80e482c075a89d732938269267faba013a9f602b`, its unchanged exact lock,
+and both native Linux and Windows passed the authorized affected regression:
+fifty completed real Turns, five per Harness/platform, concurrency one, zero
+Muha retries, no repeated failed Turn, 120 seconds per Turn and sixty Turns
+maximum. The paid batch took 566.377 seconds including the retained setup and
+control investigation. Ten reserve Turns remain unused. Fixed models were Codex
+`gpt-6-luna`, OpenCode/Pi `opencode-go/deepseek-v4.1-flash`, Kimi
+`deepseek/deepseek-flash`, and AGY `claude-sonnet-5-5-low`.
+
+Native catalog/create agreement, same approved-model reselection and retained
+history, actual native file-tool bytes, tool-result history after resumption in
+a new Runtime, ordinary rejected-selection recovery, owned close and host-owned
+native records passed. AGY's idle setter remained honestly unsupported. This
+batch did not infer on a second model or repeat every optional image, Question,
+permission or process-crash case; unchanged historical coverage retains its
+original source and platform scope. Codex's inherited Question feature stayed
+disabled and emitted its expected nonblocking diagnostic; no user config changed.
+
+Two Windows fixture directory-ACL failures occurred before inference. The SDK
+correctly rejected broad existing temporary-directory permissions; the fixture
+now creates its directory with the existing private-directory helper. Windows
+AGY's first immediate resume control was rejected by the read-only metadata
+check before a fourth Turn. A later independent read accepted the same native
+identity, Project and canonical Workspace on unchanged SDK source. Manual
+continuation completed the remaining two Turns without repeating the first
+three or replacing the conversation. Its transient cause is unconfirmed;
+the original FAIL receipt remains and immediate metadata availability is not
+claimed. All fifty accepted Turns succeeded, and copied Pi credentials were
+removed with original credential hashes preserved.
+
+Core received an independent audit: eight catalog/type/dispatch/error resources
+changed from the pre-catalog baseline; nineteen existing runtime, ownership and
+store resources retained their hashes. The only external dependency change is
+Zod 4.6.5 to 4.6.7. Full Linux check passed 693 SDK tests with 17 existing
+conditional skips and all 64 Pi tests; a separate native Windows affected run
+passed 113 contracts without skips. Stable references, exactly one terminal and
+final response, tool bytes/history, all five native lifecycles and post-close
+records were independently checked on both platforms. The appended manifest
+entries extend preserved unchanged qualification and do not inherit PASS solely
+from Adapter flags. Required full Linux/Windows CI remains a merge gate.
+
+Publication is still blocked: a fresh production audit additionally reports
+GHSA-4w7w-5xrc-9h26, GHSA-2m5v-pch6-74hx, GHSA-qrxm-fqhp-jwvm,
+GHSA-9fm3-97px-rjf6 and GHSA-55wc-3pg8-jfw6 for the same undici 8.10.2.
+The maintainer's existing exception covers only the earlier three advisories.
+The committed guard rejects these five additions; no broader exception, upload
+or Registry consumer acceptance is implied by real qualification. Latest Pi SDK
+1.4.0 was rechecked and still pins undici 8.10.2.
+
+
+## SDK 0.1.18 release preparation (2026-10-27)
+
+All seven packages and their internal dependencies move together to 0.1.18.
+The root and npm entry-package READMEs include the updated introduction and
+banner. Core's exact Zod dependency moves from 4.6.5 to compatible patched 4.6.7;
+all other external lock entries and the exact Pi SDK 1.2.0 remain unchanged.
+
+Native Linux OpenCode preflight also reproduced an initially empty V2 model
+catalog before native plugin settlement. Session-free listing now reuses the
+bounded read-only ordered-plugin readiness check already required for Session
+admission. It neither queries nor writes a default selection, creates no Session
+and preserves existing model validation. The additional OpenCode resource
+entries remain PENDING on both platforms.
+
+The dependency change is included in Core's pending affected qualification.
+Model catalog discovery and Codex background diagnostics retain the source and
+platform boundaries below. Their Linux and Windows records remain PENDING;
+controlled CI and native empty-Session timings are not real-model acceptance.
+Production audit still reports the Pi SDK's exact undici 8.10.2 dependency.
+On 2026-10-27 the maintainer explicitly accepted the 0.1.18-only audit exception
+documented in RELEASING.md for its three known advisories. Other findings and all
+qualification gates remain blocking. No qualification status is promoted merely
+to prepare this version; metadata and merge authority do not imply publication.
+
+## Codex background Session diagnostic candidate (2026-10-26)
+
+Codex's effective Question-feature discovery now runs in the background after
+Session admission. The existing five-second bound and native per-thread query
+remain; closed handles, shutdown and superseded Workspace checks cannot emit
+stale warnings. Model, effort and applied permission validation still complete
+before a Session is exposed. No user configuration is rewritten.
+
+Controlled evidence reproduces the previous five-second Session creation stall
+when feature discovery never responds. Regressions cover creation, usable Turns,
+resume and close with that diagnostic pending, delayed/out-of-order responses,
+independent Workspaces and the retained warning timeout. This is a latency fix
+for the reproduced path, not proof of the user's environment's complete cause.
+
+Only the Codex process runtime resource changed. Its new Linux and Windows
+entries remain PENDING with zero real attempts; earlier evidence retains its
+original source and platform scope. No real inference, platform requalification,
+publication or consumer-application acceptance is claimed.
+
 ## Native model catalog development candidate (2026-10-24)
 
 This candidate adds Session-free `runtime.listModels({ harness, workspacePath })`

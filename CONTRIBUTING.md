@@ -42,6 +42,33 @@ New commits contain no `docs/` directory at any depth. Run
 See [RELEASING.md](RELEASING.md) for reviewed candidates, npm publication and
 public Registry consumer acceptance.
 
+## Pull requests and main protection
+
+Work on a topic branch and open a pull request targeting `main`. Direct pushes,
+force pushes and deletion of `main` are blocked by the `main-protection` ruleset.
+Merge using squash only, keep the branch up to date with `main`, resolve review
+threads, and pass every required check from GitHub Actions:
+
+- `contract (22.20.0)`
+- `contract (lts/*)`
+- `contract (current)`
+- `windows-contract (22.20.0)`
+- `windows-contract (lts/*)`
+- `windows-contract (current)`
+
+The required approval count is zero to support solo maintenance, not to authorize
+unreviewed automatic merges. The maintainer decides when to merge; agents need
+explicit user authorization even when sharing the owner's GitHub credentials.
+There is no standing bypass for administrators or bots. A protection change or
+emergency exception requires explicit maintainer authorization and a retained
+record; diagnose failed checks rather than silently removing requirements.
+
+The listed checks reflect the accepted Linux and native Windows implementation
+and the active branch-protection requirements. Ordinary PR checks do not call
+paid models or publish packages. Real-model
+qualification and the manually dispatched OIDC release workflow remain separate
+approval gates; merging a PR does not publish an npm release.
+
 ## Examples
 
 Examples are GitHub repository content outside the seven npm packages. Put a new

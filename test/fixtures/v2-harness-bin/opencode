@@ -12,7 +12,10 @@ const authorization = "Basic " + Buffer.from("opencode:" + password).toString("b
 const evidenceFile = process.env.MUHA_V2_EVIDENCE_FILE;
 if (process.env.MUHA_V2_PID_FILE) await writeFile(process.env.MUHA_V2_PID_FILE, String(process.pid));
 const evidence = { unauthenticated: 0, authenticated: 0, requests: [], created: 0, removed: 0,
-  createdPermissions: [], prompts: [], permissions: [], forms: [], interrupts: [] };
+  createdPermissions: [], prompts: [], permissions: [], forms: [], interrupts: [],
+  modelInitializations: [], modelQueries: [] };
+const initializedModelWorkspaces = new Set();
+const initializingModelWorkspaces = new Set();
 let evidenceWrite;
 let pendingEvidenceSnapshot;
 let evidenceSequence = 0;
@@ -99,6 +102,20 @@ const server = createServer(async (request, response) => {
     }
   } else if (request.method === "GET" && url.pathname === "/api/plugin") {
     const directory = url.searchParams.get("location[directory]") ?? "";
+    if (process.env.MUHA_FAKE_MODEL_CATALOG) {
+      const catalog = JSON.parse(await readFile(process.env.MUHA_FAKE_MODEL_CATALOG, "utf8"));
+      if (catalog.pluginError) {
+        await persistEvidence();
+        return json(response, 500, { error: "private diagnostic" });
+      }
+      if (catalog.requireModelInitialization && !initializingModelWorkspaces.has(directory)) {
+        initializingModelWorkspaces.add(directory);
+        await persistEvidence();
+        return json(response, 200, { location: { directory }, data: [] });
+      }
+    }
+    initializedModelWorkspaces.add(directory);
+    evidence.modelInitializations.push(directory);
     json(response, 200, {
       location: { directory },
       data: process.env.MUHA_V2_PLUGIN_STATE === "missing" ? [] : [{
@@ -148,11 +165,15 @@ const server = createServer(async (request, response) => {
       cursor: {},
     });
   } else if (request.method === "GET" && url.pathname === "/api/model") {
+    const directory = url.searchParams.get("location[directory]") ?? "";
+    evidence.modelQueries.push(directory);
     if (process.env.MUHA_FAKE_MODEL_CATALOG) {
       const catalog = JSON.parse(await readFile(process.env.MUHA_FAKE_MODEL_CATALOG, "utf8"));
-      return json(response, catalog.error ? 500 : 200, { data: catalog.models });
+      await persistEvidence();
+      return json(response, catalog.error ? 500 : 200, {
+        data: catalog.requireModelInitialization && !initializedModelWorkspaces.has(directory) ? [] : catalog.models,
+      });
     }
-    const directory = url.searchParams.get("location[directory]") ?? "";
     json(response, 200, {
       location: { directory },
       data: [{

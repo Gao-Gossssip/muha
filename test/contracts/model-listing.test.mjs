@@ -6,6 +6,7 @@ import { delimiter, dirname, join, resolve } from "node:path";
 import { mkdtemp } from "../support/temporary-directory.mjs";
 import { createMuhaRuntime, codexAdapter, openCodeAdapter, kimiAdapter, agyAdapter } from "@muha-sdk/muha";
 import { agyConformance } from "../support/agy-conformance.mjs";
+import { readV2Evidence } from "../support/v2-evidence.mjs";
 import { controlledPi } from "../../packages/pi-adapter/test/support/controlled-pi.mjs";
 
 const nativeBin = resolve(import.meta.dirname, "../fixtures/harness-bin");
@@ -39,7 +40,8 @@ async function fixture(t, profile, initial = { models: profile.models }) {
     env: { PATH: [profile.harness === "opencode" ? v2Bin : nativeBin, dirname(process.execPath)].join(delimiter) },
   };
   const runtime = await createMuhaRuntime({ harnesses: [profile.factory({
-    ...base, env: { ...base.env, MUHA_FAKE_MODEL_CATALOG: file },
+    ...base, env: { ...base.env, MUHA_FAKE_MODEL_CATALOG: file,
+      ...(profile.harness === "opencode" ? { MUHA_V2_EVIDENCE_FILE: join(root, "evidence.json") } : {}) },
   })], dataDir: join(root, "diagnostics") });
   t.after(async () => { try { await runtime.close(); } finally { await rm(root, { recursive: true, force: true }); } });
   return { runtime, workspace, file, root, options: { harness: profile.harness, workspacePath: workspace },
@@ -87,6 +89,41 @@ for (const profile of profiles) {
     assert.equal(f.runtime.status, "active");
   });
 }
+
+test("OpenCode initializes each native Workspace catalog without creating Sessions or selecting its default", async t => {
+  const profile = profiles[1];
+  const initial = { models: profile.models, requireModelInitialization: true };
+  const f = await fixture(t, profile, initial);
+  const other = join(f.root, "other-workspace");
+  await mkdir(other);
+  for (const workspacePath of [f.workspace, other, f.workspace]) {
+    assert.deepEqual(await f.runtime.listModels({ ...f.options, workspacePath }), profile.expected);
+  }
+  const evidence = await readV2Evidence(join(f.root, "evidence.json"), value => value.modelQueries.length === 3);
+  assert.deepEqual(evidence.modelInitializations, [f.workspace, other, f.workspace]);
+  assert.deepEqual(evidence.modelQueries, evidence.modelInitializations);
+  assert.equal(evidence.created, 0);
+  assert.deepEqual(evidence.prompts, []);
+  assert.equal(evidence.requests.includes("/api/model/default"), false);
+  await f.set({ ...initial, pluginError: true });
+  await assert.rejects(f.runtime.listModels(f.options), error =>
+    error.data?.code === "HARNESS_ERROR" && error.data.operation === "listModels" &&
+    !error.message.includes("private diagnostic"));
+  assert.equal(f.runtime.status, "active");
+  await f.set(initial);
+  assert.deepEqual(await f.runtime.listModels(f.options), profile.expected);
+});
+
+test("OpenCode validates an explicit first Session model against its initialized catalog", async t => {
+  const profile = profiles[1];
+  const f = await fixture(t, profile, { models: profile.models, requireModelInitialization: true });
+  const session = await f.runtime.createSession({ ...f.options, model: profile.expected[0].id });
+  assert.equal(session.model, profile.expected[0].id);
+  const before = { reference: session.reference, model: session.model, effort: session.effort };
+  assert.deepEqual(await f.runtime.listModels(f.options), profile.expected);
+  assert.deepEqual({ reference: session.reference, model: session.model, effort: session.effort }, before);
+  await session.close();
+});
 
 test("Codex rejects repeated Model cursors and conflicting native identity fields", async t => {
   const f = await fixture(t, profiles[0]);

@@ -215,26 +215,26 @@ export class OpenCodeV2Service {
     }
   }
 
-  async ensureOrderedPlugin(workspacePath: string): Promise<void> {
+  async ensureOrderedPlugin(workspacePath: string, operation: HarnessErrorData["operation"] = "initialize"): Promise<void> {
     const expected = this.#pluginPath;
-    if (!expected || !this.#client) throw serviceFailure("initialize", "handshake");
+    if (!expected || !this.#client) throw serviceFailure(operation, "handshake");
     const deadline = Date.now() + Math.min(this.options.startupTimeoutMs ?? defaultTimeoutMs, 10_000);
     for (;;) {
       let response: unknown;
       try { response = await this.#client.plugin.list({ location: { directory: workspacePath } }); }
-      catch { throw serviceFailure("initialize", "handshake"); }
+      catch { throw serviceFailure(operation, "handshake"); }
       await this.context.recordNativeEvent("opencode", response);
-      if (!isRecord(response) || !Array.isArray(response.data)) throw serviceFailure("initialize", "handshake");
+      if (!isRecord(response) || !Array.isArray(response.data)) throw serviceFailure(operation, "handshake");
       const plugin = response.data.find((value) => isRecord(value) && value.id === orderedInputPluginID);
       if (isRecord(plugin)) {
         const source = plugin.source;
         const state = plugin.state;
         if (!isRecord(source) || source.type !== "local" || source.path !== expected ||
-            !isRecord(state)) throw serviceFailure("initialize", "handshake");
+            !isRecord(state)) throw serviceFailure(operation, "handshake");
         if (state.status === "active") return;
-        if (state.status === "failed") throw serviceFailure("initialize", "handshake");
+        if (state.status === "failed") throw serviceFailure(operation, "handshake");
       }
-      if (Date.now() >= deadline) throw serviceFailure("initialize", "handshake");
+      if (Date.now() >= deadline) throw serviceFailure(operation, "handshake");
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
   }

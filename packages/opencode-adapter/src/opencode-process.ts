@@ -296,6 +296,9 @@ export class OpenCodeProcess implements LiveHarnessAdapter {
   }
 
   async listModels(workspacePath: string): Promise<readonly HarnessModelInfo[]> {
+    // Native model.list may precede initial plugin settlement. Reuse Session
+    // admission's read-only Workspace barrier without creating a Session.
+    await this.#service?.ensureOrderedPlugin(workspacePath, "listModels");
     return snapshotHarnessModels("opencode", (await this.#requireApi().listModels(workspacePath, "listModels")).map(value => {
       const entry = asObjectProtocol(value, "OpenCode v2 Model");
       const provider = requireProtocolString(entry.providerID, "OpenCode Model provider");

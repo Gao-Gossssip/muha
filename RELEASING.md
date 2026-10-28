@@ -42,6 +42,26 @@ platforms must be `PASS`. Historical smoke receipts and controlled fixtures
 cannot clear a `PENDING` real-model qualification. Qualification evidence remains
 scoped to the source, platform and dependencies it actually exercised.
 
+## SDK 0.1.18 production audit exception
+
+The maintainer explicitly accepted this exception on 2026-10-27. It applies only
+to the seven-package 0.1.18 cohort with Pi SDK 1.2.0, its exact undici 8.10.2
+dependency, and patched Zod 4.6.7. `node scripts/release-audit.mjs` still performs
+a complete production npm audit. All other packages, advisories, critical
+severity updates, incomplete reports and Registry errors fail publication.
+The exception expires outside this release; a clean audit needs no exception.
+
+These residual vulnerabilities remain present and are not claimed unreachable:
+
+- [GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685): unbounded EventSource-parser memory can cause denial of service.
+- [GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472): non-lowercase algorithm tokens can bypass Subresource Integrity.
+- [GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c): excessive content encodings can cause unhandled errors and denial of service.
+
+The affected dependency bytes are unchanged from the preceding release. This
+does not waive real-model qualification, licenses, immutable archive/provenance
+verification, dual-platform acceptance or consumer installation. The release
+notes and affected package READMEs must disclose the residual advisories.
+
 Registry propagation is handled through read-only verification, bounded by
 60 attempts and five minutes per operation. Identity, byte or provenance
 mismatches stop immediately. Failed npm uploads are not
