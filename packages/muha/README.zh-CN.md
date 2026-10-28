@@ -170,8 +170,13 @@ Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
 ## SDK 0.1.18 安全说明
 
 随附的 Pi SDK 1.2.0 固定依赖 undici 8.10.2。本版通过明确授权的限定例外，
-保留其已知拒绝服务与子资源完整性校验风险：
+保留其已知拒绝服务、子资源完整性校验绕过、缓存污染与数据泄露、TLS 证书校验绕过风险：
 [GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685)、
 [GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472)、
-[GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c)。
+[GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c)、
+[GHSA-4w7w-5xrc-9h26](https://github.com/advisories/GHSA-4w7w-5xrc-9h26)、
+[GHSA-2m5v-pch6-74hx](https://github.com/advisories/GHSA-2m5v-pch6-74hx)、
+[GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm)、
+[GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6)、
+[GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6)。
 范围与其他检查要求见[本版发布例外](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception)。

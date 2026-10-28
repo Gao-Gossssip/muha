@@ -44,8 +44,10 @@ scoped to the source, platform and dependencies it actually exercised.
 
 ## SDK 0.1.18 production audit exception
 
-The maintainer explicitly accepted this exception on 2026-10-27. It applies only
-to the seven-package 0.1.18 cohort with Pi SDK 1.2.0, its exact undici 8.10.2
+The maintainer accepted the initial three advisories on 2026-10-27 and resumed
+publication on 2026-10-28 with the five additional risks listed below. This
+eight-advisory exception applies only to the seven-package 0.1.18 cohort with
+Pi SDK 1.2.0, its exact undici 8.10.2
 dependency, and patched Zod 4.6.7. `node scripts/release-audit.mjs` still performs
 a complete production npm audit. All other packages, advisories, critical
 severity updates, incomplete reports and Registry errors fail publication.
@@ -56,6 +58,11 @@ These residual vulnerabilities remain present and are not claimed unreachable:
 - [GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685): unbounded EventSource-parser memory can cause denial of service.
 - [GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472): non-lowercase algorithm tokens can bypass Subresource Integrity.
 - [GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c): excessive content encodings can cause unhandled errors and denial of service.
+- [GHSA-4w7w-5xrc-9h26](https://github.com/advisories/GHSA-4w7w-5xrc-9h26): cross-origin redirects with a shared cache can poison entries and disclose other users' data.
+- [GHSA-2m5v-pch6-74hx](https://github.com/advisories/GHSA-2m5v-pch6-74hx): dropped TLS callback options can bypass intended certificate validation.
+- [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm): TLS 1.2 certificate-changing renegotiation can crash the client process.
+- [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6): unbounded automatic WebSocket PONG buffering can cause denial of service.
+- [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6): asynchronous decompression handler exceptions can escape and crash the process.
 
 The affected dependency bytes are unchanged from the preceding release. This
 does not waive real-model qualification, licenses, immutable archive/provenance

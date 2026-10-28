@@ -4,12 +4,17 @@ import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnNpmSync } from "./npm-command.mjs";
 
-// Maintainer-approved on 2026-10-27, exclusively for the 0.1.18 cohort.
+// Maintainer-approved on 2026-10-27, expanded on 2026-10-28 for 0.1.18 only.
 // These advisories remain risks, not fixed or unreachable vulnerabilities.
 const permittedAdvisories = new Set([
   "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
   "https://github.com/advisories/GHSA-f72v-6w45-q472",
   "https://github.com/advisories/GHSA-xjj6-f33q-929c",
+  "https://github.com/advisories/GHSA-4w7w-5xrc-9h26",
+  "https://github.com/advisories/GHSA-2m5v-pch6-74hx",
+  "https://github.com/advisories/GHSA-qrxm-fqhp-jwvm",
+  "https://github.com/advisories/GHSA-9fm3-97px-rjf6",
+  "https://github.com/advisories/GHSA-55wc-3pg8-jfw6",
 ]);
 
 export function validateReleaseAudit(report, lock) {

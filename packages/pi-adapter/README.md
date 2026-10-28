@@ -2,9 +2,16 @@
 
 SDK 0.1.18 retains Pi SDK 1.2.0's undici 8.10.2 dependency under an explicit,
 release-specific security exception. Known residual risks include denial of
-service and Subresource Integrity bypass: [GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685),
-[GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472), and
-[GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c).
+service, Subresource Integrity bypass, cache poisoning/data disclosure and TLS
+certificate-validation bypass:
+[GHSA-4qv8-2p9j-2685](https://github.com/advisories/GHSA-4qv8-2p9j-2685),
+[GHSA-f72v-6w45-q472](https://github.com/advisories/GHSA-f72v-6w45-q472),
+[GHSA-xjj6-f33q-929c](https://github.com/advisories/GHSA-xjj6-f33q-929c),
+[GHSA-4w7w-5xrc-9h26](https://github.com/advisories/GHSA-4w7w-5xrc-9h26),
+[GHSA-2m5v-pch6-74hx](https://github.com/advisories/GHSA-2m5v-pch6-74hx),
+[GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm),
+[GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6), and
+[GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6).
 See the [scoped exception](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception).
 
 Pi uses the checksum-verified high-level input patch for SDK 1.2.0. See

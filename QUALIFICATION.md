@@ -1,5 +1,22 @@
 # SDK qualification and migration provenance
 
+## 0.1.18 publication resumed with the scoped audit exception (2026-10-28)
+
+After reviewing the five additional findings below and initially deferring
+publication, the maintainer instructed publication to proceed. The existing
+0.1.18-only audit exception now permits those five exact URLs in addition to
+the original three. Cache disclosure, TLS-validation, Subresource Integrity and
+denial-of-service risks remain present; RELEASING.md and affected package READMEs
+disclose all eight. All other packages/advisories, critical severity changes,
+version changes, malformed reports and Registry failures still block release.
+
+Only release-audit policy, its controlled fixtures and disclosure documents
+change. All 71 runtime resources, the exact production lock and the complete
+qualification manifest retain their accepted digests, so the fifty actual Turns
+below retain their recorded scope without new paid calls. Publication must still
+use reviewed source-bound dual-platform artifacts, OIDC provenance and cold
+Linux/Windows consumer installation with lockfile replay before latest promotion.
+
 ## Affected 0.1.18 qualification closure (2026-10-28)
 
 Source `80e482c075a89d732938269267faba013a9f602b`, its unchanged exact lock,
