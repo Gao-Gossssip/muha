@@ -7,6 +7,13 @@ The root and npm entry-package READMEs include the updated introduction and
 banner. Core's exact Zod dependency moves from 4.6.5 to compatible patched 4.6.7;
 all other external lock entries and the exact Pi SDK 1.2.0 remain unchanged.
 
+Native Linux OpenCode preflight also reproduced an initially empty V2 model
+catalog before native plugin settlement. Session-free listing now reuses the
+bounded read-only ordered-plugin readiness check already required for Session
+admission. It neither queries nor writes a default selection, creates no Session
+and preserves existing model validation. The additional OpenCode resource
+entries remain PENDING on both platforms.
+
 The dependency change is included in Core's pending affected qualification.
 Model catalog discovery and Codex background diagnostics retain the source and
 platform boundaries below. Their Linux and Windows records remain PENDING;

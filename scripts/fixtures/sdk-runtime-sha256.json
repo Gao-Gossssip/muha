@@ -201,7 +201,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-process.ts",
-      "sha256": "c129bd2bd4d0b3dd54cddec7520286722f7d7aeef81408312b4b0f4b9f2c12c3"
+      "sha256": "2e388cac4f9b9cbcce1eb54df82b3d8d4cb8f3aef19674e4bbf1039c97438e78"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-api.ts",
@@ -217,7 +217,7 @@
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
-      "sha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82"
+      "sha256": "4b262c6bba1721c3ac8d471f9405d8c89d50518d99bec6676c26a23cc8f0a064"
     },
     {
       "path": "packages/opencode-adapter/src/opencode-v2-turn.ts",
@@ -1327,6 +1327,50 @@
       ],
       "realAttempts": 0,
       "scope": "Only Codex diagnostic scheduling and stale-warning suppression changed. Controlled no-response tests do not qualify real inference; existing historical evidence retains its source and platform scope."
+    },
+    {
+      "harness": "opencode",
+      "platform": "linux-x64",
+      "candidateDate": "2026-10-28",
+      "status": "PENDING",
+      "sourceBase": "d617e2c349d4ffe5bbc4e8d71156b2f86ab697ea",
+      "feature": "wait-for-native-workspace-plugin-settlement-before-model-catalog",
+      "changedResources": [
+        {
+          "path": "packages/opencode-adapter/src/opencode-process.ts",
+          "previousSha256": "c129bd2bd4d0b3dd54cddec7520286722f7d7aeef81408312b4b0f4b9f2c12c3",
+          "updatedSha256": "2e388cac4f9b9cbcce1eb54df82b3d8d4cb8f3aef19674e4bbf1039c97438e78"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
+          "previousSha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82",
+          "updatedSha256": "4b262c6bba1721c3ac8d471f9405d8c89d50518d99bec6676c26a23cc8f0a064"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Session-free Model listing reuses the existing bounded read-only ordered-plugin readiness check. No default-model query or mutation, Session or inference. Existing Session admission and model validation semantics are unchanged; authorized affected catalog/selection qualification remains pending."
+    },
+    {
+      "harness": "opencode",
+      "platform": "win32-x64",
+      "candidateDate": "2026-10-28",
+      "status": "PENDING",
+      "sourceBase": "d617e2c349d4ffe5bbc4e8d71156b2f86ab697ea",
+      "feature": "wait-for-native-workspace-plugin-settlement-before-model-catalog",
+      "changedResources": [
+        {
+          "path": "packages/opencode-adapter/src/opencode-process.ts",
+          "previousSha256": "c129bd2bd4d0b3dd54cddec7520286722f7d7aeef81408312b4b0f4b9f2c12c3",
+          "updatedSha256": "2e388cac4f9b9cbcce1eb54df82b3d8d4cb8f3aef19674e4bbf1039c97438e78"
+        },
+        {
+          "path": "packages/opencode-adapter/src/opencode-v2-service.ts",
+          "previousSha256": "92b1e46c88f6e20bf92cb331da337e4643a177b4348f3884f792dbe315ab4d82",
+          "updatedSha256": "4b262c6bba1721c3ac8d471f9405d8c89d50518d99bec6676c26a23cc8f0a064"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Session-free Model listing reuses the existing bounded read-only ordered-plugin readiness check. No default-model query or mutation, Session or inference. Existing Session admission and model validation semantics are unchanged; authorized affected catalog/selection qualification remains pending."
     }
   ]
 }
