@@ -73,10 +73,24 @@ test("Core rejects invalid, contradictory and conflicting catalog entries withou
   const f = await fixture(t, { list: async () => value });
   for (value of [null, [{}], [{ id: "" }], [{ id: " native " }], [{ id: "native", name: 1 }],
     [{ id: "native", supportedEfforts: ["x", "x"] }], [{ id: "native", supportedEfforts: ["x"], defaultEffort: "y" }],
+    [{ id: "native", supportedEfforts: null }], [{ id: "native", supportedEfforts: [""] }],
+    [{ id: "native", supportedEfforts: [" high "] }], [{ id: "native", supportedEfforts: [1] }],
+    [{ id: "native", supportedEfforts: [], defaultEffort: "high" }],
+    [{ id: "native", supportedEfforts: ["low"] }, { id: "native", supportedEfforts: ["high"] }],
     [{ id: "native", name: "first" }, { id: "native", name: "different" }]]) {
     await assert.rejects(f.runtime.listModels(f.options), error => error.data?.code === "ADAPTER_PROTOCOL_ERROR");
     assert.equal(f.runtime.status, "active");
   }
+});
+
+test("Core preserves unreported Efforts, an explicit empty list and native disabled values distinctly", async t => {
+  const entries = [{ id: "unknown" }, { id: "none", supportedEfforts: [] },
+    { id: "disabled", supportedEfforts: ["off"], defaultEffort: "off" }];
+  const f = await fixture(t, { list: async () => entries });
+  const catalog = await f.runtime.listModels(f.options);
+  assert.deepEqual(JSON.parse(JSON.stringify(catalog)), entries);
+  assert.equal(Object.hasOwn(catalog[0], "supportedEfforts"), false);
+  assert.equal(Object.isFrozen(catalog[1].supportedEfforts), true);
 });
 
 test("Runtime.close preempts a pending model catalog even before the Adapter acknowledges", async t => {

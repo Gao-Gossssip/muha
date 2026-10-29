@@ -152,14 +152,43 @@ npm install @muha-sdk/core @muha-sdk/pi-adapter
 ```js
 const models = await runtime.listModels({ harness: "codex", workspacePath: process.cwd() });
 // 对已启用的 opencode、kimi、pi、agy 使用相同调用，只替换 harness。
-console.log(models.map(model => ({ id: model.id, name: model.name })));
+console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
+  id, name, supportedEfforts, defaultEffort,
+})));
 ```
 
 此接口查询 Harness 原生配置所报告的可选聊天模型。Workspace 必须存在；
 查询不创建聊天会话、不调用模型推理、不修改默认模型。返回值是深度冻结、
 可 JSON 序列化的数组，原生 `id` 可原样传给对应 Harness 的模型选择接口。
 仅在原生目录提供时返回 `name`、`description`、`supportedEfforts` 和
-`defaultEffort`；effort 保留原生含义。成功查询到空目录返回 `[]`，查询和格式
+`defaultEffort`；effort 保留原生含义。
+
+`model.supportedEfforts` 返回该模型可选择的原生强度值，可原样传给创建/恢复会话的
+`effort`，或空闲会话的 `session.setEffort(value)`；具体选择时机仍由
+`effort.selectionAt` 能力声明决定。字段缺省表示目录未提供信息，`[]` 表示原生明确
+报告没有可选值；`"off"` 等禁用推理的值本身仍是一个可选项。`defaultEffort`
+仅表示目录报告的默认值，不表示当前会话的实际选择。
+
+| Harness | `supportedEfforts` 来源 | `defaultEffort` 来源 |
+| --- | --- | --- |
+| Codex | 原生支持的 reasoning efforts | 原生默认 reasoning effort |
+| OpenCode | Workspace 模型的 variant ID | 未提供 |
+| Kimi | 原生支持的 thinking efforts | 原生默认 effort（若提供） |
+| Pi | SDK 按模型计算的 thinking levels，包含自定义映射 | 未提供 |
+| AGY | 当前支持的 `agy models` 输出未提供 | 未提供 |
+
+Muha 不跨 Harness 统一强度等级，也不从模型名称猜测。原生配置改变后可再次查询。
+
+```js
+const model = models.find(model => model.id === session.model);
+const effort = model?.supportedEfforts?.[0];
+if (effort !== undefined &&
+    runtime.getHarnessCapabilities("codex").effort.selectionAt.includes("idleSession")) {
+  await session.setEffort(effort); // 两次 Turn 之间调用，对后续 Turn 生效。
+}
+```
+
+成功查询到空目录返回 `[]`，查询和格式
 错误会明确拒绝。目录受原生配置、认证和缓存影响，不保证凭据、额度或下一次
 模型调用成功。静态能力声明为 `runtime.getHarnessCapabilities(harness).model.listing`。
 

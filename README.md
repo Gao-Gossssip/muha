@@ -178,7 +178,9 @@ Security reports: [SECURITY.md](SECURITY.md). Licensed under [MIT](LICENSE).
 ```js
 const models = await runtime.listModels({ harness: "codex", workspacePath: process.cwd() });
 // Use the same call with opencode, kimi, pi, or agy when enabled.
-console.log(models.map(model => ({ id: model.id, name: model.name })));
+console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
+  id, name, supportedEfforts, defaultEffort,
+})));
 ```
 
 `listModels` reads the enabled Harness's native selectable chat-model catalog.
@@ -187,6 +189,34 @@ or change model defaults. The result is a deeply frozen, JSON-safe array; each
 native `id` can be passed unchanged to that Harness's model selection APIs.
 Optional `name`, `description`, `supportedEfforts`, and `defaultEffort` appear only
 when reported natively. Effort values retain their Harness-specific meaning.
+
+`model.supportedEfforts` contains the native values accepted by `effort` at
+Session creation/resumption or by idle `session.setEffort(value)`, subject to the
+Harness's `effort.selectionAt` capability. An omitted field means the catalog
+does not report this information; `[]` means it explicitly reports no selectable
+values. A value such as `"off"` remains a selectable native value. `defaultEffort`
+is a catalog default when supplied, not the current Session's effort.
+
+| Harness | `supportedEfforts` source | `defaultEffort` source |
+| --- | --- | --- |
+| Codex | Native supported reasoning efforts | Native default reasoning effort |
+| OpenCode | Workspace model variant IDs | Not reported |
+| Kimi | Native supported thinking efforts | Native default effort, when reported |
+| Pi | SDK per-model thinking levels, including custom mappings | Not reported |
+| AGY | Not reported by the supported `agy models` output | Not reported |
+
+Select a listed value directly; Muha does not normalize levels across Harnesses
+or derive them from model names. Query again after changing native configuration.
+
+```js
+const model = models.find(model => model.id === session.model);
+const effort = model?.supportedEfforts?.[0];
+if (effort !== undefined &&
+    runtime.getHarnessCapabilities("codex").effort.selectionAt.includes("idleSession")) {
+  await session.setEffort(effort); // Between Turns; applies to the next Turn.
+}
+```
+
 A successful empty catalog returns `[]`; query and format failures reject.
 Catalogs reflect native configuration/authentication and native caching, and do
 not guarantee credentials, quota, or the success of a later model request.

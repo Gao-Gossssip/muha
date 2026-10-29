@@ -81,6 +81,10 @@ adding C constructors. The helper links the platform libc dynamically.
 const models = await runtime.listModels({ harness: "agy", workspacePath: process.cwd() });
 ```
 
+The supported native catalog reports model IDs and display names only, so
+`supportedEfforts` and `defaultEffort` are omitted (unknown). Muha does not infer
+selectable effort values from model-name suffixes such as `low` or `high`.
+
 The Adapter runs the caller-installed `agy models` under its owned process supervisor. It validates the native slug/display-name output (including CLI 1.4.5 tab-separated lines), drains diagnostics privately, and bounds query time and descendant cleanup. Unknown output formats reject; AGY idle model switching remains unsupported.
 
 The result reports native selectable chat models, not a guarantee of credentials,

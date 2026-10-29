@@ -1,5 +1,22 @@
 # SDK qualification and migration provenance
 
+## Native model effort discovery candidate (2026-10-29)
+
+The existing `runtime.listModels` response retains `supportedEfforts` and
+`defaultEffort`. Codex, OpenCode and Kimi already supply their native catalog
+metadata. Pi now supplies per-model thinking levels through the same public
+native helper used by Session effort validation, without creating a Session or
+running inference. Custom mappings and non-reasoning models retain native
+semantics. Pi and AGY do not invent catalog defaults; the supported AGY catalog
+still omits effort metadata entirely.
+
+Only Pi's `sdk-worker.mjs` changes among the 71 runtime resources. Its existing
+transitive Pi AI 1.2.0 dependency becomes a direct exact dependency; every locked
+external package entry remains unchanged. The new Linux and Windows Pi entries
+are PENDING with zero real attempts. Historical qualification keeps its exact
+source/platform scope; controlled contracts do not extend those paid receipts.
+No new real-model budget, merge or npm publication is implied by this candidate.
+
 ## 0.1.18 publication resumed with the scoped audit exception (2026-10-28)
 
 After reviewing the five additional findings below and initially deferring
