@@ -42,7 +42,26 @@ platforms must be `PASS`. Historical smoke receipts and controlled fixtures
 cannot clear a `PENDING` real-model qualification. Qualification evidence remains
 scoped to the source, platform and dependencies it actually exercised.
 
+## SDK 0.1.19 production audit exception
+
+On 2026-10-29 the maintainer separately authorized the same eight exact undici
+advisories listed in the historical 0.1.18 section below for the seven-package
+0.1.19 cohort only. The scope remains Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7.
+The current audit guard accepts only that version and dependency combination;
+future versions require a clean audit or a separately reviewed exception.
+
+All eight risks remain present: denial of service, Subresource Integrity bypass,
+cache poisoning/cross-user disclosure and TLS certificate-validation bypass.
+A complete fresh production audit is still required. New packages/advisories,
+critical severity changes, malformed reports and Registry errors are rejected.
+Real qualification, source-bound artifacts, provenance, licenses and consumer
+installation gates remain mandatory. Affected package READMEs and release notes
+must disclose the residual risks.
+
 ## SDK 0.1.18 production audit exception
+
+This section preserves the preceding release's authorization and risk disclosure;
+it does not extend the current release guard to historical versions.
 
 The maintainer accepted the initial three advisories on 2026-10-27 and resumed
 publication on 2026-10-28 with the five additional risks listed below. This

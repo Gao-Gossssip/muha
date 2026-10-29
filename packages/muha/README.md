@@ -227,7 +227,7 @@ to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
 
-## SDK 0.1.18 security note
+## SDK 0.1.19 security note
 
 The included Pi SDK 1.2.0 pins undici 8.10.2, retaining known denial-of-service,
 Subresource Integrity, cache poisoning/data disclosure and TLS-validation risks
@@ -240,4 +240,4 @@ under an exception limited to this release:
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm),
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6), and
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6).
-See the [release exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception) for its exact scope.
+See the [release exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0119-production-audit-exception) for its exact scope.

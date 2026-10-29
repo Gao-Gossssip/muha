@@ -1,6 +1,6 @@
 # @muha-sdk/pi-adapter
 
-SDK 0.1.18 retains Pi SDK 1.2.0's undici 8.10.2 dependency under an explicit,
+SDK 0.1.19 retains Pi SDK 1.2.0's undici 8.10.2 dependency under an explicit,
 release-specific security exception. Known residual risks include denial of
 service, Subresource Integrity bypass, cache poisoning/data disclosure and TLS
 certificate-validation bypass:
@@ -12,7 +12,7 @@ certificate-validation bypass:
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm),
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6), and
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6).
-See the [scoped exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception).
+See the [scoped exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0119-production-audit-exception).
 
 Pi uses the checksum-verified high-level input patch for SDK 1.2.0. See
 [qualification and limitations](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)

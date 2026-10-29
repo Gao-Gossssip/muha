@@ -9,7 +9,7 @@ function fixture() {
   return {
     lock: { packages: {
       ...Object.fromEntries(["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "muha"]
-        .map(name => [`packages/${name}`, { version: "0.1.18" }])),
+        .map(name => [`packages/${name}`, { version: "0.1.19" }])),
       "node_modules/@earendil-works/pi-coding-agent": { version: "1.2.0" },
       "node_modules/undici": { version: "8.10.2" },
       "node_modules/zod": { version: "4.6.7" },
@@ -22,10 +22,10 @@ function fixture() {
   };
 }
 
-test("release audit discloses exactly the approved 0.1.18 residual findings", () => {
+test("release audit discloses exactly the approved 0.1.19 residual findings", () => {
   const { report, lock } = fixture();
   const result = validateReleaseAudit(report, lock);
-  assert.equal(result.status, "PASS_WITH_APPROVED_0_1_18_EXCEPTION");
+  assert.equal(result.status, "PASS_WITH_APPROVED_0_1_19_EXCEPTION");
   assert.equal(result.acceptedResidualAdvisories.length, 8);
 });
 
@@ -45,7 +45,7 @@ test("new packages, advisories, direct SDK findings and critical severity stay b
 
 test("the approved exception expires with any cohort or scoped dependency change", () => {
   for (const [path, version] of [
-    ["packages/core", "0.1.19"], ["node_modules/@earendil-works/pi-coding-agent", "1.4.0"],
+    ["packages/core", "0.1.20"], ["packages/core", "0.1.18"], ["node_modules/@earendil-works/pi-coding-agent", "1.4.0"],
     ["node_modules/undici", "8.12.2"], ["node_modules/zod", "4.6.5"],
   ]) {
     const f = fixture(); f.lock.packages[path].version = version;
@@ -55,7 +55,7 @@ test("the approved exception expires with any cohort or scoped dependency change
 
 test("a clean complete production audit needs no exception for future versions", () => {
   const f = fixture(); f.report.vulnerabilities = {}; f.report.metadata.vulnerabilities.total = 0;
-  f.lock.packages["packages/core"].version = "0.1.19";
+  f.lock.packages["packages/core"].version = "0.1.20";
   assert.deepEqual(validateReleaseAudit(f.report, f.lock), { status: "PASS", acceptedResidualAdvisories: [] });
 });
 
