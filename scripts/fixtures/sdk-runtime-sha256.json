@@ -2383,6 +2383,138 @@
       ],
       "realAttempts": 0,
       "scope": "Session-free catalog now uses the same native per-model thinking-level helper as Pi Session validation. Pi AI 1.2.0 becomes an explicit direct dependency; all locked external package entries are unchanged. Historical PASS receipts retain their recorded source and platform scope; affected real qualification requires separate authorization before publication."
+    },
+    {
+      "harness": "pi",
+      "platform": "linux-x64",
+      "authorizationDate": "2026-10-29",
+      "qualificationDate": "2026-10-29",
+      "status": "PASS",
+      "sourceSnapshot": "4c8028c52b5a6eecd98536553fc2ce504b8b1918",
+      "sourceTree": "aecfedcd3741de5ef0013542302a90b3ad29ac5d",
+      "lockfileSha256": "d8dc02c857b9db5232885320f54564c52e8b06c093660c6e3f27ebd4c1c5001b",
+      "qualifiedManifestSha256": "c3df68f67312a8d4961352980b15acf5945cef32c88dd7a85ea5c2a8936137a2",
+      "feature": "native-model-effort-discovery",
+      "sdkVersion": "1.2.0",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0",
+          "updatedSha256": "188fecff18f8509fd81a080dc8ae104b11c858f603f5d2c86f5a9a17fda2f52a"
+        }
+      ],
+      "qualifiedUnitResources": 15,
+      "unitResourceSetSha256": "07b8b2b8d3f64b42bd4be77cccde97c2d7c0b77790e3dd4b428c23db5e773800",
+      "budgetLedgerSha256": "c322f21bfb5540757b59b393c216c409fe132b1cfd68ef15747c73f0a3f1dd1d",
+      "receiptSha256": "e0898c56879d4474b96f9335f4c6f2c12bd0ba0f4eeb8ca45fc3b38f349a1108",
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "catalogEfforts": [
+        "low",
+        "high",
+        "max"
+      ],
+      "qualifiedEfforts": [
+        "low",
+        "high"
+      ],
+      "realAttempts": 2,
+      "attemptLimit": 2,
+      "attempts": [
+        1,
+        2
+      ],
+      "globalRealAttempts": 4,
+      "globalAttemptLimit": 4,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 900,
+      "actualWallClockSeconds": 46.416,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "nativeRecordsIndependentlyAudited": 37,
+      "checks": [
+        "session-free-effort-catalog",
+        "catalog-efforts-accepted-at-create-and-idle",
+        "query-preserves-selected-effort",
+        "invalid-selection-preserves-effort",
+        "same-reference-and-conversation",
+        "owned-runtime-close"
+      ],
+      "nativeFinalMessagesMatch": true,
+      "temporaryCredentialsRemoved": true,
+      "originalConfigurationUnchanged": true,
+      "sourceEquivalence": {
+        "runtimeResourcesUnchanged": 71,
+        "lockedExternalPackagesUnchanged": true
+      },
+      "scope": "Bounded affected qualification on the exact recorded source and lock. Two completed Turns per platform validate native catalog low/high selection, idle effort change with stable reference and conversation history, read-only catalog queries, rejected-effort state preservation and owned close. Native thinking levels and final messages were independently audited. Catalog max was observed but not inferred on. All 71 release runtime resources and locked external package entries match the tested source; internal version and publication metadata differ. Historical optional-capability qualification retains its original scope; no additional Harness or consumer-application qualification is claimed."
+    },
+    {
+      "harness": "pi",
+      "platform": "win32-x64",
+      "authorizationDate": "2026-10-29",
+      "qualificationDate": "2026-10-29",
+      "status": "PASS",
+      "sourceSnapshot": "4c8028c52b5a6eecd98536553fc2ce504b8b1918",
+      "sourceTree": "aecfedcd3741de5ef0013542302a90b3ad29ac5d",
+      "lockfileSha256": "d8dc02c857b9db5232885320f54564c52e8b06c093660c6e3f27ebd4c1c5001b",
+      "qualifiedManifestSha256": "c3df68f67312a8d4961352980b15acf5945cef32c88dd7a85ea5c2a8936137a2",
+      "feature": "native-model-effort-discovery",
+      "sdkVersion": "1.2.0",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0",
+          "updatedSha256": "188fecff18f8509fd81a080dc8ae104b11c858f603f5d2c86f5a9a17fda2f52a"
+        }
+      ],
+      "qualifiedUnitResources": 15,
+      "unitResourceSetSha256": "07b8b2b8d3f64b42bd4be77cccde97c2d7c0b77790e3dd4b428c23db5e773800",
+      "budgetLedgerSha256": "c322f21bfb5540757b59b393c216c409fe132b1cfd68ef15747c73f0a3f1dd1d",
+      "receiptSha256": "d8bd7b22434a58321f4577d151bc277a62b666d13226f2a8a782b59d244822d1",
+      "models": {
+        "text": "opencode-go/deepseek-v4.1-flash"
+      },
+      "catalogEfforts": [
+        "low",
+        "high",
+        "max"
+      ],
+      "qualifiedEfforts": [
+        "low",
+        "high"
+      ],
+      "realAttempts": 2,
+      "attemptLimit": 2,
+      "attempts": [
+        3,
+        4
+      ],
+      "globalRealAttempts": 4,
+      "globalAttemptLimit": 4,
+      "perAttemptSecondsLimit": 120,
+      "wallClockSecondsLimit": 900,
+      "actualWallClockSeconds": 46.416,
+      "concurrency": 1,
+      "maxRetries": 0,
+      "nativeRecordsIndependentlyAudited": 63,
+      "checks": [
+        "session-free-effort-catalog",
+        "catalog-efforts-accepted-at-create-and-idle",
+        "query-preserves-selected-effort",
+        "invalid-selection-preserves-effort",
+        "same-reference-and-conversation",
+        "owned-runtime-close"
+      ],
+      "nativeFinalMessagesMatch": true,
+      "temporaryCredentialsRemoved": true,
+      "originalConfigurationUnchanged": true,
+      "sourceEquivalence": {
+        "runtimeResourcesUnchanged": 71,
+        "lockedExternalPackagesUnchanged": true
+      },
+      "scope": "Bounded affected qualification on the exact recorded source and lock. Two completed Turns per platform validate native catalog low/high selection, idle effort change with stable reference and conversation history, read-only catalog queries, rejected-effort state preservation and owned close. Native thinking levels and final messages were independently audited. Catalog max was observed but not inferred on. All 71 release runtime resources and locked external package entries match the tested source; internal version and publication metadata differ. Historical optional-capability qualification retains its original scope; no additional Harness or consumer-application qualification is claimed."
     }
   ]
 }

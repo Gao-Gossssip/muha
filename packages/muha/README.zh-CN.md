@@ -8,20 +8,20 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm 版本"></a>
-  <a href="https://github.com/Gao-Sijie/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Sijie/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI 状态"></a>
-  <a href="https://github.com/Gao-Sijie/muha/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT 许可证"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Gossssip/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI 状态"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT 许可证"></a>
 </p>
 
 <p align="center">
   <a href="#安装">安装</a> ·
   <a href="#快速开始">快速开始</a> ·
   <a href="#示例">示例</a> ·
-  <a href="https://github.com/Gao-Sijie/muha/blob/main/README.md">English</a> ·
+  <a href="https://github.com/Gao-Gossssip/muha/blob/main/README.md">English</a> ·
   <strong>简体中文</strong>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Gao-Sijie/muha/main/assets/muha-banner.png" width="960" alt="一套 TypeScript API 通过 Muha 连接 Codex、OpenCode、Pi、Agy 等 Harness">
+  <img src="https://raw.githubusercontent.com/Gao-Gossssip/muha/main/assets/muha-banner.png" width="960" alt="一套 TypeScript API 通过 Muha 连接 Codex、OpenCode、Pi、Agy 等 Harness">
 </p>
 
 Muha 是轻量 TypeScript SDK，将已有编码 Agent 接入脚本和应用。
@@ -66,7 +66,7 @@ npm install @muha-sdk/muha
 
 **给 Agent 的一句话启动：**
 
-> 请查看 <https://github.com/Gao-Sijie/muha>，安装该项目，并检查当前环境中可用的 Harness CLI。
+> 请查看 <https://github.com/Gao-Gossssip/muha>，安装该项目，并检查当前环境中可用的 Harness CLI。
 
 ## 快速开始
 
@@ -110,7 +110,7 @@ node example.mjs
 
 ## 示例
 
-在[示例索引](https://github.com/Gao-Sijie/muha/blob/main/examples/README.zh-CN.md)中查看可运行场景；每个示例拥有独立
+在[示例索引](https://github.com/Gao-Gossssip/muha/blob/main/examples/README.zh-CN.md)中查看可运行场景；每个示例拥有独立
 的源码目录与运行说明，便于后续持续扩充。
 
 两个示例都要求完整安装 `@muha-sdk/muha`，但不要求安装全部原生 CLI。
@@ -119,11 +119,11 @@ node example.mjs
 
 | 项目 | 概述 | 位置 |
 | --- | --- | --- |
-| [多 Harness 集成 Chat](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，支持五种适配器、原生 model/effort、内联 Turn 事件、审批、追问和停止。选项仅在点击“新对话”后生效，不迁移上下文。 | [examples/local-chat/](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/) |
-| [AI 热点选题与写作](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/README.zh-CN.md) | 纯命令行交互：使用 `content-strategy` 选题、`khazix-writer` 写文；引导配置两阶段的 harness/model/effort，终端仅流式展示模型回复，保留工作目录。需明确确认真实模型调用，不自动发布。 | [examples/auto-social-media/](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/) |
+| [多 Harness 集成 Chat](https://github.com/Gao-Gossssip/muha/blob/main/examples/local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，支持五种适配器、原生 model/effort、内联 Turn 事件、审批、追问和停止。选项仅在点击“新对话”后生效，不迁移上下文。 | [examples/local-chat/](https://github.com/Gao-Gossssip/muha/blob/main/examples/local-chat/) |
+| [AI 热点选题与写作](https://github.com/Gao-Gossssip/muha/blob/main/examples/auto-social-media/README.zh-CN.md) | 纯命令行交互：使用 `content-strategy` 选题、`khazix-writer` 写文；引导配置两阶段的 harness/model/effort，终端仅流式展示模型回复，保留工作目录。需明确确认真实模型调用，不自动发布。 | [examples/auto-social-media/](https://github.com/Gao-Gossssip/muha/blob/main/examples/auto-social-media/) |
 
 Examples 属于 GitHub 项目内容，不随 npm 包安装；新增示例不需要重新发布
-SDK。新增场景的约定见[贡献说明](https://github.com/Gao-Sijie/muha/blob/main/CONTRIBUTING.md#examples)。
+SDK。新增场景的约定见[贡献说明](https://github.com/Gao-Gossssip/muha/blob/main/CONTRIBUTING.md#examples)。
 
 ## 按需安装
 
@@ -143,9 +143,9 @@ npm install @muha-sdk/core @muha-sdk/pi-adapter
 
 ## 参与贡献
 
-开发和测试步骤见 [CONTRIBUTING.md](https://github.com/Gao-Sijie/muha/blob/main/CONTRIBUTING.md)。问题反馈请使用
-[GitHub Issues](https://github.com/Gao-Sijie/muha/issues)，安全问题请参考
-[SECURITY.md](https://github.com/Gao-Sijie/muha/blob/main/SECURITY.md)。许可证为 [MIT](https://github.com/Gao-Sijie/muha/blob/main/LICENSE)。
+开发和测试步骤见 [CONTRIBUTING.md](https://github.com/Gao-Gossssip/muha/blob/main/CONTRIBUTING.md)。问题反馈请使用
+[GitHub Issues](https://github.com/Gao-Gossssip/muha/issues)，安全问题请参考
+[SECURITY.md](https://github.com/Gao-Gossssip/muha/blob/main/SECURITY.md)。许可证为 [MIT](https://github.com/Gao-Gossssip/muha/blob/main/LICENSE)。
 
 ## 查询可用模型
 
@@ -196,7 +196,7 @@ Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
 `await session.setModel(id)`，保留同一会话历史。切换会清除旧的显式 effort，
 原生 Harness 仍可采用其默认值。AGY 目前仅支持在创建和恢复会话时选择模型。
 
-## SDK 0.1.18 安全说明
+## SDK 0.1.19 安全说明
 
 随附的 Pi SDK 1.2.0 固定依赖 undici 8.10.2。本版通过明确授权的限定例外，
 保留其已知拒绝服务、子资源完整性校验绕过、缓存污染与数据泄露、TLS 证书校验绕过风险：
@@ -208,4 +208,4 @@ Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm)、
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6)、
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6)。
-范围与其他检查要求见[本版发布例外](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception)。
+范围与其他检查要求见[本版发布例外](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0119-production-audit-exception)。

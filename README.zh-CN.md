@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm 版本"></a>
-  <a href="https://github.com/Gao-Sijie/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Sijie/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI 状态"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Gossssip/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI 状态"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT 许可证"></a>
 </p>
 
@@ -66,7 +66,7 @@ npm install @muha-sdk/muha
 
 **给 Agent 的一句话启动：**
 
-> 请查看 <https://github.com/Gao-Sijie/muha>，安装该项目，并检查当前环境中可用的 Harness CLI。
+> 请查看 <https://github.com/Gao-Gossssip/muha>，安装该项目，并检查当前环境中可用的 Harness CLI。
 
 ## 快速开始
 
@@ -144,7 +144,7 @@ npm install @muha-sdk/core @muha-sdk/pi-adapter
 ## 参与贡献
 
 开发和测试步骤见 [CONTRIBUTING.md](CONTRIBUTING.md)。问题反馈请使用
-[GitHub Issues](https://github.com/Gao-Sijie/muha/issues)，安全问题请参考
+[GitHub Issues](https://github.com/Gao-Gossssip/muha/issues)，安全问题请参考
 [SECURITY.md](SECURITY.md)。许可证为 [MIT](LICENSE)。
 
 ## 查询可用模型

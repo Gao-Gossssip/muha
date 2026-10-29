@@ -1,5 +1,38 @@
 # SDK qualification and migration provenance
 
+## Affected 0.1.19 qualification closure (2026-10-29)
+
+The maintainer separately authorized four Pi Turns on Linux and native Windows,
+two per platform, on source `4c8028c52b5a6eecd98536553fc2ce504b8b1918`
+and its exact lock. All four passed with `opencode-go/deepseek-v4.1-flash`:
+create with `low`, then idle selection of `high` and conversation recall in the
+same Session. The native catalog returned `low / high / max`; only low and high
+were exercised with inference. Session-free listing, queries preserving current
+selection, invalid-effort rejection preserving state, stable references and
+owned close also passed. Independent audits of 37 Linux and 63 Windows native
+records confirmed thinking levels and final messages.
+
+The complete paid batch took 46.416 seconds, with concurrency one, zero retries,
+120 seconds per Turn and a 900-second wall-clock bound. All four authorized Turns
+are consumed; none remain. Temporary credential copies were removed and original
+configuration hashes are unchanged. Appended PASS records supersede the pending
+Pi candidate records while preserving their history and exact source identities.
+
+All 71 runtime resources and every resolved external lock entry in the release
+match that tested source. Internal package versions and publication metadata
+advance to 0.1.19; the recorded test source is not relabeled as the release commit.
+The other Harnesses and unchanged optional capabilities retain their historical
+qualification scope. This batch does not claim a full new capability matrix,
+inference with max, or validation of a consumer application.
+
+The maintainer also separately accepted the same eight undici advisories for
+0.1.19 only, with Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7 fixed. The current
+release audit enforces that version-specific scope; the 0.1.18 exception remains
+historical. See RELEASING.md for the unresolved risks. All other audit findings,
+required CI, source-bound Linux/Windows builds, OIDC provenance and cold Registry
+consumer checks remain release gates.
+
+
 ## Native model effort discovery candidate (2026-10-29)
 
 The existing `runtime.listModels` response retains `supportedEfforts` and

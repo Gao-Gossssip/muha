@@ -29,7 +29,7 @@ const npmEnv = publicationNpmEnvironment(process.env, npmDirectory);
 const cli = spawnNpmSync(["--version"], { cwd: npmDirectory, env: npmEnv, encoding: "utf8", timeout: 15000 });
 if (cli.error || cli.status !== 0) throw new Error("Cannot verify the pinned publishing npm CLI");
 assertPublicationNpmVersion(cli.stdout.trim());
-const repository = await fetch("https://api.github.com/repos/Gao-Sijie/muha", {
+const repository = await fetch("https://api.github.com/repos/Gao-Gossssip/muha", {
   headers: { "User-Agent": "muha-release" }, signal: AbortSignal.timeout(15000),
 });
 if (!repository.ok || (await repository.json()).private !== false) {

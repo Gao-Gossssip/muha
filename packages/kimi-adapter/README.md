@@ -1,6 +1,6 @@
 # @muha-sdk/kimi-adapter
 
-Official Kimi Code Adapter for [Muha SDK](https://github.com/Gao-Sijie/muha). It requires an independently installed and authenticated `kimi` command on `PATH`; this package never installs or updates Kimi Code.
+Official Kimi Code Adapter for [Muha SDK](https://github.com/Gao-Gossssip/muha). It requires an independently installed and authenticated `kimi` command on `PATH`; this package never installs or updates Kimi Code.
 
 Use `kimiAdapter(options)` with the existing `createMuhaRuntime` API. Kimi MCP
 project files are written by this Adapter's packaged worker under Core's

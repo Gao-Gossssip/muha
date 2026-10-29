@@ -1,6 +1,6 @@
 # Contributing
 
-Use [Gao-Sijie/muha Issues](https://github.com/Gao-Sijie/muha/issues) for SDK work.
+Use [Gao-Gossssip/muha Issues](https://github.com/Gao-Gossssip/muha/issues) for SDK work.
 Read [CONTEXT.md](CONTEXT.md) and [qualification and exceptions](QUALIFICATION.md)
 before changing behavior; the public API, static Profiles and native behavior
 are contractual. Consult relevant local `docs/adr/` decisions when available.

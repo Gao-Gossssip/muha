@@ -8,7 +8,7 @@ This repository contains the `@muha-sdk/muha` SDK entry package, Core and five o
 - Keep plans, ADRs and private evidence in ignored `docs/` or `.scratch/` paths.
   Preserve local documents when removing Git tracking. New commits must contain
   no `docs/` directory at any depth; never force-add ignored documents.
-- For SDK issues, always use `gh --repo Gao-Sijie/muha`; read the originating
+- For SDK issues, always use `gh --repo Gao-Gossssip/muha`; read the originating
   specification and comments before implementation, or use the approved local
   plan when no originating issue exists. Close only completed tickets and keep
   sanitized command receipts in ignored paths.

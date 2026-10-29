@@ -1,6 +1,6 @@
 # @muha-sdk/codex-adapter
 
-Official Codex Adapter for [Muha SDK](https://github.com/Gao-Sijie/muha). It requires an independently installed and authenticated `codex` command on `PATH`; this package never installs or updates Codex.
+Official Codex Adapter for [Muha SDK](https://github.com/Gao-Gossssip/muha). It requires an independently installed and authenticated `codex` command on `PATH`; this package never installs or updates Codex.
 
 Use `codexAdapter(options)` with the existing `createMuhaRuntime` API. `options.env`
 applies only to the Codex process, not to Workspace configuration workers.

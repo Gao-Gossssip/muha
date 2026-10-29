@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/pi-adapter",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Official Pi SDK adapter for Muha SDK.",
   "type": "module",
   "exports": {
@@ -26,17 +26,17 @@
     "@earendil-works/pi-ai": "1.2.0",
     "@earendil-works/pi-codemode": ">=1.0.4",
     "@earendil-works/pi-coding-agent": "1.2.0",
-    "@muha-sdk/core": "0.1.18"
+    "@muha-sdk/core": "0.1.19"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Gao-Sijie/muha.git",
+    "url": "https://github.com/Gao-Gossssip/muha.git",
     "directory": "packages/pi-adapter"
   },
   "bugs": {
-    "url": "https://github.com/Gao-Sijie/muha/issues"
+    "url": "https://github.com/Gao-Gossssip/muha/issues"
   },
-  "homepage": "https://github.com/Gao-Sijie/muha/tree/main/packages/pi-adapter#readme",
+  "homepage": "https://github.com/Gao-Gossssip/muha/tree/main/packages/pi-adapter#readme",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

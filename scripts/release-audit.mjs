@@ -4,7 +4,7 @@ import { resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { spawnNpmSync } from "./npm-command.mjs";
 
-// Maintainer-approved on 2026-10-27, expanded on 2026-10-28 for 0.1.18 only.
+// Separately renewed by the maintainer on 2026-10-29 for 0.1.19 only.
 // These advisories remain risks, not fixed or unreachable vulnerabilities.
 const permittedAdvisories = new Set([
   "https://github.com/advisories/GHSA-4qv8-2p9j-2685",
@@ -30,7 +30,7 @@ export function validateReleaseAudit(report, lock) {
   assert.ok(report.metadata?.dependencies?.prod >= 150, "audit must cover the complete production closure");
   const cohort = Object.entries(lock.packages).filter(([path]) => path.startsWith("packages/"));
   assert.equal(cohort.length, 7);
-  assert.ok(cohort.every(([, item]) => item.version === "0.1.18"), "exception expires outside 0.1.18");
+  assert.ok(cohort.every(([, item]) => item.version === "0.1.19"), "exception expires outside 0.1.19");
   assert.equal(lock.packages["node_modules/@earendil-works/pi-coding-agent"].version, "1.2.0");
   assert.equal(lock.packages["node_modules/undici"].version, "8.10.2");
   assert.equal(lock.packages["node_modules/zod"].version, "4.6.7");
@@ -56,7 +56,7 @@ export function validateReleaseAudit(report, lock) {
   }
   // An indirect package report cannot stand in for the actual advisory data.
   assert.ok(accepted.size > 0, "complete residual advisory evidence required");
-  return { status: "PASS_WITH_APPROVED_0_1_18_EXCEPTION", version: "0.1.18",
+  return { status: "PASS_WITH_APPROVED_0_1_19_EXCEPTION", version: "0.1.19",
     sdkVersion: "1.2.0", undiciVersion: "8.10.2", acceptedResidualAdvisories: [...accepted].sort() };
 }
 

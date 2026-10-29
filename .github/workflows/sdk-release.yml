@@ -89,8 +89,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name native-linux-x64 --dir .scratch/native-artifacts/linux-x64
-          gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name native-win32-x64 --dir .scratch/native-artifacts/win32-x64
+          gh run download ${{ github.run_id }} --repo Gao-Gossssip/muha --name native-linux-x64 --dir .scratch/native-artifacts/linux-x64
+          gh run download ${{ github.run_id }} --repo Gao-Gossssip/muha --name native-win32-x64 --dir .scratch/native-artifacts/win32-x64
       - name: Assemble both targets after the final source build
         run: node scripts/platform-artifacts.mjs assemble --input .scratch/native-artifacts
       - run: node scripts/pack-local-release.mjs --candidate --output .scratch/npm-candidate
@@ -130,7 +130,7 @@ jobs:
       - name: Download the unchanged prepared cohort from this run
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh run download ${{ github.run_id }} --repo Gao-Sijie/muha --name npm-candidate --dir .scratch/npm-candidate
+        run: gh run download ${{ github.run_id }} --repo Gao-Gossssip/muha --name npm-candidate --dir .scratch/npm-candidate
       - name: Verify source and the prepared manifest digest
         env:
           REVIEWED_REVISION: ${{ inputs.revision }}

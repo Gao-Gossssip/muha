@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/core",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Common runtime primitives for Muha SDK coding harness integrations.",
   "type": "module",
   "scripts": {
@@ -30,13 +30,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Gao-Sijie/muha.git",
+    "url": "https://github.com/Gao-Gossssip/muha.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/Gao-Sijie/muha/issues"
+    "url": "https://github.com/Gao-Gossssip/muha/issues"
   },
-  "homepage": "https://github.com/Gao-Sijie/muha/tree/main/packages/core#readme",
+  "homepage": "https://github.com/Gao-Gossssip/muha/tree/main/packages/core#readme",
   "dependencies": {
     "@agentclientprotocol/sdk": "1.4.0",
     "add-mcp": "2.0.0",

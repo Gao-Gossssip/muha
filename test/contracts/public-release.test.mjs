@@ -118,8 +118,8 @@ test("Registry provenance rejects another package, bytes, source, workflow or ru
     _type: "https://in-toto.io/Statement/v1", predicateType: "https://slsa.dev/provenance/v1",
     subject: [{ name: `pkg:npm/%40muha-sdk/core@${version}`, digest: { sha512: "64" } }],
     predicate: { buildDefinition: {
-      externalParameters: { workflow: { repository: "https://github.com/Gao-Sijie/muha", path: ".github/workflows/sdk-release.yml", ref: "refs/heads/main" } },
-      resolvedDependencies: [{ uri: "git+https://github.com/Gao-Sijie/muha@refs/heads/main", digest: { gitCommit: revision } }],
+      externalParameters: { workflow: { repository: "https://github.com/Gao-Gossssip/muha", path: ".github/workflows/sdk-release.yml", ref: "refs/heads/main" } },
+      resolvedDependencies: [{ uri: "git+https://github.com/Gao-Gossssip/muha@refs/heads/main", digest: { gitCommit: revision } }],
     }, runDetails: { builder: { id: "https://github.com/actions/runner/github-hosted" } } },
   };
   const envelope = value => ({ attestations: [{ predicateType: "https://slsa.dev/provenance/v1", bundle: { dsseEnvelope: { payload: Buffer.from(JSON.stringify(value)).toString("base64") } } }] });
@@ -128,6 +128,8 @@ test("Registry provenance rejects another package, bytes, source, workflow or ru
     value => { value.subject[0].name = `pkg:npm/%40muha-sdk/pi-adapter@${version}`; },
     value => { value.subject[0].digest.sha512 = "65"; },
     value => { value.predicate.buildDefinition.resolvedDependencies[0].digest.gitCommit = "b".repeat(40); },
+    value => { value.predicate.buildDefinition.externalParameters.workflow.repository = "https://github.com/Gao-Sijie/muha"; },
+    value => { value.predicate.buildDefinition.resolvedDependencies[0].uri = "git+https://github.com/Gao-Sijie/muha@refs/heads/main"; },
     value => { value.predicate.buildDefinition.externalParameters.workflow.path = ".github/workflows/other.yml"; },
     value => { value.predicate.runDetails.builder.id = "https://github.com/actions/runner/self-hosted"; },
   ]) { const changed = structuredClone(statement); alter(changed); assert.throws(() => validateRegistryProvenance(envelope(changed), item, revision)); }
