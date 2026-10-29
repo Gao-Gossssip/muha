@@ -82,10 +82,10 @@ test('SDK guidance is self-contained and preserves qualification exceptions', as
   }
   for (const directory of ['core', 'codex-adapter', 'opencode-adapter', 'kimi-adapter', 'pi-adapter', 'agy-adapter']) {
     const manifest = JSON.parse(await readFile(join(root, 'packages', directory, 'package.json'), 'utf8'));
-    assert.equal(manifest.repository.url, 'https://github.com/Gao-Sijie/muha.git');
+    assert.equal(manifest.repository.url, 'https://github.com/Gao-Gossssip/muha.git');
     assert.equal(manifest.repository.directory, `packages/${directory}`);
-    assert.equal(manifest.bugs.url, 'https://github.com/Gao-Sijie/muha/issues');
-    assert.equal(manifest.homepage, `https://github.com/Gao-Sijie/muha/tree/main/packages/${directory}#readme`);
+    assert.equal(manifest.bugs.url, 'https://github.com/Gao-Gossssip/muha/issues');
+    assert.equal(manifest.homepage, `https://github.com/Gao-Gossssip/muha/tree/main/packages/${directory}#readme`);
   }
   const tracked = spawnSync('git', ['ls-files', '-z', '--', '*.md'], { cwd: root, encoding: 'utf8' });
   assert.equal(tracked.status, 0, tracked.stderr);

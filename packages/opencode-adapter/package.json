@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/opencode-adapter",
-  "version": "0.1.18",
+  "version": "0.1.19",
   "description": "Official OpenCode adapter for Muha SDK.",
   "type": "module",
   "engines": {
@@ -19,15 +19,15 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Gao-Sijie/muha.git",
+    "url": "https://github.com/Gao-Gossssip/muha.git",
     "directory": "packages/opencode-adapter"
   },
   "bugs": {
-    "url": "https://github.com/Gao-Sijie/muha/issues"
+    "url": "https://github.com/Gao-Gossssip/muha/issues"
   },
-  "homepage": "https://github.com/Gao-Sijie/muha/tree/main/packages/opencode-adapter#readme",
+  "homepage": "https://github.com/Gao-Gossssip/muha/tree/main/packages/opencode-adapter#readme",
   "dependencies": {
-    "@muha-sdk/core": "0.1.18",
+    "@muha-sdk/core": "0.1.19",
     "@opencode/client": "2.0.11",
     "jsonc-parser": "3.3.1"
   },

@@ -15,10 +15,10 @@ import {
 
 const revision = "a".repeat(40);
 const environment = (mode = "publish") => ({
-  GITHUB_ACTIONS: "true", GITHUB_REPOSITORY: "Gao-Sijie/muha",
+  GITHUB_ACTIONS: "true", GITHUB_REPOSITORY: "Gao-Gossssip/muha",
   GITHUB_REF: "refs/heads/main", GITHUB_SHA: revision, REVIEWED_REVISION: revision,
   GITHUB_EVENT_NAME: "workflow_dispatch",
-  GITHUB_WORKFLOW_REF: "Gao-Sijie/muha/.github/workflows/sdk-release.yml@refs/heads/main",
+  GITHUB_WORKFLOW_REF: "Gao-Gossssip/muha/.github/workflows/sdk-release.yml@refs/heads/main",
   GITHUB_JOB: mode, RUNNER_ENVIRONMENT: "github-hosted",
   ACTIONS_ID_TOKEN_REQUEST_URL: "https://example.actions.githubusercontent.com/idtoken",
   ACTIONS_ID_TOKEN_REQUEST_TOKEN: "controlled-request-credential-never-log",
@@ -33,9 +33,11 @@ test("both publication operations accept hosted reviewed OIDC context without an
 test("OIDC publication rejects other source, workflow, event, runner and job identities", () => {
   for (const change of [
     { GITHUB_ACTIONS: "false" }, { GITHUB_REPOSITORY: "someone/muha" },
+    { GITHUB_REPOSITORY: "Gao-Sijie/muha" },
     { GITHUB_REF: "refs/heads/other" }, { GITHUB_SHA: "b".repeat(40) },
     { REVIEWED_REVISION: undefined }, { REVIEWED_REVISION: "bad", GITHUB_SHA: "bad" },
-    { GITHUB_WORKFLOW_REF: "Gao-Sijie/muha/.github/workflows/other.yml@refs/heads/main" },
+    { GITHUB_WORKFLOW_REF: "Gao-Gossssip/muha/.github/workflows/other.yml@refs/heads/main" },
+    { GITHUB_WORKFLOW_REF: "Gao-Sijie/muha/.github/workflows/sdk-release.yml@refs/heads/main" },
     { GITHUB_EVENT_NAME: "pull_request" }, { RUNNER_ENVIRONMENT: "self-hosted" },
     { RUNNER_ENVIRONMENT: undefined }, { GITHUB_JOB: "prepare" },
   ]) {
@@ -180,7 +182,7 @@ test("release instructions cover all seven package setups and both independent O
   for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "muha"]) {
     assert.ok(source.includes(`@muha-sdk/${packageName}`));
   }
-  for (const required of ["Gao-Sijie", "sdk-release.yml", "leave blank", "npm publish", "npm dist-tag", "11.21.0", "within two days", "No `NPM_PUBLISH_TOKEN`", "new source-bound candidate"]) {
+  for (const required of ["Gao-Gossssip", "sdk-release.yml", "leave blank", "npm publish", "npm dist-tag", "11.21.0", "within two days", "No `NPM_PUBLISH_TOKEN`", "new source-bound candidate"]) {
     assert.ok(source.includes(required), `missing trusted publishing instruction: ${required}`);
   }
 });

@@ -14,8 +14,8 @@ const proof = (source = revision) => ({ attestations: [{ predicateType: "https:/
     _type: "https://in-toto.io/Statement/v1", predicateType: "https://slsa.dev/provenance/v1",
     subject: [{ name: `pkg:npm/%40muha-sdk/muha@${item.version}`, digest: { sha512: Buffer.from(item.integrity.slice(7), "base64").toString("hex") } }],
     predicate: { buildDefinition: {
-      externalParameters: { workflow: { repository: "https://github.com/Gao-Sijie/muha", path: ".github/workflows/sdk-release.yml", ref: "refs/heads/main" } },
-      resolvedDependencies: [{ uri: "git+https://github.com/Gao-Sijie/muha@refs/heads/main", digest: { gitCommit: source } }],
+      externalParameters: { workflow: { repository: "https://github.com/Gao-Gossssip/muha", path: ".github/workflows/sdk-release.yml", ref: "refs/heads/main" } },
+      resolvedDependencies: [{ uri: "git+https://github.com/Gao-Gossssip/muha@refs/heads/main", digest: { gitCommit: source } }],
     }, runDetails: { builder: { id: "https://github.com/actions/runner/github-hosted" } } },
   })).toString("base64") } } }] });
 const json = value => new Response(JSON.stringify(value), { headers: { "Content-Type": "application/json" } });

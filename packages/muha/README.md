@@ -8,8 +8,8 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm version"></a>
-  <a href="https://github.com/Gao-Sijie/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Sijie/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
-  <a href="https://github.com/Gao-Sijie/muha/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT license"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Gossssip/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT license"></a>
 </p>
 
 <p align="center">
@@ -17,11 +17,11 @@
   <a href="#quick-start">Quick start</a> ·
   <a href="#examples">Examples</a> ·
   <strong>English</strong> ·
-  <a href="https://github.com/Gao-Sijie/muha/blob/main/README.zh-CN.md">简体中文</a>
+  <a href="https://github.com/Gao-Gossssip/muha/blob/main/README.zh-CN.md">简体中文</a>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Gao-Sijie/muha/main/assets/muha-banner.png" width="960" alt="One TypeScript API connects through Muha to Codex, OpenCode, Pi, Agy and other harnesses">
+  <img src="https://raw.githubusercontent.com/Gao-Gossssip/muha/main/assets/muha-banner.png" width="960" alt="One TypeScript API connects through Muha to Codex, OpenCode, Pi, Agy and other harnesses">
 </p>
 
 Muha is a lightweight TypeScript SDK for using coding agents in scripts and apps.
@@ -89,7 +89,7 @@ npm install @muha-sdk/muha
 
 **A one-line prompt for your agent:**
 
-> Read <https://github.com/Gao-Sijie/muha>, install the project, and check which Harness CLIs are available in the current environment.
+> Read <https://github.com/Gao-Gossssip/muha>, install the project, and check which Harness CLIs are available in the current environment.
 
 ## Quick start
 
@@ -134,7 +134,7 @@ workflow; policy details differ between agents.
 
 ## Examples
 
-Browse the [examples catalog](https://github.com/Gao-Sijie/muha/blob/main/examples/README.md) for runnable scenarios, each
+Browse the [examples catalog](https://github.com/Gao-Gossssip/muha/blob/main/examples/README.md) for runnable scenarios, each
 with its own source and setup guide.
 
 Both examples require the complete `@muha-sdk/muha` installation and offer only
@@ -143,11 +143,11 @@ comes with Muha, while other harnesses need their native CLI on `PATH`.
 
 | Project | Overview | Location |
 | --- | --- | --- |
-| [Multi-Harness Chat](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/README.md) | Single-file server and chat UI: five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](https://github.com/Gao-Sijie/muha/blob/main/examples/local-chat/) |
-| [AI Topic & Writing](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/README.md) | Interactive command-line research-to-draft workflow using `content-strategy` and `khazix-writer`. Independently choose each agent's harness/model/effort, stream model replies in the terminal and inspect the retained workspace. Real models require explicit consent. | [examples/auto-social-media/](https://github.com/Gao-Sijie/muha/blob/main/examples/auto-social-media/) |
+| [Multi-Harness Chat](https://github.com/Gao-Gossssip/muha/blob/main/examples/local-chat/README.md) | Single-file server and chat UI: five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](https://github.com/Gao-Gossssip/muha/blob/main/examples/local-chat/) |
+| [AI Topic & Writing](https://github.com/Gao-Gossssip/muha/blob/main/examples/auto-social-media/README.md) | Interactive command-line research-to-draft workflow using `content-strategy` and `khazix-writer`. Independently choose each agent's harness/model/effort, stream model replies in the terminal and inspect the retained workspace. Real models require explicit consent. | [examples/auto-social-media/](https://github.com/Gao-Gossssip/muha/blob/main/examples/auto-social-media/) |
 
 Examples live in this GitHub repository, not the npm package. Adding examples
-does not require a new SDK release. See [example contribution guidance](https://github.com/Gao-Sijie/muha/blob/main/CONTRIBUTING.md#examples).
+does not require a new SDK release. See [example contribution guidance](https://github.com/Gao-Gossssip/muha/blob/main/CONTRIBUTING.md#examples).
 
 ## Install only what you need
 
@@ -169,9 +169,9 @@ compiling Muha from source is not a required setup step.
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/Gao-Sijie/muha/blob/main/CONTRIBUTING.md) for development and tests.
-Report problems in [GitHub Issues](https://github.com/Gao-Sijie/muha/issues).
-Security reports: [SECURITY.md](https://github.com/Gao-Sijie/muha/blob/main/SECURITY.md). Licensed under [MIT](https://github.com/Gao-Sijie/muha/blob/main/LICENSE).
+See [CONTRIBUTING.md](https://github.com/Gao-Gossssip/muha/blob/main/CONTRIBUTING.md) for development and tests.
+Report problems in [GitHub Issues](https://github.com/Gao-Gossssip/muha/issues).
+Security reports: [SECURITY.md](https://github.com/Gao-Gossssip/muha/blob/main/SECURITY.md). Licensed under [MIT](https://github.com/Gao-Gossssip/muha/blob/main/LICENSE).
 
 ## Available models
 
@@ -240,4 +240,4 @@ under an exception limited to this release:
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm),
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6), and
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6).
-See the [release exception](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception) for its exact scope.
+See the [release exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception) for its exact scope.

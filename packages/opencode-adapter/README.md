@@ -1,6 +1,6 @@
 # @muha-sdk/opencode-adapter
 
-Official OpenCode Adapter for [Muha SDK](https://github.com/Gao-Sijie/muha). It requires an independently installed and authenticated OpenCode v2 `opencode` command on `PATH`; this package never installs or updates OpenCode. The current implementation is qualified against the `opencode v2.0.11` binary and declares the official `@opencode/client@2.0.11` as an ordinary, unbundled runtime dependency. Other v2 versions require their own qualification.
+Official OpenCode Adapter for [Muha SDK](https://github.com/Gao-Gossssip/muha). It requires an independently installed and authenticated OpenCode v2 `opencode` command on `PATH`; this package never installs or updates OpenCode. The current implementation is qualified against the `opencode v2.0.11` binary and declares the official `@opencode/client@2.0.11` as an ordinary, unbundled runtime dependency. Other v2 versions require their own qualification.
 
 Use `openCodeAdapter(options)` with the existing `createMuhaRuntime` API.
 Muha starts an owned private `opencode serve` on loopback. This Adapter exposes only native Session References; it does not offer OpenCode ACP, combined execution, or automatic route fallback. An internal plugin preserves mixed text/image order through model dispatch without writing to a user's OpenCode config. An existing `OPENCODE_CONFIG_DIR` is rejected because the private plugin cannot safely compose with it.

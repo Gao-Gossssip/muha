@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm version"></a>
-  <a href="https://github.com/Gao-Sijie/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Sijie/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
+  <a href="https://github.com/Gao-Gossssip/muha/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Gao-Gossssip/muha/ci.yml?branch=main&amp;style=flat-square&amp;label=CI" alt="CI status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-64748b?style=flat-square" alt="MIT license"></a>
 </p>
 
@@ -89,7 +89,7 @@ npm install @muha-sdk/muha
 
 **A one-line prompt for your agent:**
 
-> Read <https://github.com/Gao-Sijie/muha>, install the project, and check which Harness CLIs are available in the current environment.
+> Read <https://github.com/Gao-Gossssip/muha>, install the project, and check which Harness CLIs are available in the current environment.
 
 ## Quick start
 
@@ -170,7 +170,7 @@ compiling Muha from source is not a required setup step.
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development and tests.
-Report problems in [GitHub Issues](https://github.com/Gao-Sijie/muha/issues).
+Report problems in [GitHub Issues](https://github.com/Gao-Gossssip/muha/issues).
 Security reports: [SECURITY.md](SECURITY.md). Licensed under [MIT](LICENSE).
 
 ## Available models

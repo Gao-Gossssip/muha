@@ -25,5 +25,5 @@ install and lockfile npm ci, consumers can install the complete SDK:
 npm install --save-exact @muha-sdk/muha@{{VERSION}}
 ```
 
-See the [package-specific usage](https://github.com/Gao-Sijie/muha#readme) and
-[qualification and limitations](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md).
+See the [package-specific usage](https://github.com/Gao-Gossssip/muha#readme) and
+[qualification and limitations](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md).

@@ -13,10 +13,10 @@ export function validateRegistryProvenance(attestations, item, revision) {
       statement.predicateType !== 'https://slsa.dev/provenance/v1' ||
       statement.subject?.length !== 1 || statement.subject[0].name !== expectedName ||
       statement.subject[0].digest?.sha512 !== expectedDigest ||
-      workflow?.repository !== 'https://github.com/Gao-Sijie/muha' ||
+      workflow?.repository !== 'https://github.com/Gao-Gossssip/muha' ||
       workflow.path !== '.github/workflows/sdk-release.yml' || workflow.ref !== 'refs/heads/main' ||
       !Array.isArray(dependencies) || !dependencies.some(value =>
-        value.uri === 'git+https://github.com/Gao-Sijie/muha@refs/heads/main' && value.digest?.gitCommit === revision) ||
+        value.uri === 'git+https://github.com/Gao-Gossssip/muha@refs/heads/main' && value.digest?.gitCommit === revision) ||
       statement.predicate?.runDetails?.builder?.id !== 'https://github.com/actions/runner/github-hosted') {
     throw new Error(`${item.name}: provenance does not bind the reviewed source, workflow and artifact`);
   }

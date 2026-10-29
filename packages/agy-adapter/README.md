@@ -4,7 +4,7 @@ The stage-five AGY CLI Adapter for Muha SDK. It uses the caller-installed and
 authenticated `agy` command on `PATH`; it never installs AGY or falls back to an
 SDK or API integration. Historical Linux qualification uses Claude Sonnet 4.6;
 native Windows qualification uses CLI 1.4.5 and `claude-sonnet-5-5-low`.
-See the [acceptance results](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md)
+See the [acceptance results](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)
 for exact source/platform scopes. Use `agy models` to check native identifiers.
 
 ```js

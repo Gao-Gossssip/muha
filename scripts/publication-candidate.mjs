@@ -47,7 +47,7 @@ export async function readPublicationCandidate(directory, { revision, version, m
     const manifest = JSON.parse(tar(["-xOzf", archive, "package/package.json"]));
     if (manifest.name !== item.name || manifest.version !== version || manifest.private !== undefined ||
         manifest.publishConfig?.access !== "public" || manifest.publishConfig?.registry !== "https://registry.npmjs.org/" ||
-        manifest.repository?.url !== "https://github.com/Gao-Sijie/muha.git" || manifest.type !== "module" ||
+        manifest.repository?.url !== "https://github.com/Gao-Gossssip/muha.git" || manifest.type !== "module" ||
         manifest.engines?.node !== ">=22.20.0" || manifest.license !== "MIT" ||
         JSON.stringify(manifest.files) !== JSON.stringify(publicationFiles(delivery)) ||
         manifest.exports?.["."]?.types !== "./dist/index.d.ts" || manifest.exports?.["."]?.default !== "./dist/index.js") {

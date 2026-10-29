@@ -18,6 +18,7 @@ import { openCodeAdapter } from "@muha-sdk/opencode-adapter";
 import { createConformanceProfiles } from "../support/official-harness-profiles.mjs";
 import { piConformance } from "../support/pi-conformance.mjs";
 import { agyConformance } from "../support/agy-conformance.mjs";
+import { readV2Evidence } from "../support/v2-evidence.mjs";
 
 const fakeHarnessBin = resolve(import.meta.dirname, "../fixtures/harness-bin");
 const fakeOpenCodeV2Bin = resolve(import.meta.dirname, "../fixtures/v2-harness-bin");
@@ -119,9 +120,12 @@ const profiles = createConformanceProfiles({
       startupTimeoutMs: 2_000,
       shutdownTimeoutMs: 2_000,
     }),
-    submission: async (evidencePath) => {
-      const evidence = JSON.parse(await readFile(evidencePath, "utf8"));
-      return evidence.prompts.at(-1)?.model?.variant ?? undefined;
+    submission: async (evidencePath, count) => {
+      // A completed Turn can precede the fixture's atomic receipt replacement.
+      // Wait for this Turn's receipt, rather than accepting the preceding one.
+      const evidence = await readV2Evidence(evidencePath, value => value.prompts.length >= count);
+      assert.equal(evidence.prompts.length, count);
+      return evidence.prompts[count - 1]?.model?.variant ?? undefined;
     },
   },
 });
@@ -136,7 +140,8 @@ for (const profile of profiles) {
     await mkdir(workspace);
     const canonicalWorkspace = await realpath(workspace);
 
-    const submission = async () => profile.submission(evidencePath);
+    let submissionCount = 0;
+    const submission = async () => profile.submission(evidencePath, ++submissionCount);
 
     try {
       runtime = await createMuhaRuntime({

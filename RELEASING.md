@@ -84,7 +84,7 @@ publisher in the npm settings of **each** of the seven existing packages:
 `@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`, and
 `@muha-sdk/muha`. Use these identical fields:
 
-- Organization or user: `Gao-Sijie`
+- Organization or user: `Gao-Gossssip`
 - Repository: `muha`
 - Workflow filename: `sdk-release.yml` (not its directory path)
 - Environment: leave blank; this workflow does not use a GitHub environment.

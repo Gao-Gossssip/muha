@@ -12,10 +12,10 @@ certificate-validation bypass:
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm),
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6), and
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6).
-See the [scoped exception](https://github.com/Gao-Sijie/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception).
+See the [scoped exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0118-production-audit-exception).
 
 Pi uses the checksum-verified high-level input patch for SDK 1.2.0. See
-[qualification and limitations](https://github.com/Gao-Sijie/muha/blob/main/QUALIFICATION.md)
+[qualification and limitations](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)
 for source versions and acceptance. The older Pi/Pi grilling result belongs to
 SDK 0.84.2. Both that result and the later SDK 1.0.4 real-model evidence remain
 historical; SDK 1.2.0 passed separately authorized Linux and native Windows
