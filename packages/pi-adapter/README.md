@@ -146,7 +146,17 @@ or cleanup timeout produces an error; it does not prove descendant reclamation.
 const models = await runtime.listModels({ harness: "pi", workspacePath: process.cwd() });
 ```
 
-The Adapter queries SDK `ModelRuntime.getAvailable()` in a temporary owned worker, without creating an AgentSession or calling a provider for inference. IDs are `provider/id`. Native availability/configuration errors reject instead of returning a partial catalog.
+The Adapter queries SDK `ModelRuntime.getAvailable()` in a temporary owned worker,
+without creating an AgentSession or calling a provider for inference. IDs are
+`provider/id`. Native availability/configuration errors reject instead of
+returning a partial catalog.
+
+Each model includes `supportedEfforts`, obtained from the same native
+`getSupportedThinkingLevels(model)` helper as Session effort validation. This
+preserves custom model mappings, including disabled levels and `xhigh`/`max`
+where supported; non-reasoning models expose `["off"]`. `defaultEffort` is omitted
+because the catalog does not report a per-model default. Pass a returned value as
+`effort` when creating/resuming a Session, or to idle `session.setEffort(value)`.
 
 The result reports native selectable chat models, not a guarantee of credentials,
 quota, or inference success. Query failures reject; a successful empty catalog

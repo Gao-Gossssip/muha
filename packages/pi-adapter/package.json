@@ -23,6 +23,7 @@
     "test": "npm run build:sdk && node --test --test-concurrency=1 test/*.test.mjs"
   },
   "dependencies": {
+    "@earendil-works/pi-ai": "1.2.0",
     "@earendil-works/pi-codemode": ">=1.0.4",
     "@earendil-works/pi-coding-agent": "1.2.0",
     "@muha-sdk/core": "0.1.18"

@@ -277,7 +277,7 @@
     },
     {
       "path": "packages/pi-adapter/src/sdk-worker.mjs",
-      "sha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0"
+      "sha256": "188fecff18f8509fd81a080dc8ae104b11c858f603f5d2c86f5a9a17fda2f52a"
     },
     {
       "path": "packages/pi-adapter/third-party-licenses/nodable-entities-2.1.0.LICENSE",
@@ -2345,6 +2345,44 @@
         "paidTurnsBeforeFailure": 3,
         "classification": "Original immediate resume rejected read-only native metadata. A separate read-only check later accepted the same identity and canonical Workspace on unchanged SDK source. Underlying transient cause is unconfirmed. No automatic retry, new identity or repeated earlier Turn."
       }
+    },
+    {
+      "harness": "pi",
+      "platform": "linux-x64",
+      "candidateDate": "2026-10-29",
+      "status": "PENDING",
+      "sourceBase": "c221bd15816cc6657fb49036c5b45d5ec87bdfbf",
+      "feature": "native-model-effort-discovery",
+      "sdkVersion": "1.2.0",
+      "lockfileSha256": "d8dc02c857b9db5232885320f54564c52e8b06c093660c6e3f27ebd4c1c5001b",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0",
+          "updatedSha256": "188fecff18f8509fd81a080dc8ae104b11c858f603f5d2c86f5a9a17fda2f52a"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Session-free catalog now uses the same native per-model thinking-level helper as Pi Session validation. Pi AI 1.2.0 becomes an explicit direct dependency; all locked external package entries are unchanged. Historical PASS receipts retain their recorded source and platform scope; affected real qualification requires separate authorization before publication."
+    },
+    {
+      "harness": "pi",
+      "platform": "win32-x64",
+      "candidateDate": "2026-10-29",
+      "status": "PENDING",
+      "sourceBase": "c221bd15816cc6657fb49036c5b45d5ec87bdfbf",
+      "feature": "native-model-effort-discovery",
+      "sdkVersion": "1.2.0",
+      "lockfileSha256": "d8dc02c857b9db5232885320f54564c52e8b06c093660c6e3f27ebd4c1c5001b",
+      "changedResources": [
+        {
+          "path": "packages/pi-adapter/src/sdk-worker.mjs",
+          "previousSha256": "883b77e6331ef39ac50ed24f63c4fbeff9406b7f0a94f79cddb6f3181e1a7fe0",
+          "updatedSha256": "188fecff18f8509fd81a080dc8ae104b11c858f603f5d2c86f5a9a17fda2f52a"
+        }
+      ],
+      "realAttempts": 0,
+      "scope": "Session-free catalog now uses the same native per-model thinking-level helper as Pi Session validation. Pi AI 1.2.0 becomes an explicit direct dependency; all locked external package entries are unchanged. Historical PASS receipts retain their recorded source and platform scope; affected real qualification requires separate authorization before publication."
     }
   ]
 }

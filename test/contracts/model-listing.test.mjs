@@ -14,18 +14,18 @@ const v2Bin = resolve(import.meta.dirname, "../fixtures/v2-harness-bin");
 const profiles = [
   { harness: "codex", factory: codexAdapter,
     models: [{ id: "fake-default", model: "fake-default", displayName: "Native model", hidden: true,
-      description: "Native description", supportedReasoningEfforts: [{ reasoningEffort: "high" }], defaultReasoningEffort: "high" },
+      description: "Native description", supportedReasoningEfforts: [{ reasoningEffort: "low" }, { reasoningEffort: "high" }], defaultReasoningEffort: "high" },
       { id: "catalog-second", model: "catalog-second", displayName: null, description: null,
         supportedReasoningEfforts: null, defaultReasoningEffort: null }, { id: "catalog-third", model: "catalog-third" }],
     expected: [{ id: "fake-default", name: "Native model", description: "Native description",
-      supportedEfforts: ["high"], defaultEffort: "high" }, { id: "catalog-second" }, { id: "catalog-third" }] },
+      supportedEfforts: ["low", "high"], defaultEffort: "high" }, { id: "catalog-second" }, { id: "catalog-third" }] },
   { harness: "opencode", factory: openCodeAdapter,
-    models: [{ providerID: "opencode-go", id: "catalog/with/slashes", name: "Native model", variants: [{ id: "native-variant" }] }],
-    expected: [{ id: "opencode-go/catalog/with/slashes", name: "Native model", supportedEfforts: ["native-variant"] }] },
+    models: [{ providerID: "opencode-go", id: "catalog/with/slashes", name: "Native model", variants: [{ id: "native-variant" }, { id: "other-variant" }] }],
+    expected: [{ id: "opencode-go/catalog/with/slashes", name: "Native model", supportedEfforts: ["native-variant", "other-variant"] }] },
   { harness: "kimi", factory: kimiAdapter,
-    models: [{ model: "turbo", provider: "unused", display_name: "Native model", support_efforts: ["on"], default_effort: "on" },
+    models: [{ model: "turbo", provider: "unused", display_name: "Native model", support_efforts: ["off", "on"], default_effort: "on" },
       { model: "custom/native/model", display_name: null, support_efforts: null, default_effort: null }],
-    expected: [{ id: "turbo", name: "Native model", supportedEfforts: ["on"], defaultEffort: "on" }, { id: "custom/native/model" }] },
+    expected: [{ id: "turbo", name: "Native model", supportedEfforts: ["off", "on"], defaultEffort: "on" }, { id: "custom/native/model" }] },
   { harness: "agy", factory: agyAdapter,
     models: "fake-opus\t原生模型 (Low)\r\nfake-high  Native High\r\n",
     expected: [{ id: "fake-opus", name: "原生模型 (Low)" }, { id: "fake-high", name: "Native High" }] },
@@ -65,11 +65,17 @@ for (const profile of profiles) {
     assert.deepEqual(JSON.parse(JSON.stringify(models)), profile.expected);
     // Catalog ids are accepted unchanged by the existing selection path, without inference.
     const session = await f.runtime.createSession({ ...f.options, model: models[0].id,
+      ...(models[0].supportedEfforts ? { effort: models[0].supportedEfforts[0] } : {}),
       approvalPolicy: f.runtime.getHarnessCapabilities(profile.harness).approvalPolicies[0] });
     const before = { reference: session.reference, model: session.model, effort: session.effort };
     assert.equal(session.model, models[0].id);
     assert.deepEqual(await f.runtime.listModels(f.options), profile.expected);
     assert.deepEqual({ reference: session.reference, model: session.model, effort: session.effort }, before);
+    for (const effort of models[0].supportedEfforts ?? []) {
+      await session.setEffort(effort);
+      assert.equal(session.effort, effort);
+      assert.deepEqual(session.reference, before.reference);
+    }
     await session.close();
     await f.set({ models: profile.harness === "agy" ? "" : [] });
     assert.deepEqual(await f.runtime.listModels(f.options), []);
@@ -85,6 +91,24 @@ for (const profile of profiles) {
   test(profile.harness + " rejects malformed Model catalogs instead of returning an empty list", async t => {
     const f = await fixture(t, profile);
     await f.set({ models: profile.harness === "agy" ? "WARNING: catalog unavailable\n" : [{}] });
+    await assert.rejects(f.runtime.listModels(f.options), error => error.data?.code === "ADAPTER_PROTOCOL_ERROR");
+    assert.equal(f.runtime.status, "active");
+  });
+}
+
+for (const [index, field] of [[0, "supportedReasoningEfforts"], [1, "variants"], [2, "support_efforts"]]) {
+  const profile = profiles[index];
+  test(profile.harness + " distinguishes unreported and empty Efforts and rejects malformed metadata", async t => {
+    const entry = { ...profile.models[0] };
+    delete entry.defaultReasoningEffort;
+    delete entry.default_effort;
+    const f = await fixture(t, profile, { models: [{ ...entry, [field]: null }] });
+    const [unknown] = await f.runtime.listModels(f.options);
+    assert.equal(Object.hasOwn(unknown, "supportedEfforts"), false);
+    assert.equal(Object.hasOwn(unknown, "defaultEffort"), false);
+    await f.set({ models: [{ ...entry, [field]: [] }] });
+    assert.deepEqual((await f.runtime.listModels(f.options))[0].supportedEfforts, []);
+    await f.set({ models: [{ ...entry, [field]: [42] }] });
     await assert.rejects(f.runtime.listModels(f.options), error => error.data?.code === "ADAPTER_PROTOCOL_ERROR");
     assert.equal(f.runtime.status, "active");
   });
@@ -144,8 +168,9 @@ test("Pi lists available SDK chat models without creating a Session or making a 
   const catalog = await runtime.listModels(options);
   assert.equal(catalog.some(model => model.id.startsWith("unconfigured/")), false);
   assert.deepEqual(catalog.filter(model => model.id.startsWith("controlled/")), [
-    { id: "controlled/controlled", name: "controlled" }, { id: "controlled/next", name: "next" },
-    { id: "controlled/minimal", name: "minimal" },
+    { id: "controlled/controlled", name: "controlled", supportedEfforts: ["off", "minimal", "low", "medium", "high"] },
+    { id: "controlled/next", name: "next", supportedEfforts: ["off", "minimal", "low", "medium", "high"] },
+    { id: "controlled/minimal", name: "minimal", supportedEfforts: ["off"] },
   ]);
   assert.deepEqual(f.requests, []);
   assert.deepEqual(await runtime.listSessions(options), []);
@@ -155,6 +180,46 @@ test("Pi lists available SDK chat models without creating a Session or making a 
   assert.equal(runtime.status, "active");
   await writeFile(modelFile, JSON.stringify(configuration));
   assert.ok((await runtime.listModels(options)).some(model => model.id === "controlled/next"));
+  assert.deepEqual(f.requests, []);
+});
+
+test("Pi catalog Efforts follow native per-model mappings and round-trip through Session selection", async t => {
+  const f = await controlledPi(t);
+  const file = join(f.agentDir, "models.json");
+  const configuration = JSON.parse(await readFile(file, "utf8"));
+  const mapped = configuration.providers.controlled.models[1];
+  mapped.thinkingLevelMap = { off: null, minimal: null, low: null, medium: "medium", high: null, xhigh: "high", max: "high" };
+  await writeFile(file, JSON.stringify(configuration));
+  const runtime = await f.runtime();
+  const options = { harness: "pi", workspacePath: f.workspace };
+  const catalog = await runtime.listModels(options);
+  const model = catalog.find(model => model.id === "controlled/next");
+  assert.deepEqual(model, { id: "controlled/next", name: "next", supportedEfforts: ["medium", "xhigh", "max"] });
+  assert.equal(Object.isFrozen(model.supportedEfforts), true);
+  assert.deepEqual(await runtime.listSessions(options), []);
+  assert.deepEqual(f.requests, []);
+
+  const session = await runtime.createSession({ ...options, model: model.id, effort: model.supportedEfforts[0],
+    approvalPolicy: "autoApprove" });
+  const reference = session.reference;
+  for (const effort of model.supportedEfforts) {
+    await session.setEffort(effort);
+    assert.equal(session.effort, effort);
+    assert.deepEqual(session.reference, reference);
+  }
+  await assert.rejects(session.setEffort("low"), error => error.data?.code === "HARNESS_ERROR");
+  assert.equal(session.effort, "max");
+  assert.deepEqual(await runtime.listModels(options), catalog);
+  assert.equal(session.effort, "max");
+  await session.setModel("controlled/minimal");
+  await session.setEffort(catalog.find(model => model.id === "controlled/minimal").supportedEfforts[0]);
+  assert.equal(session.effort, "off");
+  await session.close();
+
+  mapped.thinkingLevelMap = { off: null, minimal: null, low: null, medium: null, high: "high" };
+  await writeFile(file, JSON.stringify(configuration));
+  assert.deepEqual((await runtime.listModels(options)).find(entry => entry.id === model.id)
+    .supportedEfforts, ["high"]);
   assert.deepEqual(f.requests, []);
 });
 

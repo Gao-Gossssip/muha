@@ -311,12 +311,19 @@ test("a clean consumer installs the declared Pi SDK and uses the verified input 
       controlled.options.env.PATH = "";
       try {
         let runtime = await controlled.runtime();
+        const catalog = await runtime.listModels({ harness: "pi", workspacePath: controlled.workspace });
+        const model = catalog.find(model => model.id === "controlled/controlled");
+        assert.deepEqual(model.supportedEfforts, ["off", "minimal", "low", "medium", "high"]);
+        assert.equal(model.defaultEffort, undefined);
+        assert.deepEqual(controlled.requests, []);
+        assert.deepEqual(await runtime.listSessions({ harness: "pi", workspacePath: controlled.workspace }), []);
         const session = await runtime.createSession({ harness: "pi", workspacePath: controlled.workspace,
-          model: "controlled/controlled", approvalPolicy: "autoApprove" });
+          model: model.id, effort: model.supportedEfforts[2], approvalPolicy: "autoApprove" });
         const turn = await session.startTurn([{ type: "image", source: { type: "base64", mediaType: image.mimeType, data: image.data } },
           { type: "text", text: "Describe this image" }]);
         for await (const event of turn) {}
         assert.equal((await turn.result).status, "completed");
+        assert.equal(controlled.requests[0].reasoning_effort, "low");
         assert.deepEqual(controlled.requests[0].messages.find(m => m.role === "user").content.map(p => p.type), ["image_url", "text"]);
         const reference = session.reference;
         runtime = await controlled.runtime();

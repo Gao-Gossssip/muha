@@ -1,3 +1,4 @@
+import { getSupportedThinkingLevels } from "@earendil-works/pi-ai/models";
 import { loadSdk } from "./sdk-loader.mjs";
 import { listedSessions, openNativeSession } from "./sdk-sessions.mjs";
 import { sessionSettings, resolveModel, selection, selectEffort } from "./sdk-settings.mjs";
@@ -51,7 +52,10 @@ transport.onMessage(async message => {
       const models = await runtime.getAvailable();
       // Native availability checks can return a partial snapshot and retain their failure.
       if (runtime.getError()) throw new Error("Pi Model catalog could not be read completely");
-      const catalog = models.map(model => ({ id: model.provider + "/" + model.id, name: model.name }));
+      // Use the same native helper as AgentSession.getAvailableThinkingLevels,
+      // including provider-specific mappings, without opening a Session.
+      const catalog = models.map(model => ({ id: model.provider + "/" + model.id, name: model.name,
+        supportedEfforts: getSupportedThinkingLevels(model) }));
       await diagnostic("ModelRuntime.getAvailable", catalog);
       await reply(catalog);
     }
