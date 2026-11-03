@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "../../scripts/npm-pack-result.mjs";
 import { spawnNpmSync } from "../../scripts/npm-command.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -17,7 +18,7 @@ test("Pi Adapter declares the pinned SDK without redistributing its dependency t
     cwd: packageRoot, encoding: "utf8", maxBuffer: 16 * 1024 * 1024,
   });
   assert.equal(packed.status, 0, packed.stderr || packed.stdout);
-  const [{ files }] = JSON.parse(packed.stdout);
+  const [{ files }] = normalizeNpmPackResult(JSON.parse(packed.stdout), [manifest.name]);
   const paths = files.map(file => file.path);
   for (const required of ["dist/ordered-agent-session.mjs", "dist/sdk-patch.json", "dist/PI-SDK-LICENSE", "dist/sdk-worker.mjs"]) {
     assert.ok(paths.includes(required), `Pi artifact lacks ${required}`);

@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "../../scripts/npm-pack-result.mjs";
 import { spawnNpmSync } from "../../scripts/npm-command.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -85,7 +86,7 @@ test("the official packages share one installable ESM contract", async () => {
 });
 
 test("every official package tarball contains declarations and one ESM build", () => {
-  for (const [directory] of packages) {
+  for (const [directory, expectedName] of packages) {
     const result = spawnNpmSync(["pack", "--dry-run", "--json"], {
       cwd: new URL(`../../packages/${directory}`, import.meta.url),
       encoding: "utf8",
@@ -93,7 +94,7 @@ test("every official package tarball contains declarations and one ESM build", (
     });
     assert.equal(result.status, 0, result.stderr);
 
-    const [{ files }] = JSON.parse(result.stdout);
+    const [{ files }] = normalizeNpmPackResult(JSON.parse(result.stdout), [expectedName]);
     const paths = files.map(({ path }) => path);
     assert.ok(paths.includes("LICENSE"), `${directory} has its MIT license text`);
     assert.ok(paths.includes("README.md"), `${directory} has package documentation`);

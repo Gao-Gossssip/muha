@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "../../../scripts/npm-pack-result.mjs";
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -283,7 +284,7 @@ test("a clean consumer installs the declared Pi SDK and uses the verified input 
   try {
     const artifacts = [];
     for (const name of ["@muha-sdk/core", "@muha-sdk/pi-adapter"]) {
-      const packed = JSON.parse(run("npm", ["pack", "--workspace", name, "--json", "--pack-destination", root], repo));
+      const packed = normalizeNpmPackResult(JSON.parse(run("npm", ["pack", "--workspace", name, "--json", "--pack-destination", root], repo)), [name]);
       artifacts.push(join(root, packed[0].filename));
     }
     // Keep a finite Windows install budget above the ordinary command deadline;

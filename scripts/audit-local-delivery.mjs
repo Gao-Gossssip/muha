@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "./npm-pack-result.mjs";
 import { spawnNpmSync } from "./npm-command.mjs";
 // Offline identity/closure/license/resource audit, independent of npm advisory
 // data. All findings are explicit; a successful registry audit cannot mask one.
@@ -31,10 +32,7 @@ for (const delivery of MUHA_DELIVERY_PACKAGES) {
     problems.push(`${manifest.name}: cannot inspect npm pack file list: ${packed.error?.message ?? packed.stderr}`);
   } else {
     try {
-      const result = JSON.parse(packed.stdout);
-      if (!Array.isArray(result) || result.length !== 1 || !Array.isArray(result[0].files)) {
-        throw new Error("invalid npm pack result");
-      }
+      const result = normalizeNpmPackResult(JSON.parse(packed.stdout), [manifest.name]);
       const paths = result[0].files.map(file => file.path);
       packedFiles = result[0].files;
       for (const path of paths) {

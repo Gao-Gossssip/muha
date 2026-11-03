@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "../../scripts/npm-pack-result.mjs";
 import { spawnNpmSync } from "../../scripts/npm-command.mjs";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
@@ -23,7 +24,7 @@ test("a packed dependency is visible in the archive even when the parent manifes
       cwd: root, encoding: "utf8", maxBuffer: 16 * 1024 * 1024,
     });
     assert.equal(packed.status, 0, packed.stderr || packed.stdout);
-    const [{ filename }] = JSON.parse(packed.stdout);
+    const [{ filename }] = normalizeNpmPackResult(JSON.parse(packed.stdout), ["fixture-parent"]);
     assert.deepEqual(packedDependencyFiles(join(root, filename)).sort(),
       ["node_modules/fixture-child/index.js", "node_modules/fixture-child/package.json"]);
     assert.throws(() => assertNoBundledDependencies(join(root, filename), "fixture-parent"),
