@@ -37,6 +37,10 @@ else {
  if (scenario === 'idle') setInterval(() => {}, 1000);
  else if (scenario === 'malformed') console.log('{broken');
  else if (scenario === 'exit') { console.error('Authorization: Bearer secret-token'); process.exitCode = 1; }
+ else if (scenario === 'redaction-values') {
+  const values = Object.fromEntries(['NUMERIC_SECRET', 'BOOLEAN_TOKEN', 'SOME_KEYRING', 'X_API_KEY', 'AWS_SESSION_TOKEN', 'SHORT_SECRET', 'LONG_SECRET'].map(name => [name, process.env[name]]));
+  emit({ type: 'custom', values }); console.error(JSON.stringify(values)); process.exitCode = 1;
+ }
  else if (scenario === 'secret-error') { emit({ type: 'custom', token: process.env.ANTHROPIC_AUTH_TOKEN }); console.error(process.env.ANTHROPIC_AUTH_TOKEN); process.exitCode = 1; }
  else if (scenario === 'error') emit({ type: 'result', subtype: 'error_during_execution', is_error: true, errors: ['Controlled failure'] });
  else {

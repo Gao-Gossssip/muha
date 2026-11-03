@@ -238,6 +238,11 @@ Use Harness Kind `"claude"`. Adapter `env` passes `ANTHROPIC_BASE_URL`,
 `ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_API_KEY` unchanged for third-party gateways;
 native `apiKeyHelper` in `~/.claude/settings.json` is also supported.
 `CLAUDE_CONFIG_DIR` selects the native config directory. Never print credentials.
+Native records and diagnostics redact credential fields, recognizable credential
+patterns and credential-named environment values of at least eight trimmed
+characters. Generic names use underscore-delimited segments; boolean and numeric
+configuration values are excluded, while known provider credential names retain
+redaction at that length. Protocol validation and turn mapping use raw identities.
 Arbitrary model IDs, including `deepseek-v4.1-flash`, pass through unchanged;
 `listModels` returns documented aliases plus configured model IDs, without inference.
 Model/effort selections apply to the next Turn (`selectedOnly`); effort flags are

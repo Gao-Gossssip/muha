@@ -124,9 +124,17 @@ class ClaudeTurn implements AdapterTurn {
     })();
   }
   private sanitize(text: string): string {
-    for (const [name, value] of Object.entries(this.session.owner.env)) {
-      if (value && /key|token|secret|password|authorization/i.test(name)) text = text.split(value).join("[REDACTED]");
-    }
+    const secrets = Object.entries(this.session.owner.env)
+      .filter(([name, value]) => {
+        if (!value || value.trim().length < 8) return false;
+        // Known provider credentials retain coverage even for numeric-looking values.
+        if (/^(?:ANTHROPIC_API_KEY|ANTHROPIC_AUTH_TOKEN|CLAUDE_CODE_OAUTH_TOKEN|AWS_(?:ACCESS_KEY_ID|SECRET_ACCESS_KEY|SESSION_TOKEN|SECURITY_TOKEN))$/i.test(name)) return true;
+        return /(^|_)(API_?KEY|KEY|TOKEN|SECRET|PASSWORD|AUTH(ORIZATION)?)(_|$)/i.test(name)
+          && !/^(?:true|false|[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)$/i.test(value.trim());
+      })
+      .map(([, value]) => value!)
+      .sort((a, b) => b.length - a.length);
+    for (const value of secrets) text = text.split(value).join("[REDACTED]");
     return text.replace(/(authorization\s*[:=]\s*)([^\r\n]+)/ig, "$1[REDACTED]")
       .replace(/((?:api[_-]?key|auth[_-]?token|access[_-]?token|token|secret)\s*[:=]\s*)["']?[^\s,"'}]+/ig, "$1[REDACTED]")
       .replace(/\b(?:sk-|sk_ant_|sk-ant-)[\w-]+/g, "[REDACTED]");
@@ -146,9 +154,9 @@ class ClaudeTurn implements AdapterTurn {
         [key, key !== "apiKeySource" && /^(?:api[_-]?key|token|secret|authorization|password)$/i.test(key) && typeof entry === "string" ? "[REDACTED]" : scrub(entry)]));
       return value;
     };
-    const payload: Obj = scrub(JSON.parse(line));
+    const payload: Obj = JSON.parse(line);
     if (!payload || typeof payload !== "object" || Array.isArray(payload)) throw new Error("Invalid event");
-    await this.session.owner.context.recordNativeEvent("claude", payload);
+    await this.session.owner.context.recordNativeEvent("claude", scrub(payload));
     if (this.stopping) return;
     this.receivedEvent = true;
     this.deadline(this.session.owner.idleTimeoutMs);

@@ -71,6 +71,34 @@ test('Claude reasoning and native Tool lifecycle', async t => {
   assert.equal(result.message.id, completed.at(-1).message.id);
   assert.equal(events.filter(e => e.type.startsWith('turn.') && e.type !== 'turn.started').length, 1);
 });
+for (const scenario of ['text', 'rich']) {
+  test(`Claude ${scenario} ignores non-credential env values and preserves raw message identities`, async t => {
+    const f = await fixture(t, scenario, { env: {
+      SOME_KEYRING: '1', FEATURE_TOKEN: 'true', X_API_KEY: 'abc',
+      NUMERIC_SECRET: '123456789', KEYRING: 'Hello from Claude Code.',
+      FIRST_SECRET: 'same-message', SECOND_SECRET: 'final-message',
+      SESSION_SECRET: '12345678-1234-1234-1234-123456789abc',
+    } });
+    const { result, events } = await run(f.session);
+    assert.equal(result.status, 'completed', JSON.stringify(result));
+    assert.equal(result.message.text, 'Hello from Claude Code.');
+    if (scenario === 'rich') {
+      assert.deepEqual(events.filter(e => e.type === 'assistant.message.completed').map(e => e.message.text),
+        ['Before tool.', 'Hello from Claude Code.']);
+      assert.equal(events.filter(e => e.type === 'tool.completed').length, 1);
+    }
+    const reference = f.session.reference;
+    await f.session.close();
+    const resumed = await f.runtime.resumeSession({ reference: { ...reference, sessionId: '12345678-1234-1234-1234-123456789abc' }, approvalPolicy: 'autoDeny' });
+    assert.equal((await run(resumed)).result.status, 'completed');
+    const db = new DatabaseSync(join(f.runtime.dataDir, 'diagnostic-events.sqlite'), { readOnly: true });
+    try {
+      const records = db.prepare("SELECT payload_json FROM native_event_records WHERE harness = 'claude'").all();
+      assert.equal(JSON.stringify(records).includes('same-message'), false);
+      assert.ok(JSON.stringify(records).includes('Hello from Claude Code.'));
+    } finally { db.close(); }
+  });
+}
 for (const scenario of ['error', 'malformed', 'exit', 'hang', 'idle', 'mismatch', 'nonzero-result', 'missing-content', 'invalid-content', 'missing-tool-id', 'missing-tool-name', 'unknown-tool-result', 'missing-result-id']) {
   test(`Claude ${scenario} terminates with a structured failure`, async t => {
     const f = await fixture(t, scenario, { startupTimeoutMs: 150, env: { MUHA_CLAUDE_TURN_IDLE_TIMEOUT_MS: '150' } });
@@ -145,3 +173,25 @@ for (const value of ['0', '-1', '1.5', 'NaN', '9007199254740992']) {
     assert.equal((await run(f.session)).result.status, 'completed');
   });
 }
+
+test('Claude credential selection ignores configuration and redacts known credentials longest first', async t => {
+  const f = await fixture(t, 'redaction-values', { env: {
+    NUMERIC_SECRET: '123456789', BOOLEAN_TOKEN: '   false   ', SOME_KEYRING: 'keyring-value', X_API_KEY: 'abc',
+    AWS_SESSION_TOKEN: '987654321', SHORT_SECRET: 'overlap-credential', LONG_SECRET: 'overlap-credential-suffix',
+  } });
+  const { result } = await run(f.session);
+  assert.equal(result.status, 'failed');
+  const db = new DatabaseSync(join(f.runtime.dataDir, 'diagnostic-events.sqlite'), { readOnly: true });
+  try {
+    const records = db.prepare("SELECT payload_json FROM native_event_records WHERE harness = 'claude'").all();
+    const custom = records.map(row => JSON.parse(row.payload_json)).find(row => row.type === 'custom');
+    assert.deepEqual(custom.values, {
+      NUMERIC_SECRET: '123456789', BOOLEAN_TOKEN: '   false   ', SOME_KEYRING: 'keyring-value', X_API_KEY: 'abc',
+      AWS_SESSION_TOKEN: '[REDACTED]', SHORT_SECRET: '[REDACTED]', LONG_SECRET: '[REDACTED]',
+    });
+    for (const output of [result.error.message, JSON.stringify(records)]) {
+      for (const secret of ['987654321', 'overlap-credential', '[REDACTED]-suffix']) assert.equal(output.includes(secret), false);
+      assert.ok(output.includes('123456789'));
+    }
+  } finally { db.close(); }
+});

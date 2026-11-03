@@ -37,7 +37,7 @@
     },
     {
       "path": "packages/claude-code-adapter/src/process.ts",
-      "sha256": "7f4899e7b42ee7c8942db0c66136256a7f6a87e76d2f1becaa906409e2b0dd5d"
+      "sha256": "9751b50392f9f6e6f3788698f065450d0404188f93c4fb064fc7aca9b35e491f"
     },
     {
       "path": "packages/codex-adapter/scripts/build-observer.mjs",
