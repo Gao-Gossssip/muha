@@ -25,6 +25,8 @@ export function assertPublicationQualification(qualification) {
   if (linuxPi?.status !== "PASS" || linuxPi.sdkVersion !== sdkVersion) {
     throw new Error("Latest Linux Pi runtime requalification must pass before publication");
   }
+  const claude = entries.filter(item => item.harness === "claude" && item.platform === "linux-x64").at(-1);
+  if (claude?.status !== "PASS") throw new Error("Latest Linux claude runtime qualification must pass before publication");
   // A later platform-specific runtime change must not be hidden by the
   // preserved Linux baseline or by a PASS for the same harness on Windows.
   for (const harness of ["core", "codex", "opencode", "kimi", "agy"]) {

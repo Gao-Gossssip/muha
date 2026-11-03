@@ -10,7 +10,7 @@ Node 内置模块。不发布、不上传、不对外联系；目录名不代表
 
 使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
-完整包提供五种适配器及 Pi SDK，不会安装其他四家的原生 CLI；
+完整包提供六种适配器及 Pi SDK，不会安装其他五家的原生 CLI；
 只需准备自己要使用的 Harness，不要求五家全部安装。
 
 复制单个 [main.ts](main.ts) 到自己的 ESM 项目后：
@@ -115,14 +115,14 @@ Pi 和 OpenCode 使用 `<provider>/<model>`：
 AGY 已验收的 `claude-sonnet-4-6` 不接受显式 Effort，请留空。
 不支持或无效的配置返回错误，不自动降级。
 
-五种 Harness 的每阶段 Session 均使用 `turnRetryPolicy: { maxRetries: 5 }`：
+六种 Harness 的每阶段 Session 均使用 `turnRetryPolicy: { maxRetries: 5 }`：
 符合条件的单个 Turn 最多自动重试五次，含首次执行共最多六次 Muha 尝试，
 不重跑整个工作流或阶段配置。
 不可重试错误、待处理交互和初始化/Skill 安装失败不会自动重试。
 工具操作、输出或文件副作用可能重复，不提供 exactly-once 保证；原生 provider
 的重试行为与费用不属于该预算。
 
-两阶段、五种 Harness 统一使用 `approvalPolicy: "autoApprove"`（autoallow）。
+两阶段、六种 Harness 统一使用 `approvalPolicy: "autoApprove"`（autoallow）。
 Adapter 选择原生自主执行模式，Core 对剩余原生 Approval Request 自动允许一次。
 脚本不再逐项询问工具审批，也不重复响应已由策略处理的请求。
 原生拒绝规则仍可能拒绝操作，不同 Harness 的权限并不等价，这不是沙箱。
@@ -187,3 +187,6 @@ Ctrl+C 为 130，SIGTERM 为 143。仅终端展示移除控制字符，
 Session、原样交接选题、保留文件和关闭 Runtime，覆盖中文、空格路径与
 CRLF 输入。Windows CI 单独执行，两个平台的完整 SDK 检查也包含这些测试，
 不需要真实凭据、外网 Skill 下载或付费模型。
+
+Claude Code 已加入 SDK，但此工作流依赖 Workspace Skills。其首版适配器未声明
+该能力，选择后会在模型 Turn 前拒绝；请使用支持 Workspace Skills 的 Harness。

@@ -1,4 +1,4 @@
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
+import { type ChildProcessWithoutNullStreams } from "node:child_process";
 import { createInterface } from "node:readline";
 import type { Duplex } from "node:stream";
 import { fileURLToPath } from "node:url";
@@ -11,6 +11,10 @@ import { spawnHarnessProcess } from "../host-process.js";
  * that failure or releasing our own handles. */
 export class AcpOwnedProcess {
   readonly child: ChildProcessWithoutNullStreams;
+  nativeExitCode: number | undefined;
+  nativeSignal: number | undefined;
+  readonly nativeExited: Promise<void>;
+  #resolveNativeExit!: () => void;
   readonly #control: Duplex;
   readonly #closed: Promise<void>;
   readonly #shutdownMs: number;
@@ -20,13 +24,14 @@ export class AcpOwnedProcess {
   #closePromise: Promise<void> | undefined;
 
   constructor(command: string, args: readonly string[], env: NodeJS.ProcessEnv, shutdownMs: number,
-    onLoss: (message: string, kind: "ownership" | "native") => void) {
+    onLoss: (message: string, kind: "ownership" | "native") => void, cwd = process.cwd()) {
     this.#shutdownMs = shutdownMs;
+    this.nativeExited = new Promise(resolve => { this.#resolveNativeExit = resolve; });
     const child = process.platform === "win32"
-      ? spawnHarnessProcess(command, args, { cwd: process.cwd(), env, shell: false, stdio: ["pipe", "pipe", "pipe"] }, shutdownMs, false)
-      : spawn(fileURLToPath(new URL("../acp-supervisor", import.meta.url)),
+      ? spawnHarnessProcess(command, args, { cwd, env, shell: false, stdio: ["pipe", "pipe", "pipe"] }, shutdownMs, false)
+      : spawnHarnessProcess(fileURLToPath(new URL("../acp-supervisor", import.meta.url)),
       [String(Math.min(1000, Math.floor(shutdownMs / 2))), command, ...args],
-      { cwd: process.cwd(), env, shell: false, stdio: ["pipe", "pipe", "pipe", "pipe"] });
+      { cwd, env, shell: false, stdio: ["pipe", "pipe", "pipe", "pipe"] });
     this.child = child as ChildProcessWithoutNullStreams;
     this.#control = child.stdio[3] as Duplex;
     const lose = (message: string, kind: "ownership" | "native" = "ownership"): void => {
@@ -41,6 +46,10 @@ export class AcpOwnedProcess {
           if (!this.#closing) this.#control.write("go\n");
         } else if (event.type === "closed") {
           this.#reaped = event.noChildren === true && event.cleanupError === false;
+        } else if (event.type === "nativeExit") {
+          this.nativeExitCode = typeof event.code === "number" ? event.code : undefined;
+          this.nativeSignal = typeof event.signal === "number" ? event.signal : undefined;
+          this.#resolveNativeExit();
         } else if (event.type === "error") {
           lose(`ACP supervisor failed during ${String(event.operation)} (${String(event.win32 ?? event.errno)})`);
         }

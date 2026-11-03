@@ -111,7 +111,7 @@ export async function verifyUmbrellaConsumer({ repositoryRoot, registryVersion, 
       'const core = await import("@muha-sdk/core");',
       'for (const name of Object.keys(core)) assert.equal(sdk[name], core[name]);',
       ...MUHA_DELIVERY_PACKAGES.filter(item => item.role === "adapter").map(item => {
-        const factory = { codex: "codexAdapter", opencode: "openCodeAdapter", kimi: "kimiAdapter", pi: "piAdapter", agy: "agyAdapter" }[item.harness];
+        const factory = { codex: "codexAdapter", opencode: "openCodeAdapter", kimi: "kimiAdapter", pi: "piAdapter", agy: "agyAdapter", claude: "claudeCodeAdapter" }[item.harness];
         return `assert.equal(sdk.${factory}, (await import(${JSON.stringify(item.packageName)})).${factory}); assert.equal(typeof sdk.${factory}(), "object");`;
       }),
       'assert.equal(sdk.createOfficialHarnessRegistration, undefined);',

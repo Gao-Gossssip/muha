@@ -87,7 +87,7 @@ test('chat omits missing harnesses before initialization and exposes only the in
     return runtime;
   } });
   assert.deepEqual(initialized, ['codex', 'pi']);
-  assert.deepEqual(result.skipped, ['opencode', 'kimi', 'agy']);
+  assert.deepEqual(result.skipped, ['opencode', 'kimi', 'claude', 'agy']);
   const app = await startChatServer(runtime, { workspacePath: root, port: 0 });
   t.after(() => app.close());
   const html = await (await fetch(app.url)).text();

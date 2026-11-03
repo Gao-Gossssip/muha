@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";
 import { codexAdapter } from "@muha-sdk/codex-adapter";
 import type {
   AgentSession,
@@ -34,7 +35,7 @@ type Equal<Left, Right> =
     : false;
 type Assert<Value extends true> = Value;
 
-type ExpectedHarnessKinds = "codex" | "opencode" | "kimi" | "pi" | "agy";
+type ExpectedHarnessKinds = "codex" | "opencode" | "kimi" | "pi" | "agy" | "claude";
 type ExpectedApprovalPolicies =
   | "interactive"
   | "autoApprove"
@@ -240,3 +241,6 @@ export type PublicContractAssertions =
   | WorkspaceFailureUnionIsWidened
   | TurnResultsAreValues
 ;
+
+const claudeRegistration: HarnessRegistration = claudeCodeAdapter({ startupTimeoutMs: 120000 });
+void claudeRegistration;

@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";
 import { codexAdapter } from "@muha-sdk/codex-adapter";
 import { OFFICIAL_HARNESS_KINDS } from "@muha-sdk/core/internal";
 import { kimiAdapter } from "@muha-sdk/kimi-adapter";
@@ -6,6 +7,7 @@ import { piAdapter } from "@muha-sdk/pi-adapter";
 import { agyAdapter } from "@muha-sdk/agy-adapter";
 
 const profiles = Object.freeze([
+  Object.freeze({ harness: "claude", command: "claude", registration: claudeCodeAdapter, qualificationModel: "deepseek-v4.1-flash", qualificationEffort: null }),
   Object.freeze({ harness: "codex", command: "codex", registration: codexAdapter,
     qualificationModel: "gpt-5.6-luna", qualificationEffort: "low", qualificationIdleEffort: "medium" }),
   Object.freeze({

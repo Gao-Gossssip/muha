@@ -33,7 +33,8 @@
     "@muha-sdk/opencode-adapter": "0.1.19",
     "@muha-sdk/kimi-adapter": "0.1.19",
     "@muha-sdk/pi-adapter": "0.1.19",
-    "@muha-sdk/agy-adapter": "0.1.19"
+    "@muha-sdk/agy-adapter": "0.1.19",
+    "@muha-sdk/claude-code-adapter": "0.1.19"
   },
   "publishConfig": {
     "access": "public",

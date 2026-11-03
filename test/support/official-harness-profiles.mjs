@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";
 import { codexAdapter } from "@muha-sdk/codex-adapter";
 import { OFFICIAL_HARNESS_KINDS } from "@muha-sdk/core/internal";
 import { kimiAdapter } from "@muha-sdk/kimi-adapter";
@@ -11,6 +12,7 @@ const factories = Object.freeze({
   kimi: kimiAdapter,
   pi: piAdapter,
   agy: agyAdapter,
+  claude: claudeCodeAdapter,
 });
 
 export const OFFICIAL_HARNESS_TEST_PROFILES = Object.freeze(

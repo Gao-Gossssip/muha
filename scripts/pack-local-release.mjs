@@ -134,6 +134,7 @@ try {
     OPENCODE_FILENAME: requireFilename(filenames, "@muha-sdk/opencode-adapter"),
     KIMI_FILENAME: requireFilename(filenames, "@muha-sdk/kimi-adapter"),
     PI_FILENAME: requireFilename(filenames, "@muha-sdk/pi-adapter"),
+    CLAUDE_FILENAME: requireFilename(filenames, "@muha-sdk/claude-code-adapter"),
     AGY_FILENAME: requireFilename(filenames, "@muha-sdk/agy-adapter"),
     MUHA_FILENAME: requireFilename(filenames, "@muha-sdk/muha"),
   });

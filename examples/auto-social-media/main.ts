@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/muha";
 /**
  * Pure interactive command-line example. One TS file, public Muha API + Node built-ins.
  *   node examples/auto-social-media/main.ts [existing-output-directory]
@@ -51,8 +52,8 @@ export const PINNED_SKILLS: Readonly<Record<Stage, PinnedSkill>> = {
     ],
   },
 };
-const factories = { codex: codexAdapter, opencode: openCodeAdapter, kimi: kimiAdapter, pi: piAdapter, agy: agyAdapter };
-const commands = { codex: "codex", opencode: "opencode", kimi: "kimi", agy: "agy" } as const;
+const factories = { codex: codexAdapter, opencode: openCodeAdapter, kimi: kimiAdapter, pi: piAdapter, claude: claudeCodeAdapter, agy: agyAdapter };
+const commands = { codex: "codex", opencode: "opencode", kimi: "kimi", claude: "claude", agy: "agy" } as const;
 
 async function commandPresent(path: string): Promise<boolean> {
   try {
@@ -78,6 +79,7 @@ export async function installedHarnesses(path: string = process.env.PATH ?? "/us
   const present = await Promise.all(kinds.map(async kind => {
     // Complete Muha installation supplies the Pi SDK as a production dependency.
     if (kind === "pi") return true;
+    if (kind === "claude" && process.platform !== "linux") return false;
     for (const directory of path.split(delimiter)) {
       const names = process.platform === "win32" ? [commands[kind] + ".exe", commands[kind], commands[kind] + ".cmd"] : [commands[kind]];
       for (const name of names) if (await commandPresent(resolve(directory || ".", name))) return true;
@@ -90,6 +92,7 @@ const models: Record<HarnessKind, readonly string[]> = {
   codex: ["gpt-6-luna", "gpt-5.6-luna"],
   opencode: ["<provider>/<model>"],
   kimi: ["k3", "deepseek/deepseek-flash"], pi: ["<provider>/<model>"],
+  claude: ["default", "sonnet", "opus", "haiku"],
   agy: ["claude-sonnet-4-6"],
 };
 const MAX_RETRIES = 5;

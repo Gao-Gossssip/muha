@@ -80,7 +80,7 @@ test('SDK guidance is self-contained and preserves qualification exceptions', as
     'claude-sonnet-4-6', 'opencode-go/qwen3.8-flash', 'NOT_TRIGGERED', 'WAIVED', 'N/A']) {
     assert.ok(qualification.includes(fact), fact);
   }
-  for (const directory of ['core', 'codex-adapter', 'opencode-adapter', 'kimi-adapter', 'pi-adapter', 'agy-adapter']) {
+  for (const directory of ['core', 'codex-adapter', 'opencode-adapter', 'kimi-adapter', 'pi-adapter', 'agy-adapter', 'claude-code-adapter']) {
     const manifest = JSON.parse(await readFile(join(root, 'packages', directory, 'package.json'), 'utf8'));
     assert.equal(manifest.repository.url, 'https://github.com/Gao-Gossssip/muha.git');
     assert.equal(manifest.repository.directory, `packages/${directory}`);

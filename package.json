@@ -10,6 +10,7 @@
     "packages/kimi-adapter",
     "packages/pi-adapter",
     "packages/agy-adapter",
+    "packages/claude-code-adapter",
     "packages/muha"
   ],
   "engines": {

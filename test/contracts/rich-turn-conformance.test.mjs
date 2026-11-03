@@ -16,6 +16,7 @@ const fakeOpenCodeV2Bin = resolve(import.meta.dirname, "../fixtures/v2-harness-b
 const controlledPath = [fakeHarnessBin, dirname(process.execPath)].join(delimiter);
 
 const profiles = createConformanceProfiles({
+  claude: { options: () => ({ env: { PATH: controlledPath, MUHA_FAKE_CLAUDE_SCENARIO: "rich" } }) },
   agy: { options: async t => (await agyConformance(t, { scenario: "rich" })).options },
   pi: { options: async t => (await piConformance(t, { rich: true })).options },
   codex: {
@@ -61,6 +62,7 @@ const autonomousProfile = {
 
 for (const profile of [...profiles, autonomousProfile]) {
   test(`${profile.label ?? profile.harness} satisfies the rich Turn Core Conformance`, async t => {
+    if (profile.harness === "claude" && process.platform === "win32") { t.skip("Claude Code adapter is Linux-only for now; Windows is untested"); return; }
     const root = await mkdtemp(join(tmpdir(), `muha-${profile.harness}-rich-conformance-`));
     const workspace = join(root, "workspace");
     let runtime;

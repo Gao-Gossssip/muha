@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/muha";
 /**
  * Local, single-user chat. Node >=22.20; no frontend build or extra dependency.
  *   node examples/local-chat/main.ts .
@@ -22,8 +23,8 @@ import {
 } from "@muha-sdk/muha";
 
 const factories = { codex: codexAdapter, opencode: openCodeAdapter,
-  kimi: kimiAdapter, pi: piAdapter, agy: agyAdapter } as const;
-const commands = { codex: "codex", opencode: "opencode", kimi: "kimi", agy: "agy" } as const;
+  kimi: kimiAdapter, pi: piAdapter, claude: claudeCodeAdapter, agy: agyAdapter } as const;
+const commands = { codex: "codex", opencode: "opencode", kimi: "kimi", claude: "claude", agy: "agy" } as const;
 
 async function commandPresent(path: string): Promise<boolean> {
   try {
@@ -49,6 +50,7 @@ export async function installedHarnesses(path: string = process.env.PATH ?? "/us
   const present = await Promise.all(kinds.map(async kind => {
     // Complete Muha installation supplies the Pi SDK as a production dependency.
     if (kind === "pi") return true;
+    if (kind === "claude" && process.platform !== "linux") return false;
     for (const directory of path.split(delimiter)) {
       const names = process.platform === "win32" ? [commands[kind] + ".exe", commands[kind], commands[kind] + ".cmd"] : [commands[kind]];
       for (const name of names) if (await commandPresent(resolve(directory || ".", name))) return true;
@@ -64,6 +66,7 @@ const suggestions: Record<HarnessKind, readonly string[]> = {
   opencode: ["opencode-go/deepseek-v4.1-flash", "opencode-go/qwen3.8-flash"],
   kimi: ["k3", "deepseek/deepseek-flash"],
   pi: ["opencode-go/deepseek-v4.1-flash", "opencode-go/qwen3.8-flash"],
+  claude: ["default", "sonnet", "opus", "haiku"],
   agy: ["claude-sonnet-4-6"],
 };
 
@@ -412,7 +415,7 @@ button.primary{color:white;background:var(--accent);border-color:var(--accent);b
 const $ = id => document.getElementById(id);
 const token = document.querySelector('meta[name="muha-token"]').content;
 const drafts = new Map(); let config, current, busy = false, creating = false;
-const harnessLabels = { codex: 'Codex CLI', opencode: 'OpenCode', kimi: 'Kimi Code', pi: 'Pi', agy: 'AGY' };
+const harnessLabels = { codex: 'Codex CLI', opencode: 'OpenCode', kimi: 'Kimi Code', pi: 'Pi', claude: 'Claude Code', agy: 'AGY' };
 function note(message) { $('status').textContent = message; }
 async function api(path, method = 'GET', body) {
   const response = await fetch(path, { method, headers: { 'x-muha-token': token,

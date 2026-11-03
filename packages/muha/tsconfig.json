@@ -12,7 +12,8 @@
     { "path": "../opencode-adapter" },
     { "path": "../kimi-adapter" },
     { "path": "../pi-adapter" },
-    { "path": "../agy-adapter" }
+    { "path": "../agy-adapter" },
+    { "path": "../claude-code-adapter" }
   ],
   "include": ["src/**/*.ts"]
 }

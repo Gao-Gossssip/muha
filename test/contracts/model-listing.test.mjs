@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { mkdir, readFile, readdir, writeFile, rm } from "node:fs/promises";
@@ -29,6 +30,8 @@ const profiles = [
   { harness: "agy", factory: agyAdapter,
     models: "fake-opus\t原生模型 (Low)\r\nfake-high  Native High\r\n",
     expected: [{ id: "fake-opus", name: "原生模型 (Low)" }, { id: "fake-high", name: "Native High" }] },
+  { harness: "claude", factory: claudeCodeAdapter, staticCatalog: true,
+    expected: ["default", "sonnet", "opus", "haiku", "opusplan", "fable"].map(id => ({ id, supportedEfforts: ["low", "medium", "high", "xhigh", "max"] })) },
 ];
 
 async function fixture(t, profile, initial = { models: profile.models }) {
@@ -41,6 +44,8 @@ async function fixture(t, profile, initial = { models: profile.models }) {
   };
   const runtime = await createMuhaRuntime({ harnesses: [profile.factory({
     ...base, env: { ...base.env, MUHA_FAKE_MODEL_CATALOG: file,
+      ...(profile.staticCatalog ? { CLAUDE_CONFIG_DIR: join(root, "no-config"), ANTHROPIC_MODEL: undefined,
+        ANTHROPIC_DEFAULT_OPUS_MODEL: undefined, ANTHROPIC_DEFAULT_SONNET_MODEL: undefined, ANTHROPIC_DEFAULT_HAIKU_MODEL: undefined } : {}),
       ...(profile.harness === "opencode" ? { MUHA_V2_EVIDENCE_FILE: join(root, "evidence.json") } : {}) },
   })], dataDir: join(root, "diagnostics") });
   t.after(async () => { try { await runtime.close(); } finally { await rm(root, { recursive: true, force: true }); } });
@@ -77,6 +82,7 @@ for (const profile of profiles) {
       assert.deepEqual(session.reference, before.reference);
     }
     await session.close();
+    if (profile.staticCatalog) return; // No native catalog query; aliases remain available without provider configuration.
     await f.set({ models: profile.harness === "agy" ? "" : [] });
     assert.deepEqual(await f.runtime.listModels(f.options), []);
     await f.set({ error: true });
@@ -88,7 +94,7 @@ for (const profile of profiles) {
     assert.deepEqual(await f.runtime.listModels(f.options), profile.expected);
   });
 
-  test(profile.harness + " rejects malformed Model catalogs instead of returning an empty list", async t => {
+  test(profile.harness + " rejects malformed Model catalogs instead of returning an empty list", { skip: profile.staticCatalog ? "Claude Code exposes a static alias/config catalog, not a native model-list protocol" : false }, async t => {
     const f = await fixture(t, profile);
     await f.set({ models: profile.harness === "agy" ? "WARNING: catalog unavailable\n" : [{}] });
     await assert.rejects(f.runtime.listModels(f.options), error => error.data?.code === "ADAPTER_PROTOCOL_ERROR");

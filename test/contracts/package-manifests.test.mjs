@@ -11,6 +11,7 @@ const packages = [
   ["kimi-adapter", "@muha-sdk/kimi-adapter"],
   ["pi-adapter", "@muha-sdk/pi-adapter"],
   ["agy-adapter", "@muha-sdk/agy-adapter"],
+  ["claude-code-adapter", "@muha-sdk/claude-code-adapter"],
   ["muha", "@muha-sdk/muha"],
 ];
 
@@ -58,7 +59,7 @@ test("the official packages share one installable ESM contract", async () => {
     skills: "1.5.21",
     zod: "4.6.7",
   });
-  for (const adapter of [manifests[1], manifests[3]]) {
+  for (const adapter of [manifests[1], manifests[3], manifests[6]]) {
     assert.deepEqual(adapter.dependencies, {
       "@muha-sdk/core": releaseVersion,
     });
@@ -77,10 +78,10 @@ test("the official packages share one installable ESM contract", async () => {
   assert.equal(manifests[4].bundledDependencies, undefined);
   assert.equal(manifests[4].bundleDependencies, undefined);
   assert.deepEqual(manifests[5].dependencies, { "@muha-sdk/core": releaseVersion });
-  assert.deepEqual(manifests[6].dependencies,
-    Object.fromEntries(packages.slice(0, 6).map(([, name]) => [name, releaseVersion])));
-  assert.equal(manifests[6].optionalDependencies, undefined);
-  assert.equal(manifests[6].peerDependencies, undefined);
+  assert.deepEqual(manifests[7].dependencies,
+    Object.fromEntries(packages.slice(0, 7).map(([, name]) => [name, releaseVersion])));
+  assert.equal(manifests[7].optionalDependencies, undefined);
+  assert.equal(manifests[7].peerDependencies, undefined);
 });
 
 test("every official package tarball contains declarations and one ESM build", () => {

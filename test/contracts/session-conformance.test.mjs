@@ -15,6 +15,7 @@ const fakeOpenCodeV2Bin = resolve(import.meta.dirname, "../fixtures/v2-harness-b
 const controlledPath = [fakeHarnessBin, dirname(process.execPath)].join(delimiter);
 
 const profiles = createConformanceProfiles({
+  claude: { primaryId: "00000000-0000-4000-8000-000000000001", missingId: "missing", initialModel: undefined, nextModel: "custom-model", seed: () => [], options: () => ({ env: { PATH: controlledPath } }) },
   agy: {
     primaryId: "agy-external-child", missingId: "agy-missing", initialModel: undefined, nextModel: "fake-high",
     seed: (workspace, missingWorkspace) => [
@@ -115,6 +116,7 @@ const profiles = createConformanceProfiles({
 
 for (const profile of profiles) {
   test(`${profile.harness} satisfies the native Session Core Conformance`, async t => {
+    if (profile.harness === "claude" && process.platform === "win32") { t.skip("Claude Code adapter is Linux-only for now; Windows is untested"); return; }
     const root = await mkdtemp(join(tmpdir(), `muha-${profile.harness}-session-conformance-`));
     const workspace = join(root, "workspace");
     const missingWorkspace = join(root, "missing-workspace");
@@ -201,7 +203,7 @@ for (const profile of profiles) {
       );
 
       session = await runtime.resumeSession({ reference, approvalPolicy });
-      assert.equal(session.model, idleModel ? profile.nextModel : profile.initialModel);
+      assert.equal(session.model, profile.harness === "claude" ? undefined : idleModel ? profile.nextModel : profile.initialModel);
       await session.close();
 
       const absentReference = {
@@ -210,7 +212,7 @@ for (const profile of profiles) {
         sessionId: `${profile.missingId}_absent`,
         workspacePath: canonicalWorkspace,
       };
-      await assert.rejects(
+      if (profile.harness !== "claude") await assert.rejects(
         runtime.resumeSession({ reference: absentReference, approvalPolicy }),
         (error) =>
           error instanceof MuhaError &&

@@ -72,6 +72,11 @@ export const MUHA_DELIVERY_PACKAGES = Object.freeze([
     requiredFiles: Object.freeze(["dist/index.js", "dist/model-query.js", ...supervisorFiles("agy-supervisor")]),
   }),
   Object.freeze({
+    role: "adapter", harness: "claude", packageName: "@muha-sdk/claude-code-adapter",
+    directory: "claude-code-adapter", artifactStem: "muha-sdk-claude-code-adapter",
+    requiredFiles: Object.freeze(["dist/index.js"]),
+  }),
+  Object.freeze({
     role: "umbrella",
     packageName: "@muha-sdk/muha",
     directory: "muha",

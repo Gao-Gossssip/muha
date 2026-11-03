@@ -143,7 +143,7 @@ comes with Muha, while other harnesses need their native CLI on `PATH`.
 
 | Project | Overview | Location |
 | --- | --- | --- |
-| [Multi-Harness Chat](examples/local-chat/README.md) | Single-file server and chat UI: five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](examples/local-chat/) |
+| [Multi-Harness Chat](examples/local-chat/README.md) | Single-file server and chat UI: six adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Settings apply to new conversations only. | [examples/local-chat/](examples/local-chat/) |
 | [AI Topic & Writing](examples/auto-social-media/README.md) | Interactive command-line research-to-draft workflow using `content-strategy` and `khazix-writer`. Independently choose each agent's harness/model/effort, stream model replies in the terminal and inspect the retained workspace. Real models require explicit consent. | [examples/auto-social-media/](examples/auto-social-media/) |
 
 Examples live in this GitHub repository, not the npm package. Adding examples
@@ -226,3 +226,33 @@ For Codex, OpenCode, Kimi, and Pi, use `await session.setModel(id)` between Turn
 to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
+
+## Claude Code
+
+Export `claudeCodeAdapter` from `@muha-sdk/muha` (or install
+`@muha-sdk/core @muha-sdk/claude-code-adapter`). Independently install `claude`
+using Anthropic's installer and configure native authentication. Linux is the
+only tested platform; Windows is untested/unsupported for now; macOS is untested.
+
+Use Harness Kind `"claude"`. Adapter `env` passes `ANTHROPIC_BASE_URL`,
+`ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_API_KEY` unchanged for third-party gateways;
+native `apiKeyHelper` in `~/.claude/settings.json` is also supported.
+`CLAUDE_CONFIG_DIR` selects the native config directory. Never print credentials.
+Arbitrary model IDs, including `deepseek-v4.1-flash`, pass through unchanged;
+`listModels` returns documented aliases plus configured model IDs, without inference.
+Model/effort selections apply to the next Turn (`selectedOnly`); effort flags are
+`low`, `medium`, `high`, `xhigh`, `max` (CLI 2.1.197 help).
+
+`autoApprove` uses `--dangerously-skip-permissions`; `autoDeny` uses
+`--permission-mode dontAsk` (configured permissions may already allow tools).
+No interactive approvals, Questions, images, Session listing or Workspace
+Skills/MCP configuration are declared. Each Turn owns a new native process;
+Session identity is verified on init, and continuation uses `--resume`.
+
+Set `startupTimeoutMs` (default 120000) for first-event readiness and adapter env
+`MUHA_CLAUDE_TURN_IDLE_TIMEOUT_MS` (default 300000) for idle output, resetting on every parsed stream-json event, including tool
+results and system events. It bounds authentication stalls after init. `shutdownTimeoutMs` defaults to 5000.
+All deadlines reclaim owned processes. Claude's `total_cost_usd` and
+`modelUsage.costUSD` are Anthropic list-price estimates, not actual gateway
+charges; they remain only in Native Event Records, never usage/cost fields.
+Real qualification is pending. See the adapter README for the full contract.

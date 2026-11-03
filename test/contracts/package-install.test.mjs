@@ -40,6 +40,7 @@ const adapters = [
   ["opencode-adapter", "@muha-sdk/opencode-adapter", "openCodeAdapter"],
   ["kimi-adapter", "@muha-sdk/kimi-adapter", "kimiAdapter"],
   ["agy-adapter", "@muha-sdk/agy-adapter", "agyAdapter"],
+  ["claude-code-adapter", "@muha-sdk/claude-code-adapter", "claudeCodeAdapter"],
   ["pi-adapter", "@muha-sdk/pi-adapter", "piAdapter"],
 ];
 
@@ -49,7 +50,7 @@ for (const [adapterDirectory, adapterPackage, factory] of
     verifyConsumerInstall(adapterDirectory, adapterPackage, factory));
 }
 
-test("an isolated fixture can install Core and all five official Adapters", async () => {
+test("an isolated fixture can install Core and all six official Adapters", async () => {
   const root = await mkdtemp(join(tmpdir(), "muha-sdk-install-"));
   const artifacts = join(root, "artifacts");
   const consumer = join(root, "consumer");
@@ -92,7 +93,7 @@ test("an isolated fixture can install Core and all five official Adapters", asyn
       assert.equal(checksums, `${release.packages.map(item => `${item.sha256}  ${item.filename}`).sort().join("\n")}\n`);
     } else {
       for (const packageDirectory of [
-        "core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter",
+        "core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "claude-code-adapter",
       ]) {
         run("npm", ["pack", "--pack-destination", artifacts], {
           cwd: join(repositoryRoot, "packages", packageDirectory), env: isolatedEnvironment,
@@ -122,7 +123,7 @@ test("an isolated fixture can install Core and all five official Adapters", asyn
         const name = basename(path);
         return path.startsWith("@muha-sdk/") || name.startsWith("muha-sdk-") || name.startsWith("muha-orchestrator-");
       }).length,
-      6,
+      7,
     );
     await writeFile(
       join(consumer, "package.json"),
@@ -173,10 +174,10 @@ test("an isolated fixture can install Core and all five official Adapters", asyn
     const installed = await readdir(join(consumer, "node_modules", "@muha-sdk"));
     assert.deepEqual(
       installed.sort(),
-      ["codex-adapter", "core", "kimi-adapter", "opencode-adapter", "pi-adapter", "agy-adapter"].sort(),
+      ["codex-adapter", "core", "kimi-adapter", "opencode-adapter", "pi-adapter", "agy-adapter", "claude-code-adapter"].sort(),
     );
     assert.equal((await readdir(join(consumer, "node_modules"))).includes("muha-orchestrator"), false);
-    for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter"]) {
+    for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "claude-code-adapter"]) {
       assert.equal((await lstat(join(consumer, "node_modules", "@muha-sdk", packageName))).isSymbolicLink(), false,
         `${packageName} must not link back to the source workspace`);
     }

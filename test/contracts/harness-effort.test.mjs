@@ -34,6 +34,12 @@ async function lastTurnSubmission(filePath) {
 
 const piFixtures = new Map();
 const profiles = createConformanceProfiles({
+  claude: { initialModel: undefined, effortModel: "gateway-model", supportedEffort: "high", unsupportedEffort: "extreme",
+    evidence: root => join(root, "claude.jsonl"),
+    options: root => ({ env: { PATH: controlledPath, MUHA_FAKE_CLAUDE_EVIDENCE: join(root, "claude.jsonl") } }),
+    submission: async file => { const last = JSON.parse((await readFile(file, "utf8")).trim().split("\n").at(-1));
+      const index = last.argv.indexOf("--effort"); return index < 0 ? undefined : last.argv[index + 1]; },
+  },
   agy: {
     initialModel: undefined, effortModel: "fake-high", supportedEffort: "high", unsupportedEffort: "extreme",
     defaultEffort: undefined, minimalModel: "fake-opus", missingModel: "invalid-model",
@@ -132,6 +138,7 @@ const profiles = createConformanceProfiles({
 
 for (const profile of profiles) {
   test(`${profile.harness} carries the common Harness Effort next-Turn selection`, async t => {
+    if (profile.harness === "claude" && process.platform === "win32") { t.skip("Claude Code adapter is Linux-only for now; Windows is untested"); return; }
     const root = await mkdtemp(join(tmpdir(), `muha-effort-${profile.harness}-`));
     const workspace = join(root, "workspace");
     const evidencePath = profile.evidence(root);
@@ -221,7 +228,7 @@ for (const profile of profiles) {
 
       // A failed Model change retains both prior selections.
       await session.setEffort(profile.supportedEffort);
-      await assert.rejects(
+      if (profile.harness !== "claude") await assert.rejects(
         session.setModel(profile.missingModel),
         (error) => isError(error, "HARNESS_ERROR"),
       );
@@ -285,8 +292,8 @@ for (const profile of profiles) {
           error.data.operation === "resumeSession",
       );
 
-      // A model without native Effort metadata rejects explicit Effort.
-      await assert.rejects(
+      // Claude effort flags are model-independent selections.
+      if (profile.harness !== "claude") await assert.rejects(
         runtime.createSession({
           harness: profile.harness,
           approvalPolicy,
