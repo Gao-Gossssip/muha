@@ -18,6 +18,7 @@ test("the explicit delivery manifest covers Core, every official Adapter and the
       "@muha-sdk/kimi-adapter",
       "@muha-sdk/pi-adapter",
       "@muha-sdk/agy-adapter",
+      "@muha-sdk/claude-code-adapter",
       "@muha-sdk/muha",
     ],
   );

@@ -119,7 +119,7 @@ node example.mjs
 
 | 项目 | 概述 | 位置 |
 | --- | --- | --- |
-| [多 Harness 集成 Chat](examples/local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，支持五种适配器、原生 model/effort、内联 Turn 事件、审批、追问和停止。选项仅在点击“新对话”后生效，不迁移上下文。 | [examples/local-chat/](examples/local-chat/) |
+| [多 Harness 集成 Chat](examples/local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，支持六种适配器、原生 model/effort、内联 Turn 事件、审批、追问和停止。选项仅在点击“新对话”后生效，不迁移上下文。 | [examples/local-chat/](examples/local-chat/) |
 | [AI 热点选题与写作](examples/auto-social-media/README.zh-CN.md) | 纯命令行交互：使用 `content-strategy` 选题、`khazix-writer` 写文；引导配置两阶段的 harness/model/effort，终端仅流式展示模型回复，保留工作目录。需明确确认真实模型调用，不自动发布。 | [examples/auto-social-media/](examples/auto-social-media/) |
 
 Examples 属于 GitHub 项目内容，不随 npm 包安装；新增示例不需要重新发布
@@ -195,3 +195,30 @@ if (effort !== undefined &&
 Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
 `await session.setModel(id)`，保留同一会话历史。切换会清除旧的显式 effort，
 原生 Harness 仍可采用其默认值。AGY 目前仅支持在创建和恢复会话时选择模型。
+
+## Claude Code
+
+从 `@muha-sdk/muha` 导入 `claudeCodeAdapter`，或单独安装
+`@muha-sdk/core @muha-sdk/claude-code-adapter`。使用 Anthropic 安装器独立安装
+`claude` 并配置原生认证。Harness Kind 为 `"claude"`。
+目前仅测试 Linux；Windows 尚未测试、暂不支持；macOS 尚未测试。
+
+适配器 `env` 原样传递 `ANTHROPIC_BASE_URL`、`ANTHROPIC_AUTH_TOKEN`、
+`ANTHROPIC_API_KEY`，支持第三方 Anthropic 兼容网关；也支持
+`~/.claude/settings.json` 的 `apiKeyHelper`，配置目录由 `CLAUDE_CONFIG_DIR`
+指定。不要打印凭据。模型 ID 任意透传，例如 `deepseek-v4.1-flash`；
+`listModels` 返回静态别名与环境/配置中指定的模型，不调用模型推理。
+模型与 effort 均为 `selectedOnly`，作用于下一次 Turn；effort 支持
+`low`、`medium`、`high`、`xhigh`、`max`（CLI 2.1.197 help）。
+
+`autoApprove` 映射到 `--dangerously-skip-permissions`；`autoDeny` 映射到
+`--permission-mode dontAsk`，原生已允许的工具仍可能执行。暂不声明交互审批、
+Question、图片、会话列表或 Workspace Skills/MCP 配置能力。每次 Turn 使用
+独立的受管子进程，以 `--session-id` 创建、`--resume` 继续，init 校验会话标识。
+
+`startupTimeoutMs` 默认 120000 ms，限制首个事件等待；适配器 env 中
+`MUHA_CLAUDE_TURN_IDLE_TIMEOUT_MS` 默认 300000 ms，限制 init 后认证卡住
+及其他无输出等待，assistant 输出会重置计时。`shutdownTimeoutMs` 默认 5000 ms。
+超时、中断与关闭均回收受管进程。`total_cost_usd` / `modelUsage.costUSD`
+只是 Claude 的 Anthropic 标价估算，不是网关实际费用，仅保留在原生事件记录，
+不会映射为 usage/cost。真实模型资格验证仍待单独授权。

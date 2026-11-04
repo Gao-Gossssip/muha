@@ -154,3 +154,5 @@ export async function preparePrivateDataDirectory(path: string): Promise<string>
 export function checkPrivateDataFiles(paths: readonly string[]): void {
   protect(["--check-private-files", ...paths.map(toNamespacedPath)]);
 }
+
+export { AcpOwnedProcess as OwnedHarnessProcess } from "./acp/owned-process.js";

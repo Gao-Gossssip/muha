@@ -15,6 +15,7 @@ const fakeOpenCodeV2Bin = resolve(import.meta.dirname, "../fixtures/v2-harness-b
 const controlledPath = [fakeHarnessBin, dirname(process.execPath)].join(delimiter);
 
 const profiles = createConformanceProfiles({
+  claude: { expectedText: "Hello from Claude Code.", options: () => ({ env: { PATH: controlledPath } }) },
   agy: {
     expectedText: "Hello from AGY.",
     options: async ({ root }, t) => (await agyConformance(t, { root })).options,
@@ -64,6 +65,7 @@ const profiles = createConformanceProfiles({
 
 for (const profile of profiles) {
   test(`${profile.harness} satisfies the durable text Turn Core Conformance`, async t => {
+    if (profile.harness === "claude" && process.platform === "win32") { t.skip("Claude Code adapter is Linux-only for now; Windows is untested"); return; }
     const root = await mkdtemp(join(tmpdir(), `muha-${profile.harness}-conformance-`));
     const workspace = join(root, "workspace");
     const evidenceFile = join(root, `${profile.harness}-evidence.json`);

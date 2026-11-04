@@ -13,9 +13,9 @@ Opening the page or creating a conversation does not automatically send a Turn.
 ## Complete Muha installation
 
 Install the complete `@muha-sdk/muha` entry package, not individual Core/Adapter
-packages. It includes all five adapters and their npm dependencies, including
+packages. It includes all six adapters and their npm dependencies, including
 Pi's SDK. It does **not** install Codex, OpenCode, Kimi or AGY's native CLI.
-You need only the native harnesses you want to use, not all five.
+You need only the native harnesses you want to use, not all six.
 
 To use the standalone file in your own ESM project:
 
@@ -168,7 +168,7 @@ No real model calls, publication or consumer application tests are required to
 run the example's controlled contract suite.
 
 After the repository build, run `npm run test:examples`
-(`npm.cmd run test:examples` in PowerShell). Alongside the five-harness HTTP/browser fixtures,
+(`npm.cmd run test:examples` in PowerShell). Alongside the six-harness HTTP/browser fixtures,
 integration tests run the real Core/Pi Adapter/pinned SDK against a loopback
 provider, exercising streamed Turns, native conversation history and owned close
 on a Chinese workspace path with spaces. The same suite runs explicitly in

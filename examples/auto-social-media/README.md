@@ -13,9 +13,9 @@ preparation, not a social-platform integration.
 Use Node.js >=22.20.0 on Linux x64/glibc or native Windows x64. From the repository:
 
 Both stages require the complete `@muha-sdk/muha` installation, not separate
-Core/Adapter packages. The complete entry includes all five adapters and Pi's
+Core/Adapter packages. The complete entry includes all six adapters and Pi's
 SDK; it does not install the other four native CLIs. You need only the native
-harnesses you choose, not all five. To copy just [main.ts](main.ts) into your own
+harnesses you choose, not all six. To copy just [main.ts](main.ts) into your own
 ESM project:
 
 ```sh
@@ -136,14 +136,14 @@ is prescribed or automatically substituted; other harnesses use their own native
 Effort is a model-specific native string. AGY's qualified `claude-sonnet-4-6`
 does not accept explicit effort; leave it blank. Invalid selections surface errors.
 
-For all five harnesses, each stage's Session sets `turnRetryPolicy: { maxRetries: 5 }`:
+For all six harnesses, each stage's Session sets `turnRetryPolicy: { maxRetries: 5 }`:
 up to five automatic retries (six Muha attempts including the initial attempt)
 for an eligible Turn, not whole-workflow/stage replays. Non-retryable
 errors, pending interactions and setup failures are not automatically retried.
 Retries may duplicate tool/file effects; this is not exactly-once execution.
 Native provider retry behavior and charges are outside this budget.
 
-Both stages use `approvalPolicy: "autoApprove"` for all five harnesses (autoallow).
+Both stages use `approvalPolicy: "autoApprove"` for all six harnesses (autoallow).
 The Adapter selects its native autonomous mode; Core approves any residual
 Approval Requests once. The script does not prompt for tool approvals or reply
 again to policy-owned requests. Native deny rules can still reject an action;
@@ -220,3 +220,7 @@ Skill discovery, two serial native Sessions, exact topic handoff, retained
 artifacts and owned Runtime close with Chinese/space paths and CRLF input.
 Windows CI runs it explicitly; the full SDK suite includes it on both platforms.
 No real credentials, external Skill downloads or provider charges are involved.
+
+Claude Code is included in the SDK catalog, but this workflow requires
+Workspace Skills. Its first adapter version does not declare that capability,
+so selecting it rejects before a model Turn. Use a Harness with Workspace Skills.

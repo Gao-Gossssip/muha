@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import { spawn } from 'node:child_process';
+import { appendFileSync, readFileSync } from 'node:fs';
+const args = process.argv.slice(2);
+const value = flag => args[args.indexOf(flag) + 1];
+assert.ok(args.includes('-p') && args.includes('--verbose'));
+assert.equal(value('--output-format'), 'stream-json');
+assert.equal(value('--input-format'), 'text');
+assert.ok(args.includes('--session-id') !== args.includes('--resume'));
+assert.ok(args.includes('--dangerously-skip-permissions') || value('--permission-mode') === 'dontAsk');
+const switches = new Set(['-p', '--verbose', '--dangerously-skip-permissions']);
+const valued = new Set(['--output-format', '--input-format', '--session-id', '--resume', '--model', '--permission-mode', '--effort']);
+for (let i = 0; i < args.length; i++) {
+ if (switches.has(args[i])) continue;
+ assert.ok(valued.has(args[i]), 'unexpected flag'); assert.ok(args[++i]);
+}
+if (args.includes('--effort')) assert.ok(['low', 'medium', 'high', 'xhigh', 'max'].includes(value('--effort')));
+const id = value(args.includes('--resume') ? '--resume' : '--session-id');
+const scenario = process.env.MUHA_FAKE_CLAUDE_SCENARIO ?? 'text';
+let prompt = '';
+for await (const chunk of process.stdin) prompt += chunk;
+let descendantPid;
+if (scenario === 'idle' && process.env.MUHA_FAKE_CLAUDE_DETACHED === '1') {
+ const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { detached: true, stdio: 'ignore' });
+ descendantPid = child.pid; child.unref();
+}
+if (process.env.MUHA_FAKE_CLAUDE_EVIDENCE) appendFileSync(process.env.MUHA_FAKE_CLAUDE_EVIDENCE, JSON.stringify({ argv: args, cwd: process.cwd(), prompt, pid: process.pid, descendantPid, authTokenPreserved: process.env.ANTHROPIC_AUTH_TOKEN === 'controlled-private-token', envNames: Object.keys(process.env).filter(k => k.startsWith('ANTHROPIC_')) }) + '\n');
+const emit = event => console.log(JSON.stringify({ session_id: id, ...event }));
+if (scenario.startsWith('sample:')) {
+ const name = scenario.slice(7);
+ assert.ok(['stream-sample', 'think-deepseek-v4.1-flash', 'think-minimax-m3', 'think-claude-haiku-5-5'].includes(name));
+ for (const line of readFileSync(new URL('../claude/' + name + '.jsonl', import.meta.url), 'utf8').trim().split('\n')) emit({ ...JSON.parse(line), session_id: id });
+} else if (scenario === 'hang') { setInterval(() => {}, 1000); }
+else {
+ emit({ type: 'system', subtype: 'init', model: value('--model'), ...(scenario === 'mismatch' ? { session_id: 'wrong' } : {}) });
+ if (scenario === 'idle') setInterval(() => {}, 1000);
+ else if (scenario === 'malformed') console.log('{broken');
+ else if (scenario === 'exit') { console.error('Authorization: Bearer secret-token'); process.exitCode = 1; }
+ else if (scenario === 'redaction-values') {
+  const values = Object.fromEntries(['NUMERIC_SECRET', 'BOOLEAN_TOKEN', 'SOME_KEYRING', 'X_API_KEY', 'AWS_SESSION_TOKEN', 'SHORT_SECRET', 'LONG_SECRET'].map(name => [name, process.env[name]]));
+  emit({ type: 'custom', values }); console.error(JSON.stringify(values)); process.exitCode = 1;
+ }
+ else if (scenario === 'secret-error') { emit({ type: 'custom', token: process.env.ANTHROPIC_AUTH_TOKEN }); console.error(process.env.ANTHROPIC_AUTH_TOKEN); process.exitCode = 1; }
+ else if (scenario === 'error') emit({ type: 'result', subtype: 'error_during_execution', is_error: true, errors: ['Controlled failure'] });
+ else {
+  const assistant = (content, messageId = 'same-message') => emit({ type: 'assistant', message: { id: messageId, content } });
+  if (scenario === 'tool-keepalive') {
+   for (let i = 0; i < 5; i++) {
+    assistant([{ type: 'tool_use', id: 'keep-' + i, name: 'Read', input: {} }]);
+    await new Promise(resolve => setTimeout(resolve, 80));
+    emit({ type: 'user', message: { content: [{ type: 'tool_result', tool_use_id: 'keep-' + i, content: 'ok' }] } });
+    await new Promise(resolve => setTimeout(resolve, 80));
+    emit({ type: 'custom' });
+    await new Promise(resolve => setTimeout(resolve, 80));
+    emit({ type: 'system', subtype: 'status' });
+   }
+  }
+  if (scenario === 'missing-content') assistant(undefined);
+  if (scenario === 'invalid-content') assistant({});
+  if (scenario === 'missing-tool-id') assistant([{ type: 'tool_use', name: 'Read' }]);
+  if (scenario === 'missing-tool-name') assistant([{ type: 'tool_use', id: 'bad' }]);
+  if (scenario === 'unknown-tool-result' || scenario === 'missing-result-id') emit({ type: 'user', message: { content: [{ type: 'tool_result', ...(scenario === 'unknown-tool-result' ? { tool_use_id: 'unknown' } : {}), content: 'bad' }] } });
+  if (scenario === 'thinking-only') {
+   assistant([{ type: 'thinking', thinking: 'Thinking only.' }]);
+   assistant([{ type: 'tool_use', id: 'thought-tool', name: 'Read', input: {} }]);
+   emit({ type: 'user', message: { content: [{ type: 'tool_result', tool_use_id: 'thought-tool', content: 'ok' }] } });
+  }
+  if (scenario === 'rich') {
+   assistant([{ type: 'thinking', thinking: 'Controlled reasoning.' }, { type: 'text', text: 'Before ' }]);
+   assistant([{ type: 'text', text: 'tool.' }]);
+   assistant([{ type: 'tool_use', id: 'tool-1', name: 'Write', input: { file_path: 'hello.txt', content: 'hello' } }]);
+   emit({ type: 'user', message: { content: [{ type: 'tool_result', tool_use_id: 'tool-1', content: 'Written' }] }, tool_use_result: { type: 'create' } });
+  }
+  if (scenario === 'nonzero-result') process.exitCode = 7;
+  assistant([{ type: 'text', text: 'Hello from Claude Code.' }], scenario === 'rich' ? 'final-message' : 'same-message');
+  emit({ type: 'result', subtype: 'success', is_error: false, total_cost_usd: 123, modelUsage: { example: { costUSD: 123 } }, permission_denials: [], usage: { input_tokens: 10, cache_creation_input_tokens: 2, cache_read_input_tokens: 3, output_tokens: 4 } });
+ }
+}

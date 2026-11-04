@@ -28,6 +28,13 @@ const commonCapabilities = {
 };
 
 const profiles = createConformanceProfiles({
+  claude: { options: () => ({ env: { PATH: controlledPath } }), expected: {
+    sessionListing: false, imageInput: false, approvalPolicies: ["autoDeny", "autoApprove"],
+    turnQuestions: false, workspaceSkills: false, workspaceMcp: false,
+    model: { listing: true, selectionAt: allSelectionPoints, observation: "selectedOnly" },
+    effort: { selectionAt: allSelectionPoints, observation: "selectedOnly", requiresKnownModel: false },
+    assistantMessageStreaming: true, assistantReasoningStreaming: true, toolEvents: true, turnUsage: true,
+  } },
   agy: {
     options: async (root, t) => (await agyConformance(t, { root })).options,
     expected: {

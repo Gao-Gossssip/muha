@@ -1,10 +1,10 @@
 # SDK releases
 
-The release consists of `@muha-sdk/muha`, Core and all five official adapters, using one
+The release consists of `@muha-sdk/muha`, Core and all six official adapters, using one
 version and exact internal dependencies. The root workspace remains private.
 Release consumers may install `@muha-sdk/muha` alone or select individual adapter packages.
 
-1. Update all seven package versions and internal dependency pins together.
+1. Update all eight package versions and internal dependency pins together.
    Preserve external dependency locks unless their change is part of the approved scope.
 2. Run the affected contracts, `npm run check`, `npm run audit:packages` and
    `node scripts/verify-sdk-source.mjs`. Changed qualified runtime resources
@@ -16,7 +16,7 @@ Release consumers may install `@muha-sdk/muha` alone or select individual adapte
    version, commit, Git tree, lockfile and qualified-resource manifest digest.
    Assembly validates both complete allowlists before modifying package outputs,
    after the final source build. It checks dependency/license closure and produces
-   seven dual-platform tarballs plus `README.md`, `SHA256SUMS` and `release.json`.
+   eight dual-platform tarballs plus `README.md`, `SHA256SUMS` and `release.json`.
    The unchanged tarballs must cold-install on Linux and Windows, using Node
    22.20.0 and LTS, before the preparation run is successful.
 4. Review that artifact and its manifest SHA256. Dispatch `action=publish` with
@@ -31,7 +31,7 @@ Release consumers may install `@muha-sdk/muha` alone or select individual adapte
    each adapter pair, all adapters, and `@muha-sdk/muha` alone. Their byte integrity,
    native resources, ESM/TypeScript and lifecycle contracts, dependency trees,
    and lockfile `npm ci` must pass before the explicit `latest` promotion job.
-7. Read back all seven versions and `latest` tags, then create the source tag
+7. Read back all eight versions and `latest` tags, then create the source tag
    and public GitHub Release using the reviewed artifacts and registry receipt.
 
 Formal candidates require both `linux-x64` and `win32-x64` helpers in Core and
@@ -98,10 +98,10 @@ is requested; the explicit promotion job still follows consumer acceptance.
 ## Trusted publisher setup
 
 Before dispatching publication, a maintainer configures a GitHub Actions trusted
-publisher in the npm settings of **each** of the seven existing packages:
+publisher in the npm settings of **each** of the eight packages:
 `@muha-sdk/core`, `@muha-sdk/codex-adapter`, `@muha-sdk/opencode-adapter`,
 `@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`, and
-`@muha-sdk/muha`. Use these identical fields:
+`@muha-sdk/claude-code-adapter`, and `@muha-sdk/muha`. Use these identical fields:
 
 - Organization or user: `Gao-Gossssip`
 - Repository: `muha`
@@ -134,3 +134,13 @@ dependency digests retain their accepted model evidence; no model rerun is impli
 Current Git trees and published packages contain no `docs/` directories.
 Plans, raw diagnostics and publication receipts stay in ignored `docs/` or
 `.scratch/` paths. Historical Git objects may contain documentation.
+
+## Claude Code candidate qualification
+
+The eighth package, `@muha-sdk/claude-code-adapter`, has controlled Linux
+coverage only. Real Linux qualification is PENDING and gates publication;
+Windows is unsupported/untested and macOS untested. Existing dual-platform
+requirements for Core and the preceding five Adapters remain unchanged.
+The real profile is opt-in and pins `deepseek-v4.1-flash` with no effort.
+No real inference, release version change or publication is authorized here.
+Historical seven-package audit exceptions retain their original scope.

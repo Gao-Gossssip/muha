@@ -8,6 +8,7 @@ const adapterReadmes = await Promise.all([
   "codex-adapter",
   "opencode-adapter",
   "kimi-adapter",
+  "claude-code-adapter",
 ].map((directory) => readFile(
   new URL(`../../packages/${directory}/README.md`, import.meta.url),
   "utf8",

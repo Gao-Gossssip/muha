@@ -32,6 +32,7 @@ test("real qualification profiles exactly cover the Core official Harness set", 
       ["kimi", "deepseek/deepseek-flash"],
       ["pi", "opencode-go/deepseek-v4.1-flash"],
       ["agy", "claude-sonnet-4-6"],
+      ["claude", "deepseek-v4.1-flash"],
     ],
   );
 });

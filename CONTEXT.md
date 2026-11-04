@@ -9,11 +9,11 @@ Short for `muli-harness-sdk`: a TypeScript library that gives local and CI autom
 _Avoid_: Hosted agent service, multi-tenant gateway, harness replacement
 
 **Muha Release**:
-A lockstep, checksummed SDK artifact set containing the Muha SDK Entry Package, Muha Core and all five official Harness Adapters, identified by one SemVer and an explicit delivery manifest. Its publication and consumer acceptance apply to all seven packages; Orchestrator has an independent private release.
+A lockstep, checksummed SDK artifact set containing the Muha SDK Entry Package, Muha Core and all six official Harness Adapters, identified by one SemVer and an explicit delivery manifest. Its publication and consumer acceptance apply to all eight packages; Orchestrator has an independent private release.
 _Avoid_: Individual package release, staggered Adapter release, Orchestrator release
 
 **Muha SDK Entry Package**:
-The complete SDK distribution entry that exposes Core's public control model and all five official Harness Registrations together. Installing it does not enable a Harness; each Runtime explicitly chooses its Registrations.
+The complete SDK distribution entry that exposes Core's public control model and all six official Harness Registrations together. Installing it does not enable a Harness; each Runtime explicitly chooses its Registrations.
 _Avoid_: Harness, automatic runtime, native tool installer
 
 **Muha Runtime**:
@@ -49,7 +49,7 @@ The closed set of Harness Adapters that one Muha version commits to support, ind
 _Avoid_: Installed Adapters, enabled Harnesses, dynamic registry, discovered plugins
 
 **Harness Kind**:
-The stable public identity of one of Muha's official Coding Harness integrations—Codex, OpenCode, Kimi Code, Pi, or AGY—used to select and route its operations.
+The stable public identity of one of Muha's official Coding Harness integrations—Codex, OpenCode, Kimi Code, Pi, AGY, or Claude Code—used to select and route its operations.
 _Avoid_: Adapter Kind, adapter instance ID, account profile, model provider
 
 **Harness Model**:

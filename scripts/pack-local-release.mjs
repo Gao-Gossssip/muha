@@ -1,3 +1,4 @@
+import { normalizeNpmPackResult } from "./npm-pack-result.mjs";
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { spawnNpmSync } from "./npm-command.mjs";
@@ -77,7 +78,7 @@ try {
         result.stderr,
       ].filter(Boolean).join("\n"));
     }
-    const packed = JSON.parse(result.stdout);
+    const packed = normalizeNpmPackResult(JSON.parse(result.stdout), [manifest.name]);
     if (!Array.isArray(packed) || packed.length !== 1 || typeof packed[0].filename !== "string") {
       throw new Error(`npm pack returned an invalid result for ${manifest.name}`);
     }
@@ -134,6 +135,7 @@ try {
     OPENCODE_FILENAME: requireFilename(filenames, "@muha-sdk/opencode-adapter"),
     KIMI_FILENAME: requireFilename(filenames, "@muha-sdk/kimi-adapter"),
     PI_FILENAME: requireFilename(filenames, "@muha-sdk/pi-adapter"),
+    CLAUDE_FILENAME: requireFilename(filenames, "@muha-sdk/claude-code-adapter"),
     AGY_FILENAME: requireFilename(filenames, "@muha-sdk/agy-adapter"),
     MUHA_FILENAME: requireFilename(filenames, "@muha-sdk/muha"),
   });

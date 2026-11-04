@@ -14,7 +14,7 @@ import {
 import { FULL_HARNESS_CAPABILITIES } from "../support/full-harness-capabilities.mjs";
 
 test("the frozen Core catalog is the runtime authority for official Harness kinds", () => {
-  assert.deepEqual(OFFICIAL_HARNESS_KINDS, ["codex", "opencode", "kimi", "pi", "agy"]);
+  assert.deepEqual(OFFICIAL_HARNESS_KINDS, ["codex", "opencode", "kimi", "pi", "agy", "claude"]);
   assert.equal(Object.isFrozen(OFFICIAL_HARNESS_KINDS), true);
   for (const kind of OFFICIAL_HARNESS_KINDS) assert.equal(isHarnessKind(kind), true);
   assert.equal(isHarnessKind("unknown-harness"), false);

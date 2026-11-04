@@ -27,8 +27,8 @@ Run the affected test first and full `npm run check` before handoff. Preserve
 resource/permission, ESM, declarations, ordinary dependency and cleanup guarantees.
 
 This repository is the sole development source for the `@muha-sdk/muha` entry package,
-Core and five official Adapters; Orchestrator belongs in its separate private project.
-The seven SDK packages share one release version and public npm metadata; the root
+Core and six official Adapters; Orchestrator belongs in its separate private project.
+The eight SDK packages share one release version and public npm metadata; the root
 workspace remains `private:true`. Publishing requires a clean, verified source
 candidate and the controlled release workflow. Do not add Orchestrator workspaces or
 copy private diagnostics into this SDK. Real models require explicit approval;
@@ -71,7 +71,7 @@ approval gates; merging a PR does not publish an npm release.
 
 ## Examples
 
-Examples are GitHub repository content outside the seven npm packages. Put a new
+Examples are GitHub repository content outside the eight npm packages. Put a new
 scenario in `examples/<kebab-case-name>/`, with `main.ts` as its entry and
 `README.md` as its setup/run guide; add `README.zh-CN.md` where useful. Keep
 scenario resources in that directory, use public SDK imports, and do not create

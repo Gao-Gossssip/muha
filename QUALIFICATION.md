@@ -656,3 +656,15 @@ not observed in this real probe; that mapping is covered by controlled fixtures,
 not presented as an observed native completion. No other Harness, full model
 matrix or consumer application workflow was rerun. Seven-package 0.1.16 Registry
 publication and lockfile installation acceptance remain the separate release gate.
+
+## Claude Code controlled candidate
+
+The Official Harness Set now includes Claude Code as the sixth Adapter, with
+eight lockstep packages. Its native per-Turn CLI route and saved CLI 2.1.197
+help are covered by controlled Linux fixtures. Real evidence is PENDING with
+zero real attempts. Only Linux is in scope; Windows is unsupported/untested and
+macOS untested. The opt-in real profile pins `deepseek-v4.1-flash`, effort null.
+No real model calls are authorized by this candidate. Historical PASS evidence
+retains its original source/platform scope. Core's ownership wrapper now accepts
+an explicit cwd and is exported internally for this Adapter; changed source
+digests identify controlled source, not fresh real qualification.

@@ -21,10 +21,11 @@ const expectedTarballs = [
   `muha-sdk-pi-adapter-${releaseVersion}.tgz`,
   `muha-sdk-kimi-adapter-${releaseVersion}.tgz`,
   `muha-sdk-agy-adapter-${releaseVersion}.tgz`,
+  `muha-sdk-claude-code-adapter-${releaseVersion}.tgz`,
   `muha-sdk-muha-${releaseVersion}.tgz`,
 ].sort();
 
-test(`the diagnostic V${releaseVersion} packer verifies seven SDK packages, dependencies, licenses and resources`, async () => {
+test(`the diagnostic V${releaseVersion} packer verifies eight SDK packages, dependencies, licenses and resources`, async () => {
   const output = await mkdtemp(join(tmpdir(), "muha-local-release-"));
   try {
     const result = spawnSync(
@@ -39,7 +40,7 @@ test(`the diagnostic V${releaseVersion} packer verifies seven SDK packages, depe
 
     const readme = await readFile(join(output, "README.md"), "utf8");
     assert.match(readme, new RegExp(`^# Muha SDK diagnostic packages V${escapeRegExp(releaseVersion)}$`, "m"));
-    assert.match(readme, /seven-package diagnostic set/);
+    assert.match(readme, /eight-package diagnostic set/);
     assert.doesNotMatch(readme, /muha-orchestrator/);
     assert.match(readme, /sha256sum --check SHA256SUMS/);
     assert.match(readme, /npm install/);
@@ -74,6 +75,7 @@ test(`the diagnostic V${releaseVersion} packer verifies seven SDK packages, depe
         "@muha-sdk/opencode-adapter",
         "@muha-sdk/pi-adapter",
         "@muha-sdk/agy-adapter",
+        "@muha-sdk/claude-code-adapter",
         "@muha-sdk/muha",
       ].sort(),
     );
@@ -130,7 +132,7 @@ test(`the diagnostic V${releaseVersion} packer verifies seven SDK packages, depe
       });
     assert.equal(isolatedInstall.status, 0,
       [isolatedInstall.stdout, isolatedInstall.stderr].filter(Boolean).join("\n"));
-    assert.match(isolatedInstall.stdout, /(?:✔ |ok \d+ - )an isolated fixture can install Core and all five official Adapters/,
+    assert.match(isolatedInstall.stdout, /(?:✔ |ok \d+ - )an isolated fixture can install Core and all six official Adapters/,
       "the preview tarballs must pass an actual isolated Runtime/Session/Turn install test");
   } finally {
     await rm(output, { recursive: true, force: true });

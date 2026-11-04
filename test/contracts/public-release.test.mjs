@@ -154,7 +154,8 @@ test("dual-platform publication requires full Windows qualification independentl
   const linuxPi = { harness: "pi", platform: "linux-x64", sdkVersion: "1.2.0", status: "PASS" };
   const windows = ["core", "codex", "opencode", "kimi", "pi", "agy"].map(harness =>
     ({ harness, platform: "win32-x64", status: "PASS", ...(harness === "pi" ? { sdkVersion: "1.2.0" } : {}) }));
-  const complete = [linuxPi, ...windows];
+  const linuxClaude = { harness: "claude", platform: "linux-x64", status: "PASS" };
+  const complete = [linuxPi, linuxClaude, ...windows];
   assert.doesNotThrow(() => assertPublicationQualification({ requalifications: complete }));
   for (const harness of ["core", "codex", "opencode", "kimi", "agy"]) {
     const changed = complete.map(item => item.harness === harness ? { ...item, status: "PENDING", realSmokeStatus: "PASS" } : item);
@@ -165,6 +166,8 @@ test("dual-platform publication requires full Windows qualification independentl
   assert.throws(() => assertPublicationQualification({ requalifications: [{ ...linuxPi, sdkVersion: "1.0.4" }, ...windows] }), /Linux Pi/);
   assert.throws(() => assertPublicationQualification({ requalifications: [...complete, { ...windows[0], status: "PENDING" }] }), /Windows core/,
     "a newer pending Windows implementation supersedes its historical PASS");
+  assert.throws(() => assertPublicationQualification({ requalifications: complete.filter(item => item.harness !== "claude") }), /Linux claude/);
+  assert.throws(() => assertPublicationQualification({ requalifications: [...complete, { ...linuxClaude, status: "PENDING" }] }), /Linux claude/);
   const linuxOpenCode = { harness: "opencode", platform: "linux-x64", status: "PENDING" };
   assert.throws(() => assertPublicationQualification({ requalifications: [...complete, linuxOpenCode] }), /Linux opencode/,
     "Windows success must not hide a later pending Linux image hook change");

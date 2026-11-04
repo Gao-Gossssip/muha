@@ -20,6 +20,9 @@
       "path": "./packages/agy-adapter"
     },
     {
+      "path": "./packages/claude-code-adapter"
+    },
+    {
       "path": "./packages/muha"
     }
   ]

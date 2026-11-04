@@ -177,9 +177,9 @@ test("only upload and post-consumer promotion request OIDC and use the pinned pu
   assert.match(jobs.promote, /publish-public-release\.mjs promote/);
 });
 
-test("release instructions cover all seven package setups and both independent OIDC permissions", async () => {
+test("release instructions cover all eight package setups and both independent OIDC permissions", async () => {
   const source = await readFile(new URL("../../RELEASING.md", import.meta.url), "utf8");
-  for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "muha"]) {
+  for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "claude-code-adapter", "muha"]) {
     assert.ok(source.includes(`@muha-sdk/${packageName}`));
   }
   for (const required of ["Gao-Gossssip", "sdk-release.yml", "leave blank", "npm publish", "npm dist-tag", "11.21.0", "within two days", "No `NPM_PUBLISH_TOKEN`", "new source-bound candidate"]) {

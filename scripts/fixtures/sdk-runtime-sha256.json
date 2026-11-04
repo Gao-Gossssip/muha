@@ -32,6 +32,14 @@
       "sha256": "ff5f20056120260c455702cecec3dd4a5da29faf4c7e41e390e7e25552857851"
     },
     {
+      "path": "packages/claude-code-adapter/src/index.ts",
+      "sha256": "75ec1264bb687aeaaa6fb4de27560e340f6a87f2b00447522049c14a6956eeaa"
+    },
+    {
+      "path": "packages/claude-code-adapter/src/process.ts",
+      "sha256": "9751b50392f9f6e6f3788698f065450d0404188f93c4fb064fc7aca9b35e491f"
+    },
+    {
       "path": "packages/codex-adapter/scripts/build-observer.mjs",
       "sha256": "73d505420fc7f00e369764381e9f95c069e0219f0c016d8fb1c25aa7a65fd997"
     },
@@ -105,7 +113,7 @@
     },
     {
       "path": "packages/core/src/acp/owned-process.ts",
-      "sha256": "7a140030eb1436803717a54c42a6d4fcfeb66cfef6e22f7ee66edb46a4fb3b27"
+      "sha256": "a66591bd0f4b76b7cdcca19d4fb646acc3935ddb950b30cf0237ca5384c2a8c7"
     },
     {
       "path": "packages/core/src/acp/types.ts",
@@ -129,11 +137,11 @@
     },
     {
       "path": "packages/core/src/harness-catalog.ts",
-      "sha256": "e74a33606822d6c8e22082fd57c5acc026446f5bbdde2c32e5c793db06e49774"
+      "sha256": "ae18382f598ae55d03d374c4cc403e9e48779c9e835b658e449c0d63fe21db8a"
     },
     {
       "path": "packages/core/src/host-process.ts",
-      "sha256": "19f61e873c9440ea73b92b5ab809677fefaa23364c2a433f698f73675c3e1958"
+      "sha256": "609df87d0c005f350373b057171387c8ac24ff18969198159e992066eb16f82a"
     },
     {
       "path": "packages/core/src/index.ts",
@@ -2515,6 +2523,27 @@
         "lockedExternalPackagesUnchanged": true
       },
       "scope": "Bounded affected qualification on the exact recorded source and lock. Two completed Turns per platform validate native catalog low/high selection, idle effort change with stable reference and conversation history, read-only catalog queries, rejected-effort state preservation and owned close. Native thinking levels and final messages were independently audited. Catalog max was observed but not inferred on. All 71 release runtime resources and locked external package entries match the tested source; internal version and publication metadata differ. Historical optional-capability qualification retains its original scope; no additional Harness or consumer-application qualification is claimed."
+    },
+    {
+      "harness": "claude",
+      "platform": "linux-x64",
+      "status": "PENDING",
+      "model": "deepseek-v4.1-flash",
+      "effort": null,
+      "realAttempts": 0,
+      "scope": "Controlled candidate only. No real inference performed; Windows unsupported/untested, macOS untested."
+    },
+    {
+      "harness": "core",
+      "platform": "linux-x64",
+      "status": "PENDING",
+      "realAttempts": 0,
+      "changedResources": [
+        "packages/core/src/acp/owned-process.ts",
+        "packages/core/src/harness-catalog.ts",
+        "packages/core/src/host-process.ts"
+      ],
+      "scope": "Explicit cwd support, native exit observation and process-specific internal export for Claude Code. Historical real evidence remains source scoped."
     }
   ]
 }

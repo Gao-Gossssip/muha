@@ -17,7 +17,7 @@ async function collect(directory, prefix) {
     else resources.push(path);
   }
 }
-for (const name of ['core', 'codex-adapter', 'opencode-adapter', 'kimi-adapter', 'pi-adapter', 'agy-adapter']) {
+for (const name of ['core', 'codex-adapter', 'opencode-adapter', 'kimi-adapter', 'pi-adapter', 'agy-adapter', 'claude-code-adapter']) {
   for (const directory of ['src', 'native', 'scripts']) {
     const prefix = `packages/${name}/${directory}`;
     try { await collect(join(root, prefix), prefix); }

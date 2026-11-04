@@ -7,14 +7,14 @@ export function fakeChatRuntime() {
   let resolveTermination;
   const runtime = {
     calls, sessions, status: 'active', runtimeId: 'controlled', dataDir: '/unused',
-    enabledHarnesses: ['codex', 'opencode', 'kimi', 'pi', 'agy'],
+    enabledHarnesses: ['codex', 'opencode', 'kimi', 'pi', 'claude', 'agy'],
     termination: new Promise(resolve => { resolveTermination = resolve; }),
     getHarnessCapabilities(harness) {
-      const agy = harness === 'agy', pi = harness === 'pi';
+      const agy = harness === 'agy', pi = harness === 'pi', claude = harness === 'claude';
       return {
-        sessionListing: !agy, imageInput: !agy,
-        approvalPolicies: agy || pi ? ['harnessManaged', 'autoApprove'] : ['interactive', 'autoDeny', 'autoApprove', 'harnessManaged'],
-        turnQuestions: !agy && !pi, workspaceSkills: true, workspaceMcp: !agy && !pi,
+        sessionListing: !agy && !claude, imageInput: !agy && !claude,
+        approvalPolicies: claude ? ['autoDeny', 'autoApprove'] : agy || pi ? ['harnessManaged', 'autoApprove'] : ['interactive', 'autoDeny', 'autoApprove', 'harnessManaged'],
+        turnQuestions: !agy && !pi && !claude, workspaceSkills: !claude, workspaceMcp: !agy && !pi && !claude,
         model: { listing: true, selectionAt: agy ? ['createSession', 'resumeSession'] : ['createSession', 'resumeSession', 'idleSession'], observation: 'selectedOnly' },
         effort: { selectionAt: agy ? ['createSession', 'resumeSession'] : ['createSession', 'resumeSession', 'idleSession'], observation: 'selectedOnly', requiresKnownModel: pi },
         assistantMessageStreaming: true, assistantReasoningStreaming: !agy, toolEvents: true, turnUsage: true,

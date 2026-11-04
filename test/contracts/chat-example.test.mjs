@@ -9,13 +9,13 @@ import { exampleRegistrations, selectHarnesses, startChatServer } from '../../ex
 import { fakeChatRuntime } from '../support/chat-example-runtime.mjs';
 import { chatBrowser } from '../support/chat-example-browser.mjs';
 
-test('single-file example covers exactly the five official harnesses', () => {
-  assert.deepEqual(selectHarnesses(), ['codex', 'opencode', 'kimi', 'pi', 'agy']);
+test('single-file example covers exactly the six official harnesses', () => {
+  assert.deepEqual(selectHarnesses(), ['codex', 'opencode', 'kimi', 'pi', 'claude', 'agy']);
   assert.deepEqual(selectHarnesses('pi,codex'), ['pi', 'codex']);
   for (const invalid of ['', 'unknown', 'pi,pi', 'codex,']) {
     assert.throws(() => selectHarnesses(invalid));
   }
-  assert.equal(exampleRegistrations(selectHarnesses()).length, 5);
+  assert.equal(exampleRegistrations(selectHarnesses()).length, 6);
 });
 
 async function fixture(t) {
@@ -32,7 +32,7 @@ async function fixture(t) {
     ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
   const create = async (harness = 'codex', extra = {}) => {
     const res = await api('/api/sessions', 'POST', { harness,
-      approvalPolicy: ['pi', 'agy'].includes(harness) ? 'harnessManaged' : 'interactive', ...extra });
+      approvalPolicy: harness === 'claude' ? 'autoDeny' : ['pi', 'agy'].includes(harness) ? 'harnessManaged' : 'interactive', ...extra });
     assert.equal(res.status, 201, await res.clone().text()); return res.json();
   };
   return { app, runtime, html, headers, api, create, pageResponse };
@@ -232,7 +232,7 @@ test('reasoning/tools/usage/terminal events render inline; final message is auth
   assert.equal(browser.node('chat').children.filter(node => node.className.includes('reasoning')).length, 1);
 });
 
-test('all five harnesses create independent Sessions and preserve opaque model/effort strings', async t => {
+test('all six harnesses create independent Sessions and preserve opaque model/effort strings', async t => {
   const { runtime, create } = await fixture(t);
   const ids = [];
   for (const harness of selectHarnesses()) {
@@ -242,7 +242,7 @@ test('all five harnesses create independent Sessions and preserve opaque model/e
     assert.equal(session.effort, 'native-custom-effort');
     ids.push(session.reference.sessionId);
   }
-  assert.equal(new Set(ids).size, 5);
+  assert.equal(new Set(ids).size, 6);
   assert.ok(runtime.calls.every(call => call.operation === 'create'));
   assert.ok(runtime.calls.every(call => !('turnRetryPolicy' in call.options)));
 });

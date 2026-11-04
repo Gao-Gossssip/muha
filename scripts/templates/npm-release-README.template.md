@@ -2,7 +2,7 @@
 
 {{CANDIDATE_STATUS}}
 
-This seven-package candidate contains @muha-sdk/muha, Core and the five official Adapters. Only
+This eight-package candidate contains @muha-sdk/muha, Core and the six official Adapters. Only
 the tarballs listed in release.json may be published. They share one version;
 each Adapter depends on that exact Core version. The root workspace is private.
 
@@ -18,7 +18,7 @@ Publication requires the separately reviewed public source and registry audit.
 Use provenance from the controlled GitHub Actions workflow. Candidate packing
 does not establish a successful registry installation or real-model qualification.
 
-After all seven exact versions are published and accepted from a cold registry
+After all eight exact versions are published and accepted from a cold registry
 install and lockfile npm ci, consumers can install the complete SDK:
 
 ```sh

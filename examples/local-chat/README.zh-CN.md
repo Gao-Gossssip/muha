@@ -13,7 +13,7 @@
 
 使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
-完整包提供五种适配器及其 npm 依赖（包含 Pi SDK），但不会替你安装另外
+完整包提供六种适配器及其 npm 依赖（包含 Pi SDK），但不会替你安装另外
 四家的原生 CLI。只需安装自己要使用的 Harness，不要求五家全部安装。
 
 复制单个 [main.ts](main.ts) 到自己的 ESM 项目后：
@@ -139,7 +139,7 @@ Codex/OpenCode/Kimi 默认使用 `interactive`，Pi/AGY 默认使用
 发布或消费者应用测试。模型调用与费用仍需使用者自行授权和承担。
 
 仓库构建后运行 `npm run test:examples`，PowerShell 使用
-`npm.cmd run test:examples`。除五种 Harness 的 HTTP/浏览器夹具外，集成
+`npm.cmd run test:examples`。除六种 Harness 的 HTTP/浏览器夹具外，集成
 测试通过本地受控 Provider 使用真实 Core/Pi Adapter/固定 SDK，验证含中文、
 空格路径上的流式 Turn、原生会话历史与所属进程关闭。Windows CI 单独执行，
 完整 SDK 检查也包含同一套测试，不需要真实凭据。

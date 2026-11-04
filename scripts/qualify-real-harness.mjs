@@ -18,10 +18,13 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const [requested, mode, ...extra] = process.argv.slice(2);
   const profile = qualificationProfileFor(requested);
   if (requested === undefined || requested === "all") {
-    process.stderr.write("An explicit Harness (codex|opencode|kimi|agy|pi) is required; implicit all is forbidden.\n");
+    process.stderr.write("An explicit Harness (codex|opencode|kimi|agy|pi|claude) is required; implicit all is forbidden.\n");
     process.exitCode = 2;
   } else if (!profile) {
     process.stderr.write(`Unknown Harness: ${requested}\n`);
+    process.exitCode = 2;
+  } else if (profile.harness === "claude" && process.platform !== "linux") {
+    process.stderr.write("Claude Code qualification is Linux-only; Windows and macOS are untested.\n");
     process.exitCode = 2;
   } else if (extra.length !== 0) {
     process.stderr.write("Unexpected qualification arguments.\n");
@@ -122,13 +125,14 @@ export async function qualify(profile, { mode, model }) {
         args: ["-e", "process.exit(0)"],
       }],
     });
-    assert.deepEqual(configuration.attempts.map(({ status }) => status), ["succeeded", capabilities.workspaceMcp ? "succeeded" : "failed"]);
+    assert.deepEqual(configuration.attempts.map(({ status }) => status), [capabilities.workspaceSkills ? "succeeded" : "failed", capabilities.workspaceMcp ? "succeeded" : "failed"]);
+    if (!capabilities.workspaceSkills) assert.equal(configuration.attempts[0].error.code, "UNSUPPORTED_CAPABILITY");
     if (!capabilities.workspaceMcp) assert.equal(configuration.attempts[1].error.code, "UNSUPPORTED_CAPABILITY");
 
     session = await runtime.createSession({
       harness,
       workspacePath: workspace,
-      approvalPolicy: mode === "--question" ? "interactive" : "autoApprove",
+      approvalPolicy: mode === "--question" && capabilities.turnQuestions ? "interactive" : "autoApprove",
       ...retrySelection,
       ...(model === undefined ? {} : { model }),
       ...(mode === "--effort" ? { effort: profile.qualificationEffort } : {}),

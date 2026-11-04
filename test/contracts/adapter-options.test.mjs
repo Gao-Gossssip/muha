@@ -1,3 +1,4 @@
+import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";
 import assert from "node:assert/strict";
 import test from "node:test";
 import { codexAdapter } from "@muha-sdk/codex-adapter";
@@ -7,7 +8,7 @@ import { piAdapter } from "@muha-sdk/pi-adapter";
 import { agyAdapter } from "@muha-sdk/agy-adapter";
 
 test("official factories reject public ACP bindings before any Harness starts", () => {
-  for (const factory of [codexAdapter, openCodeAdapter, kimiAdapter, piAdapter, agyAdapter]) {
+  for (const factory of [codexAdapter, openCodeAdapter, kimiAdapter, piAdapter, agyAdapter, claudeCodeAdapter]) {
     for (const acp of [undefined, { command: process.execPath }, { command: "/must-not-execute", args: [] }]) {
       assert.throws(() => factory({ acp }), (error) => error.data?.code === "INVALID_INPUT", factory.name);
     }
