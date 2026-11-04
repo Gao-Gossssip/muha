@@ -14,7 +14,7 @@ Opening the page or creating a conversation does not automatically send a Turn.
 
 Install the complete `@muha-sdk/muha` entry package, not individual Core/Adapter
 packages. It includes all six adapters and their npm dependencies, including
-Pi's SDK. It does **not** install Codex, OpenCode, Kimi or AGY's native CLI.
+Pi's SDK. It does **not** install Codex, OpenCode, Kimi, AGY or Claude Code's native CLI.
 You need only the native harnesses you want to use, not all six.
 
 To use the standalone file in your own ESM project:
@@ -52,7 +52,7 @@ Here `.` uses the existing current directory as the workspace. You can instead
 pass the path of another **existing project directory**; do not literally use a
 placeholder such as `/absolute/project`. Open `http://127.0.0.1:3000`.
 At startup the example finds executable `codex`, `opencode`, `kimi` and
-`agy` files on `PATH`, and enables only those installed harnesses plus
+`agy` files on `PATH` (plus `claude` on Linux), and enables only those installed harnesses plus
 Pi. Pi's SDK comes with complete Muha installation; no global `pi` command is
 needed. The browser menu contains only the enabled subset, and missing CLIs are
 reported and omitted before Runtime initialization. OpenCode must still be v2.
@@ -173,3 +173,6 @@ integration tests run the real Core/Pi Adapter/pinned SDK against a loopback
 provider, exercising streamed Turns, native conversation history and owned close
 on a Chinese workspace path with spaces. The same suite runs explicitly in
 Windows CI and is included in the full SDK checks; it needs no real credentials.
+
+Claude Code is Linux x64 real-qualified; Windows is unsupported/untested and
+macOS untested. Its menu entry is enabled only on Linux.

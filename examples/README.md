@@ -13,13 +13,15 @@ Core or selected Adapter packages. In your own ESM project use
 Each example offers only locally installed harnesses. Codex, OpenCode, Kimi and
 AGY are detected as executable CLI files on `PATH`; Pi's SDK comes with the
 complete package, without requiring a global `pi` command. You do not need to
-install all native CLIs. Detection does not verify authentication or models.
+install all native CLIs. Chat also detects `claude` on Linux; the writing workflow
+omits Claude Code because it requires Workspace Skills. Claude Code is Linux x64
+real-qualified; Windows is unsupported/untested and macOS untested. Detection does not verify authentication or models.
 
 ## Available examples
 
 | Project | Overview | Location |
 | --- | --- | --- |
-| [Multi-Harness Chat](local-chat/README.md) | Single-file server and browser chat using installed harnesses from the five adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Configuration applies only to a new conversation. | [local-chat/](local-chat/) · [main.ts](local-chat/main.ts) |
+| [Multi-Harness Chat](local-chat/README.md) | Single-file server and browser chat using installed harnesses from the six adapters, native model/effort, inline Turn events, approvals, Questions and interruption. Configuration applies only to a new conversation. | [local-chat/](local-chat/) · [main.ts](local-chat/main.ts) |
 | [AI Topic & Writing](auto-social-media/README.md) | Pure command-line interaction: two independently configured agents use `content-strategy` for research/topic selection and `khazix-writer` for a draft. Single TS file, model-reply streams without Tool/event logs, bounded retry and retained output; explicit real-model consent, no auto-publishing. | [auto-social-media/](auto-social-media/) · [main.ts](auto-social-media/main.ts) |
 
 ## Run from the repository
@@ -88,7 +90,7 @@ suite includes the same contracts on Windows and Linux.
 
 | Case | Controlled coverage |
 | --- | --- |
-| Chat | HTTP/browser controls for all five harnesses; real Core/Pi Adapter/pinned SDK text streaming, conversation history and owned close, on a Chinese path with spaces. |
+| Chat | HTTP/browser controls for the original five harnesses; real Core/Pi Adapter/pinned SDK text streaming, conversation history and owned close, on a Chinese path with spaces. |
 | Topic & Writing | Consent, selection, approvals/Questions, cancellation and failures; real SDK Skill configuration, two serial native Sessions, exact topic handoff, retained files and Runtime close, with Windows CRLF input. |
 
 Integration tests use only a loopback provider, temporary configuration and local

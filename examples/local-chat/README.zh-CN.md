@@ -14,7 +14,7 @@
 使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
 完整包提供六种适配器及其 npm 依赖（包含 Pi SDK），但不会替你安装另外
-四家的原生 CLI。只需安装自己要使用的 Harness，不要求五家全部安装。
+五家（含 Claude Code）的原生 CLI。只需安装自己要使用的 Harness，不要求六家全部安装。
 
 复制单个 [main.ts](main.ts) 到自己的 ESM 项目后：
 
@@ -49,7 +49,7 @@ node examples/local-chat/main.ts .
 已启用的任何 Harness 无法启动时，Runtime 初始化会失败，不会自动回退。
 
 启动时检测 `PATH` 上可执行的 `codex`、`opencode`、`kimi`、
-`agy`，只将已安装项与 Pi 加入 Runtime 和界面菜单。
+`agy`（Linux 还检测 `claude`），只将已安装项与 Pi 加入 Runtime 和界面菜单。
 缺失的 CLI 会在终端提示并省略，不会因未安装某家而要求补齐全部工具。
 Pi SDK 随完整 Muha 安装，**无需全局 `pi` 命令**，仍需配置原生 provider
 认证和模型。OpenCode 仍要求 v2。安装新的 CLI 后请重启示例。
@@ -143,3 +143,6 @@ Codex/OpenCode/Kimi 默认使用 `interactive`，Pi/AGY 默认使用
 测试通过本地受控 Provider 使用真实 Core/Pi Adapter/固定 SDK，验证含中文、
 空格路径上的流式 Turn、原生会话历史与所属进程关闭。Windows CI 单独执行，
 完整 SDK 检查也包含同一套测试，不需要真实凭据。
+
+Claude Code 已通过 Linux x64 真实资格验证；Windows 不支持、尚未测试，
+macOS 尚未测试。其菜单项仅在 Linux 启用。

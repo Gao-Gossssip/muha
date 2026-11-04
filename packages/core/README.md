@@ -5,7 +5,7 @@ Core Runtime, Workspace, Agent Session, Turn, event, error, and diagnostic-stora
 Install the complete SDK with `npm install @muha-sdk/muha`, or install this package together
 with only the official Adapter packages you use.
 V0.1.15 supports Node.js `>=22.20.0` on Linux x64 glibc and WSL2. Consumers
-must independently install and authenticate the Codex, OpenCode, Kimi and AGY native
+must independently install and authenticate the Codex, OpenCode, Kimi, AGY and Claude Code native
 commands and make them available on `PATH`; Muha never installs, upgrades, downloads,
 authenticates, or repairs those native commands. The Pi Adapter is a
 scoped exception: its package declares a fixed official Pi SDK dependency and needs no Pi
@@ -71,13 +71,14 @@ other native routes do not inherit this shared-ACP exception.
 
 ```js
 const models = await runtime.listModels({ harness: "codex", workspacePath: process.cwd() });
-// Use the same call with opencode, kimi, pi, or agy when enabled.
+// Use the same call with opencode, kimi, pi, agy, or claude when enabled.
 console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
   id, name, supportedEfforts, defaultEffort,
 })));
 ```
 
-`listModels` reads the enabled Harness's native selectable chat-model catalog.
+`listModels` reads the enabled Harness's native selectable chat-model catalog
+(Claude Code uses static aliases plus configured model IDs).
 It requires an existing Workspace and does not create a Session, run inference,
 or change model defaults. The result is a deeply frozen, JSON-safe array; each
 native `id` can be passed unchanged to that Harness's model selection APIs.
@@ -98,6 +99,7 @@ is a catalog default when supplied, not the current Session's effort.
 | Kimi | Native supported thinking efforts | Native default effort, when reported |
 | Pi | SDK per-model thinking levels, including custom mappings | Not reported |
 | AGY | Not reported by the supported `agy models` output | Not reported |
+| Claude Code | `listModels` reports `low`, `medium`, `high`, `xhigh`, `max` for every listed model (Claude Code CLI 2.1.197 `--effort` values); actual acceptance depends on model/provider | Not reported |
 
 Select a listed value directly; Muha does not normalize levels across Harnesses
 or derive them from model names. Query again after changing native configuration.
@@ -116,7 +118,7 @@ Catalogs reflect native configuration/authentication and native caching, and do
 not guarantee credentials, quota, or the success of a later model request.
 The static declaration is `runtime.getHarnessCapabilities(harness).model.listing`.
 
-For Codex, OpenCode, Kimi, and Pi, use `await session.setModel(id)` between Turns
+For Codex, OpenCode, Kimi, Pi, and Claude Code, use `await session.setModel(id)` between Turns
 to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
@@ -176,6 +178,12 @@ for effort. Native Pi extensions, including MCP extensions, remain unmanaged;
 their availability does not change this static Profile. Pi callers must supply
 a supported policy explicitly because the common default is still `interactive`.
 
+Claude Code supports text, known-reference resume, both Assistant streams, tools
+and usage, `autoDeny`/`autoApprove`, and selected-only model/effort selection at
+create/resume/idle. Listing Sessions, images, interactive approvals, Questions
+and managed Workspace Skills/MCP are unsupported. Linux x64 is real-qualified;
+Windows is unsupported/untested and macOS untested.
+
 The AGY Profile supports text, known-reference resume, Skills,
 message streaming, tools and current-Turn usage. It supports `harnessManaged`
 and `autoApprove`, and selected-only model/effort at create/resume. Listing,
@@ -232,7 +240,7 @@ files; it is not applied to the Workspace worker.
 Diagnostic records contain complete, unredacted native data. V0.1 provides no encryption, retention, pruning, rotation, delete, query, replay, or export API,
 so storage can grow without bound. Different Harnesses are not semantically
 equivalent and Muha does not promise identical output. V0.1 explicitly does not support
-third-party Harness registration. V0.1.15 supports the five-official-Harness
-set, including Pi and AGY; the [current qualification](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)
+third-party Harness registration. The current SDK supports the six-official-Harness
+set, including Pi, AGY and Claude Code; the [current qualification](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)
 records source and exceptions; the [AGY qualification](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md)
 retains AGY's model-level effort N/A. Qualification evidence and publication acceptance are recorded separately.

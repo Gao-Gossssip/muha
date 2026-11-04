@@ -4,7 +4,7 @@
   <strong>One TypeScript API for multiple coding agents.</strong>
 </p>
 
-<p align="center">Codex · OpenCode · Pi · Agy · ...</p>
+<p align="center">Codex · OpenCode · Kimi · Pi · AGY · Claude Code</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm version"></a>
@@ -81,7 +81,7 @@ not just a model API.
 
 ## Install
 
-Supports **Windows and Linux**. macOS is not currently supported.
+Supports **Windows and Linux**. macOS is not currently supported. The Claude Code Adapter is Linux x64 only for now (Windows unsupported/untested, macOS untested).
 
 ```sh
 npm install @muha-sdk/muha
@@ -177,13 +177,14 @@ Security reports: [SECURITY.md](https://github.com/Gao-Gossssip/muha/blob/main/S
 
 ```js
 const models = await runtime.listModels({ harness: "codex", workspacePath: process.cwd() });
-// Use the same call with opencode, kimi, pi, or agy when enabled.
+// Use the same call with opencode, kimi, pi, agy, or claude when enabled.
 console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
   id, name, supportedEfforts, defaultEffort,
 })));
 ```
 
-`listModels` reads the enabled Harness's native selectable chat-model catalog.
+`listModels` reads the enabled Harness's native selectable chat-model catalog
+(Claude Code uses static aliases plus configured model IDs).
 It requires an existing Workspace and does not create a Session, run inference,
 or change model defaults. The result is a deeply frozen, JSON-safe array; each
 native `id` can be passed unchanged to that Harness's model selection APIs.
@@ -204,6 +205,7 @@ is a catalog default when supplied, not the current Session's effort.
 | Kimi | Native supported thinking efforts | Native default effort, when reported |
 | Pi | SDK per-model thinking levels, including custom mappings | Not reported |
 | AGY | Not reported by the supported `agy models` output | Not reported |
+| Claude Code | `listModels` reports `low`, `medium`, `high`, `xhigh`, `max` for every listed model (Claude Code CLI 2.1.197 `--effort` values); actual acceptance depends on model/provider | Not reported |
 
 Select a listed value directly; Muha does not normalize levels across Harnesses
 or derive them from model names. Query again after changing native configuration.
@@ -222,7 +224,7 @@ Catalogs reflect native configuration/authentication and native caching, and do
 not guarantee credentials, quota, or the success of a later model request.
 The static declaration is `runtime.getHarnessCapabilities(harness).model.listing`.
 
-For Codex, OpenCode, Kimi, and Pi, use `await session.setModel(id)` between Turns
+For Codex, OpenCode, Kimi, Pi, and Claude Code, use `await session.setModel(id)` between Turns
 to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
@@ -244,14 +246,16 @@ See the [release exception](https://github.com/Gao-Gossssip/muha/blob/main/RELEA
 
 ## Claude Code
 
-Export `claudeCodeAdapter` from `@muha-sdk/muha` (or install
+Import `claudeCodeAdapter` from `@muha-sdk/muha` (or install
 `@muha-sdk/core @muha-sdk/claude-code-adapter`). Independently install `claude`
-using Anthropic's installer and configure native authentication. Linux is the
-only tested platform; Windows is untested/unsupported for now; macOS is untested.
+using Anthropic's installer and configure native authentication. Linux x64 is
+real-qualified; Windows is unsupported/untested; macOS is untested.
 
 Use Harness Kind `"claude"`. Adapter `env` passes `ANTHROPIC_BASE_URL`,
 `ANTHROPIC_AUTH_TOKEN` and `ANTHROPIC_API_KEY` unchanged for third-party gateways;
 native `apiKeyHelper` in `~/.claude/settings.json` is also supported.
+For opencode Go, set `ANTHROPIC_BASE_URL=https://opencode.ai/inference/go/anthropic`
+plus `ANTHROPIC_AUTH_TOKEN` through adapter `env` or the native environment.
 `CLAUDE_CONFIG_DIR` selects the native config directory. Never print credentials.
 Arbitrary model IDs, including `deepseek-v4.1-flash`, pass through unchanged;
 `listModels` returns documented aliases plus configured model IDs, without inference.
@@ -270,4 +274,5 @@ authentication stalls after init. `shutdownTimeoutMs` defaults to 5000.
 All deadlines reclaim owned processes. Claude's `total_cost_usd` and
 `modelUsage.costUSD` are Anthropic list-price estimates, not actual gateway
 charges; they remain only in Native Event Records, never usage/cost fields.
-Real qualification is pending. See the adapter README for the full contract.
+Linux x64 real qualification passed with CLI 2.1.197, Node 22.23.4 and
+`deepseek-v4.1-flash`, effort null and zero Muha retries. See the adapter README for the full contract.

@@ -37,7 +37,7 @@ Release consumers may install `@muha-sdk/muha` alone or select individual adapte
 Formal candidates require both `linux-x64` and `win32-x64` helpers in Core and
 AGY; consumers never compile these helpers during installation. Host-only
 diagnostic packages are not publishable candidates. All latest Windows Core and
-adapter qualification entries and the current Pi SDK qualification on both
+preceding-five-adapter qualification entries and the current Pi SDK qualification on both
 platforms must be `PASS`. Historical smoke receipts and controlled fixtures
 cannot clear a `PENDING` real-model qualification. Qualification evidence remains
 scoped to the source, platform and dependencies it actually exercised.
@@ -135,12 +135,25 @@ Current Git trees and published packages contain no `docs/` directories.
 Plans, raw diagnostics and publication receipts stay in ignored `docs/` or
 `.scratch/` paths. Historical Git objects may contain documentation.
 
-## Claude Code candidate qualification
+## Claude Code qualification and release checks
 
-The eighth package, `@muha-sdk/claude-code-adapter`, has controlled Linux
-coverage only. Real Linux qualification is PENDING and gates publication;
-Windows is unsupported/untested and macOS untested. Existing dual-platform
-requirements for Core and the preceding five Adapters remain unchanged.
-The real profile is opt-in and pins `deepseek-v4.1-flash` with no effort.
-No real inference, release version change or publication is authorized here.
+The eighth package, `@muha-sdk/claude-code-adapter`, passed Linux x64 real
+qualification: initial modes at `d5f05cf`, then interrupt and resume-interrupt
+continuation re-runs at `e046b9e`. See QUALIFICATION.md for exact source identities,
+checks and the runner reporting gap/fix; full-mode continuation is not yet
+real-observed. Windows is unsupported/untested and macOS untested. Existing
+Linux/Windows requirements for Core and the preceding five Adapters are unchanged.
 Historical seven-package audit exceptions retain their original scope.
+
+Before publication, check that:
+
+- All eight packages receive the lockstep release version change.
+- Required CI is green on both platforms for the existing packages, and Registry
+  installation and lockfile replay acceptance pass.
+- The new package has a trusted publisher configured from its package settings
+  page on npmjs.com, as required by [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/).
+  Verify whether the package must already exist on the Registry to access these
+  settings; if so, the maintainer may need one first manual bootstrap publish
+  before the OIDC workflow can publish it. This is a check, not a performed publish.
+- A new trusted publisher configuration completes its first successful publish
+  within two days; otherwise it expires and must be deleted and recreated.

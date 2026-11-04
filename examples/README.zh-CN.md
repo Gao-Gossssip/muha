@@ -12,13 +12,15 @@ TypeScript 入口和运行说明，方便后续持续增加新的 examples。
 自己的 ESM 项目使用 `npm install @muha-sdk/muha`；仓库中使用下方的
 `npm ci` 和构建步骤。示例只列出本地已安装的 Harness：通过 `PATH`
 检测四家的原生 CLI，Pi SDK 则随完整包安装，无需全局 `pi` 命令。
-不要求安装全部原生工具；检测不代表认证或模型可用性已通过。
+Chat 在 Linux 还检测 `claude`；写作流程需要 Workspace Skills，因此不提供
+Claude Code。Claude Code 已通过 Linux x64 真实资格验证；Windows 不支持、
+尚未测试，macOS 尚未测试。不要求安装全部原生工具；检测不代表认证或模型可用性已通过。
 
 ## 已有示例
 
 | 项目 | 概述 | 位置 |
 | --- | --- | --- |
-| [多 Harness 集成 Chat](local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，从五种适配器中仅启用本地已安装的 Harness，支持原生 model/effort、内联 Turn 事件、审批、追问和停止。配置仅在新建对话后生效。 | [local-chat/](local-chat/) · [main.ts](local-chat/main.ts) |
+| [多 Harness 集成 Chat](local-chat/README.zh-CN.md) | 单个 TS 文件包含服务端和聊天界面，从六种适配器中仅启用本地已安装的 Harness，支持原生 model/effort、内联 Turn 事件、审批、追问和停止。配置仅在新建对话后生效。 | [local-chat/](local-chat/) · [main.ts](local-chat/main.ts) |
 | [AI 热点选题与写作](auto-social-media/README.zh-CN.md) | 纯命令行交互：两个独立配置的 Agent 分别使用 `content-strategy` 选题与 `khazix-writer` 写文。单 TS、仅流式展示模型回复、不打印工具与事件日志、有限重试、保留产出；需确认真实模型调用，不自动发布。 | [auto-social-media/](auto-social-media/) · [main.ts](auto-social-media/main.ts) |
 
 ## 在仓库中运行
@@ -82,7 +84,7 @@ Windows PowerShell 使用 `npm.cmd run test:examples`。它自动收集所有
 
 | 案例 | 受控覆盖 |
 | --- | --- |
-| Chat | 五种 Harness 的 HTTP/浏览器控制；真实 Core/Pi Adapter/固定 SDK 的文本流、会话历史与所属进程关闭，使用含中文和空格的路径。 |
+| Chat | 原有五种 Harness 的 HTTP/浏览器控制；真实 Core/Pi Adapter/固定 SDK 的文本流、会话历史与所属进程关闭，使用含中文和空格的路径。 |
 | 选题写作 | 授权、配置、审批/追问、中断与失败；真实 SDK 配置 Skill、两个串行原生 Session、原样交接选题、保留产出与关闭 Runtime，使用 Windows CRLF 输入。 |
 
 集成测试只连接本机受控 Provider，使用临时配置和本地 Skill 夹具，不依赖

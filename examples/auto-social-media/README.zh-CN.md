@@ -11,7 +11,7 @@ Node 内置模块。不发布、不上传、不对外联系；目录名不代表
 使用 Node.js >=22.20.0，宿主为 Linux x64（glibc）或原生 Windows x64。
 请**完整安装 `@muha-sdk/muha`**，不要只安装 Core 或个别 Adapter。
 完整包提供六种适配器及 Pi SDK，不会安装其他五家的原生 CLI；
-只需准备自己要使用的 Harness，不要求五家全部安装。
+只需准备自己要使用的 Harness，不要求六家全部安装。
 
 复制单个 [main.ts](main.ts) 到自己的 ESM 项目后：
 

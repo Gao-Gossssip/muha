@@ -460,10 +460,12 @@ cannot identify this SDK tree. Raw evidence is retained privately.
 | Codex CLI | native app-server | 0.159.2 | `gpt-5.6-luna` |
 | OpenCode | v2 native serve | 2.0.11 | `opencode-go/deepseek-v4.1-flash` |
 | Kimi | native web | 2.1.1 | `deepseek/deepseek-flash` |
+| Claude Code | native per-Turn CLI | 2.1.197 | `deepseek-v4.1-flash` |
 | AGY | native CLI | 1.2.14 | `claude-sonnet-4-6` |
 | Pi | patched SDK | 1.0.4 (internal dependency packages 1.1.0) | text/non-image: `opencode-go/deepseek-v4.1-flash`; image: `opencode-go/qwen3.8-flash` |
 
-These are accepted historical versions. The current Pi 1.2.0 controlled candidate
+These are accepted historical versions, plus the Claude Code Linux qualification
+recorded below. The current Pi 1.2.0 controlled candidate
 below is not yet a real-model-qualified replacement for the Pi row.
 
 Codex/Luna reasoning text: three probes remained `NOT_TRIGGERED` (zero deltas);
@@ -475,7 +477,7 @@ and emits a non-blocking Node warning when false/unknown. Muha never enables the
 feature or experimental API. AGY Sonnet effort selection is model-level `N/A`,
 user accepted; the static Profile is unchanged. AGY and Pi retain their own limits.
 
-The Official Harness Set is Codex, OpenCode, Kimi, AGY and Pi. Each immutable
+The Official Harness Set is Codex, OpenCode, Kimi, AGY, Pi and Claude Code. Each immutable
 Harness Capability Profile remains enforced; unsupported calls return
 `UNSUPPORTED_CAPABILITY`. `harnessManaged` preserves native permission behavior.
 Private Orchestrator's `HARNESS_CAPABILITY_MISMATCH` checks are tested separately.
@@ -657,14 +659,56 @@ not presented as an observed native completion. No other Harness, full model
 matrix or consumer application workflow was rerun. Seven-package 0.1.16 Registry
 publication and lockfile installation acceptance remain the separate release gate.
 
-## Claude Code controlled candidate
+## Claude Code Linux x64 qualification (2026-11-04)
 
-The Official Harness Set now includes Claude Code as the sixth Adapter, with
-eight lockstep packages. Its native per-Turn CLI route and saved CLI 2.1.197
-help are covered by controlled Linux fixtures. Real evidence is PENDING with
-zero real attempts. Only Linux is in scope; Windows is unsupported/untested and
-macOS untested. The opt-in real profile pins `deepseek-v4.1-flash`, effort null.
-No real model calls are authorized by this candidate. Historical PASS evidence
-retains its original source/platform scope. Core's ownership wrapper now accepts
-an explicit cwd and is exported internally for this Adapter; changed source
-digests identify controlled source, not fresh real qualification.
+The sixth Adapter, `@muha-sdk/claude-code-adapter` (Harness Kind `"claude"`),
+passed real qualification on Linux x64 using the native per-Turn CLI route,
+Claude Code CLI 2.1.197 and Node 22.23.4. Both runs used
+`deepseek-v4.1-flash` (`modelObservation: selectedOnly`) through the opencode Go
+Anthropic-compatible gateway (`https://opencode.ai/inference/go/anthropic`),
+effort null and zero Muha retries (`maxRetriesPerTurn: 0`). Windows remains
+unsupported/untested; macOS is untested.
+
+Initial run: 2026-11-04 11:23–11:24 UTC+8, source `d5f05cf`
+(`d5f05cf336efe0624d3e9b0397731f374657ce0c`), `sourceDirty: false`:
+
+| Mode | Result | Checks |
+| --- | --- | --- |
+| `--preprobe` | PASS, 5.6s | text, two-turn-context, new-runtime-reference-resume |
+| `--full` | PASS, 10.3s | workspace-skill-and-mcp-rejection, prompt-streaming, multi-turn-context, tool-interaction (shell tool), image-rejection, known-reference-resume-and-list-rejection, interrupt |
+| `--interrupt` | PASS, 2.3s | interrupt; continuation reporting gap below |
+| `--resume-interrupt` | PASS, 3.7s | new-runtime-reference-resume, interrupt; continuation reporting gap below |
+
+At that revision the runner reported `continue-after-interrupt` without sending
+the Claude continuation Turn. The runner fix in `scripts/qualify-real-harness.mjs`
+runs the `CONTINUED` Turn for Claude and reports `continue-after-interrupt` only
+where it actually runs. The initial receipt does not establish continuation.
+
+Re-run: 2026-11-04 11:37–11:38 UTC+8, branch commit `e046b9e`
+(`e046b9e305c5523358b0d49be6961e68c2985ebd`), `sourceDirty: false`, with the
+same versions, model, gateway, effort null and zero retries:
+
+| Mode | Result | Checks |
+| --- | --- | --- |
+| `--interrupt` | PASS, 3.5s | interrupt, continue-after-interrupt |
+| `--resume-interrupt` | PASS, 4.9s | new-runtime-reference-resume, interrupt, continue-after-interrupt |
+
+Interruption during a `sleep 30` shell tool call was followed by a completed
+`CONTINUED` Turn. `--full` and `--preprobe` were not re-run at `e046b9e`; the fix
+only changes interrupt continuation. Claude's `--full` continuation is therefore
+not yet real-observed. `--image`, `--question` and `--effort` are
+`NOT_APPLICABLE` with these exact runner reasons: `--image`: "static Profile
+does not declare image input"; `--question`: "static Profile does not declare
+Questions"; `--effort`: "fixed-model-does-not-support-native-effort". The pinned
+qualification profile uses `deepseek-v4.1-flash` with effort null; the Adapter
+itself supports effort selection `low`, `medium`, `high`, `xhigh`, `max`.
+
+Initial-run usage was approximately 58.3k input, 115.3k cached input and 285
+output tokens over eight Turns. Claude Code's `total_cost_usd` and
+`modelUsage.costUSD` are Anthropic list-price estimates, not actual third-party
+gateway charges.
+
+The box build used a temporary C compiler wrapper outside the repository because
+host glibc 2.41 breaks the native supervisor build. The wrapper was not committed
+and is not part of the product. Historical evidence for other Harnesses retains
+its original source/platform scope; publication remains a separate gate.
