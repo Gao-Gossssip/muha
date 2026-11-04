@@ -44,18 +44,21 @@ scoped to the source, platform and dependencies it actually exercised.
 
 ## SDK 0.1.20 production audit exception
 
-The renewal for the eight-package 0.1.20 cohort only is PENDING the maintainer's
-explicit approval. It covers the same eight exact undici advisories as 0.1.19,
-listed in the historical 0.1.18 section below; no maintainer approval is claimed.
-The scope remains Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7. The audit guard
-expires outside that exact cohort and dependency combination. The residual
-risks and all other publication gates remain unchanged.
+On 2026-11-04 maintainer Sijie Gao explicitly approved both exceptions for
+the eight-package 0.1.20 cohort only: the same eight exact undici advisories as
+0.1.19, listed in the historical 0.1.18 section below, and
+[minimatch GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+which can cause denial of service through globparts amplification.
+The exact scope is Pi SDK 1.2.0, undici 8.10.2, minimatch 10.2.6 and Zod 4.6.7.
+Both exceptions expire outside that cohort and dependency combination. Pi must
+not be upgraded for this preparation.
 
-minimatch 10.2.6 advisory GHSA-g3hv-75wg-m249 is intentionally not excepted.
-This advisory, via Pi SDK 1.2.0, is an
-unapproved release blocker to report to the maintainer. Pi must not be upgraded
-for this preparation. The live production audit must continue to fail on this
-finding; passing controlled audit fixtures does not authorize publication.
+The live production audit must validate exact advisory URLs, package identities,
+locked versions and the Pi dependency path. Indirect findings are accepted only
+when every cause resolves to these approved advisories. New packages/advisories,
+critical severity changes, incomplete reports and Registry failures remain blocking.
+The residual risks remain present; these exceptions do not authorize publication
+or waive any other qualification or publication gate.
 
 ## SDK 0.1.19 production audit exception
 
