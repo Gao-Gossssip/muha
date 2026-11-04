@@ -27,3 +27,7 @@ npm install --save-exact @muha-sdk/muha@{{VERSION}}
 
 See the [package-specific usage](https://github.com/Gao-Gossssip/muha#readme) and
 [qualification and limitations](https://github.com/Gao-Gossssip/muha/blob/main/QUALIFICATION.md).
+
+The Claude Code Adapter is Linux x64 only (Windows unsupported/untested, macOS
+untested). All eight packages install on Windows; native Claude execution is
+not part of Windows consumer acceptance.

@@ -42,12 +42,27 @@ platforms must be `PASS`. Historical smoke receipts and controlled fixtures
 cannot clear a `PENDING` real-model qualification. Qualification evidence remains
 scoped to the source, platform and dependencies it actually exercised.
 
+## SDK 0.1.20 production audit exception
+
+The renewal for the eight-package 0.1.20 cohort only is PENDING the maintainer's
+explicit approval. It covers the same eight exact undici advisories as 0.1.19,
+listed in the historical 0.1.18 section below; no maintainer approval is claimed.
+The scope remains Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7. The audit guard
+expires outside that exact cohort and dependency combination. The residual
+risks and all other publication gates remain unchanged.
+
+minimatch 10.2.6 advisory GHSA-g3hv-75wg-m249 is intentionally not excepted.
+This advisory, via Pi SDK 1.2.0, is an
+unapproved release blocker to report to the maintainer. Pi must not be upgraded
+for this preparation. The live production audit must continue to fail on this
+finding; passing controlled audit fixtures does not authorize publication.
+
 ## SDK 0.1.19 production audit exception
 
 On 2026-10-29 the maintainer separately authorized the same eight exact undici
 advisories listed in the historical 0.1.18 section below for the seven-package
 0.1.19 cohort only. The scope remains Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7.
-The current audit guard accepts only that version and dependency combination;
+That historical authorization covered only that version and dependency combination;
 future versions require a clean audit or a separately reviewed exception.
 
 All eight risks remain present: denial of service, Subresource Integrity bypass,
@@ -100,7 +115,7 @@ is requested; the explicit promotion job still follows consumer acceptance.
 Before dispatching publication, a maintainer configures a GitHub Actions trusted
 publisher in the npm settings of **each** of the eight packages:
 `@muha-sdk/core`, `@muha-sdk/codex-adapter`, `@muha-sdk/opencode-adapter`,
-`@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`, and
+`@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`,
 `@muha-sdk/claude-code-adapter`, and `@muha-sdk/muha`. Use these identical fields:
 
 - Organization or user: `Gao-Gossssip`
@@ -108,6 +123,11 @@ publisher in the npm settings of **each** of the eight packages:
 - Workflow filename: `sdk-release.yml` (not its directory path)
 - Environment: leave blank; this workflow does not use a GitHub environment.
 - Allowed actions: explicitly allow both `npm publish` and `npm dist-tag`.
+
+`@muha-sdk/claude-code-adapter` has no npm trusted publisher yet. Before the
+publish step, the maintainer must configure it with `Gao-Gossssip` / `muha` /
+`sdk-release.yml`, environment blank. Access to package settings may require a
+manual bootstrap publish first; that remains a separate maintainer action.
 
 Publish and dist-tag permissions are independent. Stage-only permission is not
 sufficient for this direct-publication workflow; it would require a different

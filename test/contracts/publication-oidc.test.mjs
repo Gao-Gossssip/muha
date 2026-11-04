@@ -182,7 +182,7 @@ test("release instructions cover all eight package setups and both independent O
   for (const packageName of ["core", "codex-adapter", "opencode-adapter", "kimi-adapter", "pi-adapter", "agy-adapter", "claude-code-adapter", "muha"]) {
     assert.ok(source.includes(`@muha-sdk/${packageName}`));
   }
-  for (const required of ["Gao-Gossssip", "sdk-release.yml", "leave blank", "npm publish", "npm dist-tag", "11.21.0", "within two days", "No `NPM_PUBLISH_TOKEN`", "new source-bound candidate"]) {
+  for (const required of ["Gao-Gossssip", "sdk-release.yml", "leave blank", "npm publish", "npm dist-tag", "11.21.0", "within two days", "No `NPM_PUBLISH_TOKEN`", "new source-bound candidate", "has no npm trusted publisher yet", "manual bootstrap publish"]) {
     assert.ok(source.includes(required), `missing trusted publishing instruction: ${required}`);
   }
 });

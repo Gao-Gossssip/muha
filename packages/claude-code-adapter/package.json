@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/claude-code-adapter",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "Official Claude Code adapter for Muha SDK.",
   "type": "module",
   "engines": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/Gao-Gossssip/muha/tree/main/packages/claude-code-adapter#readme",
   "dependencies": {
-    "@muha-sdk/core": "0.1.19"
+    "@muha-sdk/core": "0.1.20"
   },
   "publishConfig": {
     "access": "public",

@@ -1,6 +1,6 @@
 {
   "name": "@muha-sdk/codex-adapter",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "description": "Official Codex adapter for Muha SDK.",
   "type": "module",
   "engines": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/Gao-Gossssip/muha/tree/main/packages/codex-adapter#readme",
   "dependencies": {
-    "@muha-sdk/core": "0.1.19"
+    "@muha-sdk/core": "0.1.20"
   },
   "publishConfig": {
     "access": "public",

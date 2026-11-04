@@ -229,6 +229,13 @@ to retain the same conversation with a different model. This clears the previous
 explicit effort selection; the Harness may apply its native default. AGY model
 selection remains limited to create/resume; its idle setter is unsupported.
 
+## SDK 0.1.20 release preparation
+
+The eight-package cohort includes the first Claude Code Adapter release.
+Publication is blocked by unexcepted minimatch GHSA-g3hv-75wg-m249 via Pi 1.2.0;
+only the eight previously accepted undici advisories have a 0.1.20 exception.
+See [release requirements](RELEASING.md#sdk-0120-production-audit-exception).
+
 ## Claude Code
 
 Import `claudeCodeAdapter` from `@muha-sdk/muha` (or install

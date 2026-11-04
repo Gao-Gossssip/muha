@@ -9,3 +9,7 @@ Verify with `sha256sum --check SHA256SUMS`.
 The isolated test uses temporary `npm install` fixtures; source development uses `npm ci`.
 The installable packages are {{CORE_FILENAME}}, {{CODEX_FILENAME}}, {{OPENCODE_FILENAME}},
 {{KIMI_FILENAME}}, {{PI_FILENAME}}, {{AGY_FILENAME}}, {{CLAUDE_FILENAME}} and {{MUHA_FILENAME}}.
+
+The Claude Code Adapter is Linux x64 only (Windows unsupported/untested, macOS
+untested). All eight packages install on Windows; native Claude execution is
+not part of Windows consumer acceptance.
