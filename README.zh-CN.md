@@ -4,7 +4,7 @@
   <strong>一套 TypeScript API，驱动多种编码 Agent。</strong>
 </p>
 
-<p align="center">Codex · OpenCode · Pi · Agy · ...</p>
+<p align="center">Codex · OpenCode · Kimi · Pi · AGY · Claude Code</p>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@muha-sdk/muha"><img src="https://img.shields.io/npm/v/@muha-sdk/muha?style=flat-square&amp;color=3178c6" alt="npm 版本"></a>
@@ -58,7 +58,7 @@ Harness 是包含模型、工具、权限与会话历史的 Agent 运行环境�
 
 ## 安装
 
-支持 **Windows 和 Linux**，暂不支持 macOS。
+支持 **Windows 和 Linux**，暂不支持 macOS。Claude Code Adapter 目前仅支持 Linux x64（Windows 不支持、尚未测试，macOS 尚未测试）。
 
 ```sh
 npm install @muha-sdk/muha
@@ -151,7 +151,7 @@ npm install @muha-sdk/core @muha-sdk/pi-adapter
 
 ```js
 const models = await runtime.listModels({ harness: "codex", workspacePath: process.cwd() });
-// 对已启用的 opencode、kimi、pi、agy 使用相同调用，只替换 harness。
+// 对已启用的 opencode、kimi、pi、agy、claude 使用相同调用，只替换 harness。
 console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
   id, name, supportedEfforts, defaultEffort,
 })));
@@ -176,6 +176,7 @@ console.log(models.map(({ id, name, supportedEfforts, defaultEffort }) => ({
 | Kimi | 原生支持的 thinking efforts | 原生默认 effort（若提供） |
 | Pi | SDK 按模型计算的 thinking levels，包含自定义映射 | 未提供 |
 | AGY | 当前支持的 `agy models` 输出未提供 | 未提供 |
+| Claude Code | `listModels` 为每个列出的模型提供 `low`、`medium`、`high`、`xhigh`、`max`（Claude Code CLI 2.1.197 的 `--effort` 值）；实际是否接受取决于模型/Provider | 未提供 |
 
 Muha 不跨 Harness 统一强度等级，也不从模型名称猜测。原生配置改变后可再次查询。
 
@@ -192,7 +193,7 @@ if (effort !== undefined &&
 错误会明确拒绝。目录受原生配置、认证和缓存影响，不保证凭据、额度或下一次
 模型调用成功。静态能力声明为 `runtime.getHarnessCapabilities(harness).model.listing`。
 
-Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
+Codex、OpenCode、Kimi、Pi 和 Claude Code 可以在两次 Turn 之间调用
 `await session.setModel(id)`，保留同一会话历史。切换会清除旧的显式 effort，
 原生 Harness 仍可采用其默认值。AGY 目前仅支持在创建和恢复会话时选择模型。
 
@@ -201,12 +202,18 @@ Codex、OpenCode、Kimi 和 Pi 可以在两次 Turn 之间调用
 从 `@muha-sdk/muha` 导入 `claudeCodeAdapter`，或单独安装
 `@muha-sdk/core @muha-sdk/claude-code-adapter`。使用 Anthropic 安装器独立安装
 `claude` 并配置原生认证。Harness Kind 为 `"claude"`。
-目前仅测试 Linux；Windows 尚未测试、暂不支持；macOS 尚未测试。
+Linux x64 已通过真实模型资格验证；Windows 不支持、尚未测试；macOS 尚未测试。
 
 适配器 `env` 原样传递 `ANTHROPIC_BASE_URL`、`ANTHROPIC_AUTH_TOKEN`、
 `ANTHROPIC_API_KEY`，支持第三方 Anthropic 兼容网关；也支持
 `~/.claude/settings.json` 的 `apiKeyHelper`，配置目录由 `CLAUDE_CONFIG_DIR`
-指定。不要打印凭据。模型 ID 任意透传，例如 `deepseek-v4.1-flash`；
+指定。opencode Go 可通过适配器 `env` 或原生环境设置
+`ANTHROPIC_BASE_URL=https://opencode.ai/inference/go/anthropic` 与
+`ANTHROPIC_AUTH_TOKEN`。不要打印凭据。
+原生事件记录与诊断会脱敏凭据字段、可识别的凭据模式，以及去除首尾空白后
+至少八个字符的凭据命名环境变量值。通用名称按下划线分段识别；布尔与数字
+配置值不参与此类脱敏，已知 Provider 凭据名称在达到该长度时仍会脱敏。
+协议校验与 Turn 映射使用原始标识。模型 ID 任意透传，例如 `deepseek-v4.1-flash`；
 `listModels` 返回静态别名与环境/配置中指定的模型，不调用模型推理。
 模型与 effort 均为 `selectedOnly`，作用于下一次 Turn；effort 支持
 `low`、`medium`、`high`、`xhigh`、`max`（CLI 2.1.197 help）。
@@ -218,7 +225,8 @@ Question、图片、会话列表或 Workspace Skills/MCP 配置能力。每次 T
 
 `startupTimeoutMs` 默认 120000 ms，限制首个事件等待；适配器 env 中
 `MUHA_CLAUDE_TURN_IDLE_TIMEOUT_MS` 默认 300000 ms，限制 init 后认证卡住
-及其他无输出等待，assistant 输出会重置计时。`shutdownTimeoutMs` 默认 5000 ms。
+及其他无输出等待，每个解析后的 stream-json 事件（含工具结果与系统事件）都会重置计时。`shutdownTimeoutMs` 默认 5000 ms。
 超时、中断与关闭均回收受管进程。`total_cost_usd` / `modelUsage.costUSD`
 只是 Claude 的 Anthropic 标价估算，不是网关实际费用，仅保留在原生事件记录，
-不会映射为 usage/cost。真实模型资格验证仍待单独授权。
+不会映射为 usage/cost。Linux x64 真实资格验证已通过：CLI 2.1.197、Node 22.23.4、
+`deepseek-v4.1-flash`、effort null、Muha 重试次数为 0。完整契约见适配器 README。
