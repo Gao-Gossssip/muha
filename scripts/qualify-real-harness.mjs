@@ -218,14 +218,15 @@ export async function qualify(profile, { mode, model }) {
       return { harness, model, mode, sourceRevision: revision.status === 0 ? revision.stdout.trim() : null,
         sourceDirty: dirty.status === 0 ? dirty.stdout.trim().length > 0 : null,
         harnessVersion: version?.status === 0 ? version.stdout.trim() : null,
-        checks: ["new-runtime-reference-resume", "interrupt", "continue-after-interrupt"] };
+        checks: ["new-runtime-reference-resume", "interrupt",
+          ...(continuesAfterInterrupt(harness) ? ["continue-after-interrupt"] : [])] };
     }
     if (mode === "--interrupt") {
       await qualifyInterrupt(session, harness);
       return { harness, model, mode, sourceRevision: revision.status === 0 ? revision.stdout.trim() : null,
         sourceDirty: dirty.status === 0 ? dirty.stdout.trim().length > 0 : null,
         harnessVersion: version?.status === 0 ? version.stdout.trim() : null,
-        checks: ["interrupt", "continue-after-interrupt"] };
+        checks: ["interrupt", ...(continuesAfterInterrupt(harness) ? ["continue-after-interrupt"] : [])] };
     }
     const nonce = `MUHA_${Date.now().toString(36).toUpperCase()}`;
     const first = await execute(session, [
@@ -344,8 +345,9 @@ export async function qualify(profile, { mode, model }) {
         capabilities.imageInput ? "image" : "image-rejection",
         capabilities.sessionListing ? "list-resume" : "known-reference-resume-and-list-rejection",
         "interrupt",
-        ...(harness === "pi" ? ["native-file-effect", "visual-color-ground-truth", "new-runtime-history-resume", "continue-after-interrupt"] : []),
-        ...(harness === "agy" ? ["native-file-effect", "new-runtime-history-resume", "continue-after-interrupt"] : []),
+        ...(harness === "pi" ? ["native-file-effect", "visual-color-ground-truth", "new-runtime-history-resume"] : []),
+        ...(harness === "agy" ? ["native-file-effect", "new-runtime-history-resume"] : []),
+        ...(continuesAfterInterrupt(harness) ? ["continue-after-interrupt"] : []),
       ],
     };
   } finally {
@@ -385,6 +387,10 @@ export function imageQualificationInput(imagePath) {
   ];
 }
 
+export function continuesAfterInterrupt(harness) {
+  return harness === "pi" || harness === "agy" || harness === "claude";
+}
+
 async function qualifyInterrupt(session, harness) {
     process.stderr.write(`${JSON.stringify({ stage: "interrupt", phase: "start", harness })}\n`);
     const interruptTurn = await session.startTurn([
@@ -417,7 +423,7 @@ async function qualifyInterrupt(session, harness) {
       })}`,
     );
     assert.equal(interrupted.status, "interrupted");
-    if (harness === "pi" || harness === "agy") {
+    if (continuesAfterInterrupt(harness)) {
       process.stderr.write(`${JSON.stringify({ stage: "interrupt", phase: "continue", harness })}\n`);
       const continued = await execute(session, [{ type: "text", text: "Reply with exactly CONTINUED. Do not call tools." }]);
       assertCompleted(continued, "continue after interrupt");

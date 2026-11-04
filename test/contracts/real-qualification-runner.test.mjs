@@ -2,9 +2,10 @@ import { fileURLToPath } from "node:url";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import test from "node:test";
+import { readFile } from "node:fs/promises";
 
 import { OFFICIAL_HARNESS_KINDS } from "@muha-sdk/core/internal";
-import { imageQualificationInput } from "../../scripts/qualify-real-harness.mjs";
+import { continuesAfterInterrupt, imageQualificationInput } from "../../scripts/qualify-real-harness.mjs";
 import { REAL_HARNESS_QUALIFICATION_PROFILES, qualificationModelForMode, qualificationProfileFor, qualificationTurnRetryPolicy } from "../../scripts/real-harness-profiles.mjs";
 
 test("image qualification constrains the answer to one color word after the image", () => {
@@ -109,4 +110,23 @@ test("the real qualification runner rejects every unknown Harness deterministica
       assert.match(result.stderr, new RegExp(`Unknown Harness: ${harness}`));
     });
   }
+});
+
+
+test("interrupt continuation runs and is reported only for Pi, AGY and Claude", async () => {
+  for (const harness of OFFICIAL_HARNESS_KINDS) {
+    assert.equal(continuesAfterInterrupt(harness), ["pi", "agy", "claude"].includes(harness), harness);
+  }
+  const source = await readFile(new URL("../../scripts/qualify-real-harness.mjs", import.meta.url), "utf8");
+  const continuation = '...(continuesAfterInterrupt(harness) ? ["continue-after-interrupt"] : [])';
+  for (const mode of ["--interrupt", "--resume-interrupt"]) {
+    const branch = source.split(`if (mode === "${mode}") {`)[1].split('\n    }')[0];
+    assert.ok(branch.includes("await qualifyInterrupt(session, harness)"));
+    assert.ok(branch.includes(continuation), mode);
+  }
+  const fullChecks = source.split('checks: [\n')[1].split('\n      ],')[0];
+  assert.ok(fullChecks.includes(continuation));
+  assert.match(fullChecks, /"interrupt",\s*\.\.\.\(harness === "pi" \? \["native-file-effect", "visual-color-ground-truth", "new-runtime-history-resume"\] : \[\]\),\s*\.\.\.\(harness === "agy" \? \["native-file-effect", "new-runtime-history-resume"\] : \[\]\),/);
+  assert.equal(source.match(/"continue-after-interrupt"/g).length, 3);
+  assert.match(source, /if \(continuesAfterInterrupt\(harness\)\) \{[\s\S]*?Reply with exactly CONTINUED[\s\S]*?assertCompleted\(continued, "continue after interrupt"\);[\s\S]*?assert\.match\(continued\.result\.message\.text, \/CONTINUED\/\);/);
 });
