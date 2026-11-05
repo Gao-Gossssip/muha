@@ -2527,11 +2527,35 @@
     {
       "harness": "claude",
       "platform": "linux-x64",
-      "status": "PENDING",
+      "status": "PASS",
+      "qualificationDate": "2026-11-05",
+      "sourceSnapshot": "06216105d0435379462bcd5044ffe1cd25fd2571",
       "model": "deepseek-v4.1-flash",
       "effort": null,
-      "realAttempts": 0,
-      "scope": "Controlled candidate only. No real inference performed; Windows unsupported/untested, macOS untested."
+      "harnessVersion": "2.1.197 (Claude Code)",
+      "modes": [
+        "--preprobe",
+        "--full",
+        "--interrupt",
+        "--resume-interrupt"
+      ],
+      "realAttempts": 4,
+      "maxRetries": 0,
+      "concurrency": 1,
+      "checks": [
+        "text",
+        "two-turn-context",
+        "new-runtime-reference-resume",
+        "workspace-skill-and-mcp-rejection",
+        "prompt-streaming",
+        "multi-turn-context",
+        "tool-interaction",
+        "image-rejection",
+        "known-reference-resume-and-list-rejection",
+        "interrupt",
+        "continue-after-interrupt"
+      ],
+      "scope": "Real Linux x64 qualification of the native per-Turn CLI route on clean source 0621610 with Claude Code CLI 2.1.197 and deepseek-v4.1-flash through the opencode Go Anthropic-compatible gateway, effort null, zero retries. --preprobe, --full, --interrupt and --resume-interrupt each passed on the first of four real attempts, including real-observed continuation after interrupt in --full. --image, --question and --effort are NOT_APPLICABLE for the pinned profile. Windows unsupported/untested; macOS untested."
     },
     {
       "harness": "core",
