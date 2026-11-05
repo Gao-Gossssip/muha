@@ -159,11 +159,14 @@ test("an isolated fixture can install Core and all six official Adapters", async
         'import { openCodeAdapter } from "@muha-sdk/opencode-adapter";',
         'import { piAdapter } from "@muha-sdk/pi-adapter";',
         'import { agyAdapter } from "@muha-sdk/agy-adapter";',
+        'import { claudeCodeAdapter } from "@muha-sdk/claude-code-adapter";',
         'if (typeof codexAdapter() !== "object") throw new Error("missing codex registration");',
         'if (typeof kimiAdapter() !== "object") throw new Error("missing kimi registration");',
         'if (typeof openCodeAdapter() !== "object") throw new Error("missing opencode registration");',
         'if (typeof piAdapter() !== "object") throw new Error("missing pi registration");',
         'if (typeof agyAdapter() !== "object") throw new Error("missing agy registration");',
+        // Registration/loading is supported on Windows; native Claude execution is Linux-only.
+        'if (typeof claudeCodeAdapter() !== "object") throw new Error("missing claude registration");',
       ].join("\n"),
     );
     run(process.execPath, ["esm.mjs"], { cwd: consumer });

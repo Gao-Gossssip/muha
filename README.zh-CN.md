@@ -197,6 +197,12 @@ Codex、OpenCode、Kimi、Pi 和 Claude Code 可以在两次 Turn 之间调用
 `await session.setModel(id)`，保留同一会话历史。切换会清除旧的显式 effort，
 原生 Harness 仍可采用其默认值。AGY 目前仅支持在创建和恢复会话时选择模型。
 
+## SDK 0.1.20 发布准备
+
+本版八包同步发布，包含首次发布的 Claude Code Adapter。Pi 1.2.0 引入的
+minimatch GHSA-g3hv-75wg-m249 尚未获准例外，仍阻塞发布；0.1.20 例外仅涵盖
+此前八项 undici 公告。详见[发布要求](RELEASING.md#sdk-0120-production-audit-exception)。
+
 ## Claude Code
 
 从 `@muha-sdk/muha` 导入 `claudeCodeAdapter`，或单独安装

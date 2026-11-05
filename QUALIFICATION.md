@@ -1,5 +1,23 @@
 # SDK qualification and migration provenance
 
+## SDK 0.1.20 release preparation
+
+The eight-package cohort includes the first Claude Code Adapter release. Only
+package versions, internal pins, release metadata and controlled contracts
+change in this preparation; runtime resources and external locked dependencies
+retain their recorded source and platform qualification scopes. No real-model
+Turns, publication or consumer application validation are authorized here.
+
+On 2026-11-04 maintainer Sijie Gao explicitly approved both exceptions for
+the eight-package 0.1.20 cohort only: the same eight exact undici advisories as
+0.1.19 and minimatch 10.2.6 advisory GHSA-g3hv-75wg-m249, via Pi SDK 1.2.0.
+The exact scope fixes Pi SDK 1.2.0, undici 8.10.2, minimatch 10.2.6 and Zod 4.6.7.
+The audit requires exact advisory/package matching and complete approved cause
+chains for indirect findings. Other findings and critical severity remain blocking.
+The residual risks remain present, and the maintainer must configure the new
+package's npm trusted publisher. See RELEASING.md; historical exceptions and
+qualification receipts remain scoped to their original releases and sources.
+
 ## Affected 0.1.19 qualification closure (2026-10-29)
 
 The maintainer separately authorized four Pi Turns on Linux and native Windows,

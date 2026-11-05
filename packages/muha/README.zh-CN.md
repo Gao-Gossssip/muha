@@ -197,7 +197,7 @@ Codex、OpenCode、Kimi、Pi 和 Claude Code 可以在两次 Turn 之间调用
 `await session.setModel(id)`，保留同一会话历史。切换会清除旧的显式 effort，
 原生 Harness 仍可采用其默认值。AGY 目前仅支持在创建和恢复会话时选择模型。
 
-## SDK 0.1.19 安全说明
+## SDK 0.1.20 安全说明
 
 随附的 Pi SDK 1.2.0 固定依赖 undici 8.10.2。本版通过明确授权的限定例外，
 保留其已知拒绝服务、子资源完整性校验绕过、缓存污染与数据泄露、TLS 证书校验绕过风险：
@@ -209,7 +209,10 @@ Codex、OpenCode、Kimi、Pi 和 Claude Code 可以在两次 Turn 之间调用
 [GHSA-qrxm-fqhp-jwvm](https://github.com/advisories/GHSA-qrxm-fqhp-jwvm)、
 [GHSA-9fm3-97px-rjf6](https://github.com/advisories/GHSA-9fm3-97px-rjf6)、
 [GHSA-55wc-3pg8-jfw6](https://github.com/advisories/GHSA-55wc-3pg8-jfw6)。
-范围与其他检查要求见[本版发布例外](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0119-production-audit-exception)。
+范围与其他检查要求见[本版发布例外](https://github.com/Gao-Gossssip/muha/blob/main/RELEASING.md#sdk-0120-production-audit-exception)。
+
+minimatch 10.2.6（经 Pi SDK 1.2.0 引入）的 GHSA-g3hv-75wg-m249 不在例外范围内，
+是 0.1.20 发布阻塞项，须报告维护者；真实审计仍会失败。
 
 ## Claude Code
 

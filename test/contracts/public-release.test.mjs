@@ -12,7 +12,7 @@ import { publicationFiles } from "../../scripts/delivery-manifest.mjs";
 import { publicationRequiredFiles } from "../../scripts/native-resources.mjs";
 
 const root = resolve(import.meta.dirname, "../..");
-const revision = "a".repeat(40), version = "0.1.15";
+const revision = "a".repeat(40), version = "0.1.20";
 const candidate = () => ({
   delivery: "public-npm-candidate", candidate: true, version,
   source: { revision, dirty: false, tree: "b".repeat(40), lockfileSha256: "c".repeat(64) },
@@ -51,6 +51,9 @@ test("publication rejects diagnostics, changed sources, mixed versions and missi
     release => { release.source.dirty = true; },
     release => { release.source.revision = "e".repeat(40); },
     release => { release.packages.pop(); },
+    release => { release.packages = release.packages.filter(item => item.name !== "@muha-sdk/claude-code-adapter"); },
+    release => { delete release.packages.at(-1).dependencies["@muha-sdk/claude-code-adapter"]; },
+    release => { [release.packages[6], release.packages[7]] = [release.packages[7], release.packages[6]]; },
     release => { release.packages[1].version = "0.1.12"; },
     release => { release.packages[1].dependencies["@muha-sdk/core"] = `^${version}`; },
     release => { delete release.packages.at(-1).dependencies["@muha-sdk/pi-adapter"]; },

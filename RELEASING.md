@@ -42,12 +42,30 @@ platforms must be `PASS`. Historical smoke receipts and controlled fixtures
 cannot clear a `PENDING` real-model qualification. Qualification evidence remains
 scoped to the source, platform and dependencies it actually exercised.
 
+## SDK 0.1.20 production audit exception
+
+On 2026-11-04 maintainer Sijie Gao explicitly approved both exceptions for
+the eight-package 0.1.20 cohort only: the same eight exact undici advisories as
+0.1.19, listed in the historical 0.1.18 section below, and
+[minimatch GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249),
+which can cause denial of service through globparts amplification.
+The exact scope is Pi SDK 1.2.0, undici 8.10.2, minimatch 10.2.6 and Zod 4.6.7.
+Both exceptions expire outside that cohort and dependency combination. Pi must
+not be upgraded for this preparation.
+
+The live production audit must validate exact advisory URLs, package identities,
+locked versions and the Pi dependency path. Indirect findings are accepted only
+when every cause resolves to these approved advisories. New packages/advisories,
+critical severity changes, incomplete reports and Registry failures remain blocking.
+The residual risks remain present; these exceptions do not authorize publication
+or waive any other qualification or publication gate.
+
 ## SDK 0.1.19 production audit exception
 
 On 2026-10-29 the maintainer separately authorized the same eight exact undici
 advisories listed in the historical 0.1.18 section below for the seven-package
 0.1.19 cohort only. The scope remains Pi SDK 1.2.0, undici 8.10.2 and Zod 4.6.7.
-The current audit guard accepts only that version and dependency combination;
+That historical authorization covered only that version and dependency combination;
 future versions require a clean audit or a separately reviewed exception.
 
 All eight risks remain present: denial of service, Subresource Integrity bypass,
@@ -100,7 +118,7 @@ is requested; the explicit promotion job still follows consumer acceptance.
 Before dispatching publication, a maintainer configures a GitHub Actions trusted
 publisher in the npm settings of **each** of the eight packages:
 `@muha-sdk/core`, `@muha-sdk/codex-adapter`, `@muha-sdk/opencode-adapter`,
-`@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`, and
+`@muha-sdk/kimi-adapter`, `@muha-sdk/pi-adapter`, `@muha-sdk/agy-adapter`,
 `@muha-sdk/claude-code-adapter`, and `@muha-sdk/muha`. Use these identical fields:
 
 - Organization or user: `Gao-Gossssip`
@@ -108,6 +126,11 @@ publisher in the npm settings of **each** of the eight packages:
 - Workflow filename: `sdk-release.yml` (not its directory path)
 - Environment: leave blank; this workflow does not use a GitHub environment.
 - Allowed actions: explicitly allow both `npm publish` and `npm dist-tag`.
+
+`@muha-sdk/claude-code-adapter` has no npm trusted publisher yet. Before the
+publish step, the maintainer must configure it with `Gao-Gossssip` / `muha` /
+`sdk-release.yml`, environment blank. Access to package settings may require a
+manual bootstrap publish first; that remains a separate maintainer action.
 
 Publish and dist-tag permissions are independent. Stage-only permission is not
 sufficient for this direct-publication workflow; it would require a different
