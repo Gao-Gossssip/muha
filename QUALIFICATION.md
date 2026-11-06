@@ -760,3 +760,30 @@ The box build used a temporary C compiler wrapper outside the repository because
 host glibc 2.41 breaks the native supervisor build. The wrapper was not committed
 and is not part of the product. Historical evidence for other Harnesses retains
 its original source/platform scope; publication remains a separate gate.
+
+## Core Linux x64 affected-boundary audit (2026-11-06)
+
+The Claude Code adapter (#39) changed three Core resources from baseline
+`d3f98a4` (0.1.19): `packages/core/src/acp/owned-process.ts` adds optional explicit
+cwd defaulting to `process.cwd()`, routes Linux supervisor launch through
+`spawnHarnessProcess` (direct `spawn` off Windows), records the supervisor's
+existing `nativeExit` code/signal event and exposes `nativeExited`;
+`packages/core/src/harness-catalog.ts` adds `claude`; and
+`packages/core/src/host-process.ts` exports the internal `OwnedHarnessProcess`
+alias. The other 18 `packages/core/src` files, five native C sources and external
+dependencies are unchanged; `packages/core/package.json` differs only by version.
+Fixture sha256 values match recomputation at `58515d5`; Core runtime bytes
+are identical to clean source `0621610`.
+
+No new real calls were made. PASS maps to the four Claude Code Linux x64 real
+attempts of 2026-11-05 above: every Claude Turn constructs `OwnedHarnessProcess`
+with cwd set to the Session workspace, awaits `nativeExited` before finishing a
+completed Turn, and checks `nativeExitCode` is 0. The focused controlled Linux run
+at `58515d5` passed 93 tests, 0 failed, 0 skipped, across 14 files: ACP ownership/
+initialization/inbound, official Harness catalog, atomic Runtime lifecycle,
+fixture PIDs, Claude Turn, ACP helper loss, Runtime lifecycle, fake Harness,
+Session/text/rich Turn conformance and capability discovery. The Core linux-x64
+fixture moves from PENDING to PASS with `realAttempts: 0`, `mappedRealAttempts: 4`
+and no paid calls added. Other Harnesses' real evidence remains source scoped;
+the Windows Core PASS keeps its `80e482c` scope. No Windows or macOS claim is made
+here; publication remains a separate gate.
