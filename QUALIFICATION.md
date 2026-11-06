@@ -713,13 +713,43 @@ same versions, model, gateway, effort null and zero retries:
 
 Interruption during a `sleep 30` shell tool call was followed by a completed
 `CONTINUED` Turn. `--full` and `--preprobe` were not re-run at `e046b9e`; the fix
-only changes interrupt continuation. Claude's `--full` continuation is therefore
-not yet real-observed. `--image`, `--question` and `--effort` are
+only changes interrupt continuation. Claude's `--full` continuation was not
+real-observed at `e046b9e`; see the 2026-11-05 release re-run below. `--image`, `--question` and `--effort` are
 `NOT_APPLICABLE` with these exact runner reasons: `--image`: "static Profile
 does not declare image input"; `--question`: "static Profile does not declare
 Questions"; `--effort`: "fixed-model-does-not-support-native-effort". The pinned
 qualification profile uses `deepseek-v4.1-flash` with effort null; the Adapter
 itself supports effort selection `low`, `medium`, `high`, `xhigh`, `max`.
+
+### Release re-run: 2026-11-05
+
+Clean source `0621610` (`06216105d0435379462bcd5044ffe1cd25fd2571`),
+`sourceDirty: false`, passed all four modes with Claude Code CLI
+`2.1.197 (Claude Code)`, Node `v22.23.4`, model `deepseek-v4.1-flash`
+(`modelObservation: selectedOnly`) through the opencode Go Anthropic-compatible
+gateway, effort null, `maxRetriesPerTurn: 0` and concurrency one. After
+`npm run build:sdk`, the runner was
+`node scripts/qualify-real-harness.mjs claude <mode>`.
+
+| Mode | Result | Time (UTC+8) | Duration | Checks |
+| --- | --- | --- | --- | --- |
+| `--preprobe` | PASS | 14:29:54–14:30:01 | 7s | text, two-turn-context, new-runtime-reference-resume |
+| `--full` | PASS | 14:30:04–14:30:58 | 54s | workspace-skill-and-mcp-rejection, prompt-streaming, multi-turn-context, tool-interaction, image-rejection, known-reference-resume-and-list-rejection, interrupt, continue-after-interrupt |
+| `--interrupt` | PASS | 14:31:02–14:31:07 | 5s | interrupt, continue-after-interrupt |
+| `--resume-interrupt` | PASS | 14:31:07–14:31:12 | 5s | new-runtime-reference-resume, interrupt, continue-after-interrupt |
+
+Each mode passed on its first attempt: four real attempts total, no retries.
+The batch recorded 11 completed Turns plus three interrupted Turns, totaling
+59,926 input, 171,776 cached input and 264 output tokens. In `--full`, a shell
+tool started before `turn.interrupted`, followed by a completed continuation
+Turn. `--full` continuation is now real-observed, superseding the earlier
+`e046b9e` limitation. `--image`, `--question` and `--effort` remain
+`NOT_APPLICABLE` for the same pinned-profile reasons above.
+
+The existing Claude Linux x64 fixture entry in
+`scripts/fixtures/sdk-runtime-sha256.json` is now PASS. Windows remains
+unsupported/untested; macOS is untested. The temporary compiler wrapper was
+again used outside the repository and was not committed.
 
 Initial-run usage was approximately 58.3k input, 115.3k cached input and 285
 output tokens over eight Turns. Claude Code's `total_cost_usd` and
