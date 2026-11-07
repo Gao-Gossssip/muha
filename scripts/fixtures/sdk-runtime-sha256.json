@@ -2560,14 +2560,80 @@
     {
       "harness": "core",
       "platform": "linux-x64",
-      "status": "PENDING",
-      "realAttempts": 0,
+      "authorizationDate": "2026-11-06",
+      "qualificationDate": "2026-11-06",
+      "status": "PASS",
+      "sourceSnapshot": "58515d525e043db7e25b15a38ee04d09a2d00829",
+      "sourceTree": "91245ff9d611a9ab98ec196d54f382f24b5a35d9",
+      "lockfileSha256": "6a37ce3222e54634d476fd796b4b5ce2687b67077e8d1e3f630c2d1aa23e35da",
+      "feature": "claude-explicit-cwd-native-exit-observation-and-internal-owned-process-export",
       "changedResources": [
-        "packages/core/src/acp/owned-process.ts",
-        "packages/core/src/harness-catalog.ts",
-        "packages/core/src/host-process.ts"
+        {
+          "path": "packages/core/src/acp/owned-process.ts",
+          "previousSha256": "7a140030eb1436803717a54c42a6d4fcfeb66cfef6e22f7ee66edb46a4fb3b27",
+          "updatedSha256": "a66591bd0f4b76b7cdcca19d4fb646acc3935ddb950b30cf0237ca5384c2a8c7"
+        },
+        {
+          "path": "packages/core/src/harness-catalog.ts",
+          "previousSha256": "e74a33606822d6c8e22082fd57c5acc026446f5bbdde2c32e5c793db06e49774",
+          "updatedSha256": "ae18382f598ae55d03d374c4cc403e9e48779c9e835b658e449c0d63fe21db8a"
+        },
+        {
+          "path": "packages/core/src/host-process.ts",
+          "previousSha256": "19f61e873c9440ea73b92b5ab809677fefaa23364c2a433f698f73675c3e1958",
+          "updatedSha256": "609df87d0c005f350373b057171387c8ac24ff18969198159e992066eb16f82a"
+        }
       ],
-      "scope": "Explicit cwd support, native exit observation and process-specific internal export for Claude Code. Historical real evidence remains source scoped."
+      "realAttempts": 0,
+      "mappedRealAttempts": 4,
+      "paidCallsAddedByCoreAudit": 0,
+      "sourceEquivalence": {
+        "baseline": "d3f98a4af29ef2d1a3e040d27ff479513650803f",
+        "changedCoreSourceFiles": 3,
+        "unchangedCoreSourceFiles": 18,
+        "unchangedNativeSources": 5,
+        "mappedEvidenceSource": "06216105d0435379462bcd5044ffe1cd25fd2571",
+        "coreRuntimeIdenticalToMappedEvidenceSource": true,
+        "externalChanges": []
+      },
+      "controlled": {
+        "tests": 93,
+        "pass": 93,
+        "fail": 0,
+        "skip": 0,
+        "testFiles": 14
+      },
+      "coverage": [
+        "linux-owned-process-spawn-through-spawnHarnessProcess-direct-spawn-equivalence",
+        "explicit-cwd-with-process-cwd-default-for-existing-ACP-callers",
+        "supervisor-nativeExit-event-code-and-signal-observation",
+        "claude-official-harness-catalog-entry",
+        "internal-host-process-OwnedHarnessProcess-alias-export",
+        "ACP-ownership-helper-loss-and-owned-close"
+      ],
+      "realEvidenceMapping": [
+        {
+          "harness": "claude",
+          "platform": "linux-x64",
+          "sourceSnapshot": "06216105d0435379462bcd5044ffe1cd25fd2571",
+          "model": "deepseek-v4.1-flash",
+          "modes": [
+            "--preprobe",
+            "--full",
+            "--interrupt",
+            "--resume-interrupt"
+          ],
+          "realAttempts": 4,
+          "exercised": [
+            "OwnedHarnessProcess-export-constructs-every-Claude-Turn-process",
+            "explicit-cwd-set-to-Session-workspacePath",
+            "nativeExited-awaited-before-completed-Turn-finish",
+            "nativeExitCode-zero-checked-on-completed-Turns",
+            "claude-catalog-registration"
+          ]
+        }
+      ],
+      "scope": "Independent affected-boundary audit, not a new real-model run. Only three Core source files changed since baseline d3f98a4 (0.1.19): owned-process.ts gains an optional cwd (default process.cwd(), so existing ACP callers are unchanged), routes the Linux supervisor spawn through spawnHarnessProcess (a direct spawn on non-Windows) and records the existing supervisor nativeExit event; harness-catalog.ts adds claude; host-process.ts re-exports AcpOwnedProcess as OwnedHarnessProcess. Native C sources and external dependencies are unchanged, and Core runtime bytes are identical to clean source 0621610, where four Claude Code Linux real attempts (deepseek-v4.1-flash, zero retries) exercised the export, explicit cwd and native exit observation. A focused 93-test controlled Linux run passed without skips. Other Harnesses' historical real evidence remains source scoped; no Windows or macOS Core claim is made by this entry."
     }
   ]
 }
